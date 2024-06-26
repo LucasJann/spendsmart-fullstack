@@ -15,14 +15,22 @@ const Button: React.FC<ButtonProps> = ({
   className,
   isSelected,
 }) => {
+    
+  let disabled = false;
+
   if (isSelected) {
+    disabled = true;
     className = `${className + "border-b-2 border-red-500"}`;
-    console.log(className);
   }
 
   return (
     <>
-      <button onClick={onClick} type={type} className={className}>
+      <button
+        onClick={onClick}
+        type={type}
+        className={className}
+        disabled={disabled}
+      >
         {children}
       </button>
     </>
