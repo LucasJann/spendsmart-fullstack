@@ -40,18 +40,63 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           <Link to="/" />
           Register
         </Button>
-        <section className="text-left font-serif text-gray-300">
-          <h2>E-mail</h2>
-          <Input type="email" name="email" placeholder="Insira seu e-mail" />
-          <hr />
-          <h2>Password</h2>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Insira sua senha"
-          />
-          <hr />
-        </section>
+        {isSelected && (
+          <section className="text-left font-serif text-gray-300">
+            <h2 className="mt-2">E-mail</h2>
+            <Input type="email" name="email" placeholder="Insira seu e-mail" />
+            <hr />
+            <h2 className="mt-2">Password</h2>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Insira sua senha"
+            />
+            <hr />
+            <Button
+              type="submit"
+              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+            >
+              Entrar
+            </Button>
+          </section>
+        )}
+        {!isSelected && (
+          <section className="text-left font-serif text-gray-300">
+            <h2 className="mt-2">Nome</h2>
+            <Input type="text" name="name" placeholder="Insira seu nome" />
+            <hr />
+            <h2 className="mt-2">Sobrenome</h2>
+            <Input
+              type="text"
+              name="nickname"
+              placeholder="Insira seu sobrenome"
+            />
+            <hr />
+            <h2 className="mt-2">E-mail</h2>
+            <Input type="email" name="email" placeholder="Insira seu e-mail" />
+            <hr />
+            <h2 className="mt-2">Password</h2>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Insira sua senha"
+            />
+            <hr />
+            <h2 className="mt-2">Confirm Password</h2>
+            <Input
+              type="password"
+              name="confirmpassword"
+              placeholder="Confirme sua senha"
+            />
+            <hr />
+            <Button
+              type="submit"
+              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+            >
+              Confirmar
+            </Button>
+          </section>
+        )}
       </Form>
     </div>
   );
