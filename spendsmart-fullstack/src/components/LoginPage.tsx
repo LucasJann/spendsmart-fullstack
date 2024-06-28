@@ -3,14 +3,42 @@ import { Form, Link } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 
-interface LoginPageProps {}
+interface LoginPageProps {
+}
 
 const LoginPage: React.FC<LoginPageProps> = () => {
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
-
   const [isSelected, setIsSelected] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const data = isSelected
+      ? { email, password }
+      : { name, lastName, email, password, confirmPassword };
+
+    try {
+      const response = await fetch("http://localhost:8080/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+
+      // Lidar com a resposta aqui
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
   const onSelected = () => {
     setIsSelected(!isSelected);
@@ -43,13 +71,27 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         {isSelected && (
           <section className="text-left font-serif text-gray-300">
             <h2 className="mt-2">E-mail</h2>
-            <Input type="email" name="email" placeholder="Insira seu e-mail" />
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Insira seu e-mail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
             <hr />
             <h2 className="mt-2">Password</h2>
             <Input
+              id="password"
               type="password"
               name="password"
               placeholder="Insira sua senha"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <hr />
             <Button
@@ -63,30 +105,63 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         {!isSelected && (
           <section className="text-left font-serif text-gray-300">
             <h2 className="mt-2">Nome</h2>
-            <Input type="text" name="name" placeholder="Insira seu nome" />
+            <Input
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Insira seu nome"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
             <hr />
             <h2 className="mt-2">Sobrenome</h2>
             <Input
+              id="lastName"
               type="text"
-              name="nickname"
+              name="lastName"
               placeholder="Insira seu sobrenome"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
             />
             <hr />
             <h2 className="mt-2">E-mail</h2>
-            <Input type="email" name="email" placeholder="Insira seu e-mail" />
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Insira seu e-mail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
             <hr />
             <h2 className="mt-2">Password</h2>
             <Input
+              id="password"
               type="password"
               name="password"
               placeholder="Insira sua senha"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <hr />
             <h2 className="mt-2">Confirm Password</h2>
             <Input
-              type="password"
-              name="confirmpassword"
+              id="confirmPassword"
+              type="confirmPassword"
+              name="confirmPassword"
               placeholder="Confirme sua senha"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
             />
             <hr />
             <Button
