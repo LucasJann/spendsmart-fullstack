@@ -1,6 +1,6 @@
+import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
-import cors from "cors";
 import mainRoute from "./routes/main";
 
 const MONGODB_URI = "mongodb+srv://lucasjan:Q41TavYrylvI7Xki@cluster.neqaq8n.mongodb.net/logins?&w=majority"
