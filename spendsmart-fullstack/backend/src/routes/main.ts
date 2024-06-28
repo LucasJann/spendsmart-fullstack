@@ -1,8 +1,8 @@
-import express from 'express';
-const controllerAdmin = require('../controllers/admin')
+import { Router } from "express";
+import { Register } from "../controllers/admin";
 
-const router = express.Router();
+const router = Router();
 
-router.use('/', controllerAdmin.Register);
+router.post("/", Register);
 
 export default router;
