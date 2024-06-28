@@ -1,5 +1,21 @@
-const express = require("express");
+import express from "express";
+import mongoose from "mongoose";
+import mainRoute from "./routes/main";
 
-const app = express()
+const MONGODB_URI =
+  "mongodb+srv://lucasjan:Q41TavYrylvI7Xki@cluster.neqaq8n.mongodb.net/logins?&w=majority";
 
-app.listen(8080)
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use(mainRoute);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    app.listen(8080, () => {
+      console.log("Server is running on port 8080");
+    });
+  })
+  .catch((err) => console.log(err));
