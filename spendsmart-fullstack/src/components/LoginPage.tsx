@@ -3,15 +3,14 @@ import { Form, Link } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 
-interface LoginPageProps {
-}
+interface LoginPageProps {}
 
 const LoginPage: React.FC<LoginPageProps> = () => {
-  const [isSelected, setIsSelected] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [isSelected, setIsSelected] = useState(true);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,7 +33,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         throw new Error("Failed to submit form");
       }
 
-      // Lidar com a resposta aqui
+      onSelected();
+      setPassword("");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -155,7 +155,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             <h2 className="mt-2">Confirm Password</h2>
             <Input
               id="confirmPassword"
-              type="confirmPassword"
+              type="password"
               name="confirmPassword"
               placeholder="Confirme sua senha"
               value={confirmPassword}
