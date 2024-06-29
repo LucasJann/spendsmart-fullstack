@@ -21,17 +21,23 @@ const LoginPage: React.FC<LoginPageProps> = () => {
       : { name, lastName, email, password, confirmPassword };
 
     try {
-      const response = await fetch("http://localhost:8080/", {
+      const url = isSelected
+        ? "http://localhost:8080/login"
+        : "http://localhost:8080/";
+
+      await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit form");
-      }
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((resData) => {
+          console.log("resData: ", resData);
+        });
 
       onSelected();
       setPassword("");
@@ -140,7 +146,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               }}
             />
             <hr />
-            <h2 className="mt-2">Password</h2>
+            <h2 className="mt-2">Senha</h2>
             <Input
               id="password"
               type="password"
@@ -152,7 +158,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               }}
             />
             <hr />
-            <h2 className="mt-2">Confirm Password</h2>
+            <h2 className="mt-2">Confirmar Senha</h2>
             <Input
               id="confirmPassword"
               type="password"
