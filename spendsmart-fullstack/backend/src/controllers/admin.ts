@@ -21,3 +21,18 @@ export const Register = async (
     console.log("error");
   }
 };
+
+export const Login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const email = req.body.email;
+  const login = await User.findOne({ email });
+
+  if (login) {
+    return res.status(200).json({ loadedUser: login });
+  } else {
+    return console.log("User not found!");
+  }
+};
