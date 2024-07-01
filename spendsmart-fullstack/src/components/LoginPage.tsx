@@ -13,6 +13,15 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [error, setError] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
+  const [disabled, setDisabled] = useState(false);
+
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -36,11 +45,32 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           return res.json();
         })
         .then((resData) => {
-          console.log("resData: ", resData);
-        });
+          if (resData.errorMessage !== undefined) {
+            let err = resData.errorMessage;
+            setError(err);
 
-      onSelected();
-      setPassword("");
+            console.log(error);
+            console.log(resData.path);
+            if (resData.path === "name") {
+              setNameError(true);
+              setDisabled(true);
+            } else if (resData.path === "lastName") {
+              setLastNameError(true);
+              setDisabled(true);
+            } else if (resData.path === "email") {
+              setEmailError(true);
+              setDisabled(true);
+            } else if (resData.path === "password") {
+              setPasswordError(true);
+              setDisabled(true);
+            } else {
+              setConfirmPasswordError(true);
+              setDisabled(true);
+            }
+          } else {
+            onSelected();
+          }
+        });
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -119,8 +149,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
+                setNameError(false);
+                setDisabled(false);
               }}
             />
+            {nameError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <h2 className="mt-2">Sobrenome</h2>
             <Input
@@ -131,8 +164,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               value={lastName}
               onChange={(e) => {
                 setLastName(e.target.value);
+                setLastNameError(false);
+                setDisabled(false);
               }}
             />
+            {lastNameError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <h2 className="mt-2">E-mail</h2>
             <Input
@@ -143,9 +179,12 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
+                setEmailError(false);
+                setDisabled(false);
               }}
             />
             <hr />
+            {emailError && <p className="text-red-400 text-xs">{error}</p>}
             <h2 className="mt-2">Senha</h2>
             <Input
               id="password"
@@ -155,8 +194,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
+                setPasswordError(false);
+                setDisabled(false);
               }}
             />
+            {passwordError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <h2 className="mt-2">Confirmar Senha</h2>
             <Input
@@ -167,12 +209,22 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
+                setPasswordError(false);
+                setDisabled(false);
               }}
             />
+            {confirmPasswordError && (
+              <p className="text-red-400 text-xs">{error}</p>
+            )}
             <hr />
             <Button
               type="submit"
-              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+              className={
+                disabled
+                  ? "bg-red-300 mt-5 ml-10 p-4 w-4/5 mx-auto"
+                  : "bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+              }
+              disabled={disabled}
             >
               Confirmar
             </Button>
