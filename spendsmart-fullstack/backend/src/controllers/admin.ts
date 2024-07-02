@@ -1,11 +1,30 @@
 import { Request, Response, NextFunction } from "express";
+import { validationResult, ValidationError  } from "express-validator";
 import { User } from "../models/user";
+
+interface CustomValidationError {
+  type: string;
+  value: string;
+  msg: string;
+  path: string;
+  location: string;
+}
 
 export const Register = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const firstError = errors.array()[0] as CustomValidationError; 
+
+    return res.status(422).json({
+      errorMessage: firstError.msg,
+      path: firstError.path
+    });
+  }
+
   try {
     const user = new User({
       name: req.body.name,

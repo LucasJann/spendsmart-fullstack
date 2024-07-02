@@ -6,6 +6,7 @@ interface ButtonProps {
   children?: ReactNode;
   className: string;
   isSelected?: boolean;
+  disabled ?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -14,9 +15,8 @@ const Button: React.FC<ButtonProps> = ({
   type,
   className,
   isSelected,
+  disabled
 }) => {
-    
-  let disabled = false;
 
   if (isSelected) {
     disabled = true;
