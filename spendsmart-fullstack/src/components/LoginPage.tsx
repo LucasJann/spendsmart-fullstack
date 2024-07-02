@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Link } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
@@ -6,7 +6,9 @@ import Button from "./Button";
 interface LoginPageProps {}
 
 const LoginPage: React.FC<LoginPageProps> = () => {
+  const [disabled, setDisabled] = useState(false);
   const [isSelected, setIsSelected] = useState(true);
+
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +22,13 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
-  const [disabled, setDisabled] = useState(false);
+  useEffect(() => {
+    setNameError(false);
+    setLastNameError(false);
+    setEmailError(false);
+    setPasswordError(false);
+    setConfirmPasswordError(false);
+  }, [name, lastName, email, password, confirmPassword]);
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,7 +58,6 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             setError(err);
 
             console.log(error);
-            console.log(resData.path);
             if (resData.path === "name") {
               setNameError(true);
               setDisabled(true);
@@ -68,6 +75,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               setDisabled(true);
             }
           } else {
+            setName("");
+            setLastName("");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
             onSelected();
           }
         });
@@ -106,71 +118,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         </Button>
         {isSelected && (
           <section className="text-left font-serif text-gray-300">
-            <h2 className="mt-2">E-mail</h2>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="Insira seu e-mail"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
-            <hr />
-            <h2 className="mt-2">Password</h2>
-            <Input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Insira sua senha"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-            <hr />
-            <Button
-              type="submit"
-              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
-            >
-              Entrar
-            </Button>
-          </section>
-        )}
-        {!isSelected && (
-          <section className="text-left font-serif text-gray-300">
-            <h2 className="mt-2">Nome</h2>
-            <Input
-              id="name"
-              type="text"
-              name="name"
-              placeholder="Insira seu nome"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                setNameError(false);
-                setDisabled(false);
-              }}
-            />
-            {nameError && <p className="text-red-400 text-xs">{error}</p>}
-            <hr />
-            <h2 className="mt-2">Sobrenome</h2>
-            <Input
-              id="lastName"
-              type="text"
-              name="lastName"
-              placeholder="Insira seu sobrenome"
-              value={lastName}
-              onChange={(e) => {
-                setLastName(e.target.value);
-                setLastNameError(false);
-                setDisabled(false);
-              }}
-            />
-            {lastNameError && <p className="text-red-400 text-xs">{error}</p>}
-            <hr />
-            <h2 className="mt-2">E-mail</h2>
+            <h2 className={emailError ? "mt-2 text-red-400" : "mt-2"}>
+              E-mail
+            </h2>
             <Input
               id="email"
               type="email"
@@ -183,9 +133,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
                 setDisabled(false);
               }}
             />
-            <hr />
             {emailError && <p className="text-red-400 text-xs">{error}</p>}
-            <h2 className="mt-2">Senha</h2>
+            <hr />
+            <h2 className={passwordError ? "mt-2 text-red-400" : "mt-2"}>
+              Password
+            </h2>
             <Input
               id="password"
               type="password"
@@ -200,7 +152,85 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             />
             {passwordError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
-            <h2 className="mt-2">Confirmar Senha</h2>
+            <Button
+              type="submit"
+              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+            >
+              Entrar
+            </Button>
+          </section>
+        )}
+        {!isSelected && (
+          <section className="text-left font-serif text-gray-300">
+            <h2 className={nameError ? "mt-2 text-red-400" : "mt-2"}>Nome</h2>
+            <Input
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Insira seu nome"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setNameError(false);
+                setDisabled(false);
+              }}
+            />
+            {nameError && <p className="text-red-400 text-xs">{error}</p>}
+            <hr />
+            <h2 className={lastNameError ? "mt-2 text-red-400" : "mt-2"}>
+              Sobrenome
+            </h2>
+            <Input
+              id="lastName"
+              type="text"
+              name="lastName"
+              placeholder="Insira seu sobrenome"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                setLastNameError(false);
+                setDisabled(false);
+              }}
+            />
+            {lastNameError && <p className="text-red-400 text-xs">{error}</p>}
+            <hr />
+            <h2 className={emailError ? "mt-2 text-red-400" : "mt-2"}>
+              E-mail
+            </h2>
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Insira seu e-mail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(false);
+                setDisabled(false);
+              }}
+            />
+            <hr />
+            {emailError && <p className="text-red-400 text-xs">{error}</p>}
+            <h2 className={passwordError ? "mt-2 text-red-400" : "mt-2"}>
+              Senha
+            </h2>
+            <Input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Insira sua senha"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(false);
+                setDisabled(false);
+              }}
+            />
+            {passwordError && <p className="text-red-400 text-xs">{error}</p>}
+            <hr />
+            <h2 className={confirmPasswordError ? "mt-2 text-red-400" : "mt-2"}>
+              Confirmar Senha
+            </h2>
             <Input
               id="confirmPassword"
               type="password"
@@ -210,7 +240,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 setPasswordError(false);
-                setConfirmPasswordError(false)
+                setConfirmPasswordError(false);
                 setDisabled(false);
               }}
             />
