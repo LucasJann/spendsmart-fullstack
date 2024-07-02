@@ -210,6 +210,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 setPasswordError(false);
+                setConfirmPasswordError(false)
                 setDisabled(false);
               }}
             />
