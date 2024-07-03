@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 
@@ -21,6 +21,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setNameError(false);
@@ -53,11 +55,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           return res.json();
         })
         .then((resData) => {
-          if (resData.errorMessage !== undefined) {
-            let err = resData.errorMessage;
+          let err = resData.errorMessage;
+          if (err !== undefined) {
             setError(err);
-
-            console.log(error);
             if (resData.path === "name") {
               setNameError(true);
               setDisabled(true);
@@ -80,11 +80,15 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             setEmail("");
             setPassword("");
             setConfirmPassword("");
-            onSelected();
+            if (!isSelected) {
+              navigate("/login");
+            } else {
+              navigate("/");
+            }
           }
         });
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch (err) {
+      throw new Error("Internal Error");
     }
   };
 
@@ -94,7 +98,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <Form
+      <form
         className="max-w-md w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6"
         onSubmit={submitHandler}
       >
@@ -104,7 +108,6 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           onClick={onSelected}
           isSelected={isSelected}
         >
-          <Link to="/" />
           Login
         </Button>
         <Button
@@ -113,7 +116,6 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           onClick={onSelected}
           isSelected={!isSelected}
         >
-          <Link to="/" />
           Register
         </Button>
         {isSelected && (
@@ -126,6 +128,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="email"
               name="email"
               placeholder="Insira seu e-mail"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -143,6 +146,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="password"
               name="password"
               placeholder="Insira sua senha"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -168,6 +172,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="text"
               name="name"
               placeholder="Insira seu nome"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -185,6 +190,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="text"
               name="lastName"
               placeholder="Insira seu sobrenome"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={lastName}
               onChange={(e) => {
                 setLastName(e.target.value);
@@ -202,6 +208,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="email"
               name="email"
               placeholder="Insira seu e-mail"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -219,6 +226,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="password"
               name="password"
               placeholder="Insira sua senha"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -236,6 +244,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type="password"
               name="confirmPassword"
               placeholder="Confirme sua senha"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
@@ -261,7 +270,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             </Button>
           </section>
         )}
-      </Form>
+      </form>
     </div>
   );
 };

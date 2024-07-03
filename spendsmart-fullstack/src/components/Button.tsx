@@ -4,9 +4,9 @@ interface ButtonProps {
   onClick?: () => void;
   type: "submit" | "reset" | "button";
   children?: ReactNode;
-  className: string;
+  className?: string;
   isSelected?: boolean;
-  disabled ?: boolean
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,12 +15,11 @@ const Button: React.FC<ButtonProps> = ({
   type,
   className,
   isSelected,
-  disabled
+  disabled,
 }) => {
-
   if (isSelected) {
     disabled = true;
-    className = `${className + "border-b-2 border-red-500"}`;
+    className = `${className + " border-b-2 border-red-500"}`;
   }
 
   return (

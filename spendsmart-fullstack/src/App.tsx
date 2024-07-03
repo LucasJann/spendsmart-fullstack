@@ -1,6 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
-import { Fragment } from "react/jsx-runtime";
 import LoginPage from "./components/LoginPage";
 
 const router = createBrowserRouter([
@@ -12,9 +14,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Fragment>
       <RouterProvider router={router} />
-    </Fragment>
   );
 }
 
