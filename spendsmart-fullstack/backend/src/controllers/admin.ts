@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { validationResult, ValidationError } from "express-validator";
+import { validationResult } from "express-validator";
 import { User } from "../models/user";
 import bcrypt from "bcryptjs";
 
@@ -67,6 +67,30 @@ export const Login = async (
   }
 
   const email = req.body.email;
-  const login = await User.findOne({ email });
-  return res.status(200).json({ loadedUser: login });
+  const password = req.body.password;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(422).json({
+        errorMessage: "User not found",
+        path: "email",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(422).json({
+        errorMessage: "Invalid Password",
+        path: "password",
+      });
+    }
+
+    return res.status(200).json({ message: "Login successful", loadedUser: user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
 };
