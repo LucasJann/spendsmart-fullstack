@@ -17,6 +17,7 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   value,
   onChange,
+  className
 }) => {
   return (
     <input
@@ -26,7 +27,7 @@ const Input: React.FC<InputProps> = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+      className={className}
     />
   );
 };
