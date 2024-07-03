@@ -4,7 +4,7 @@ interface User extends Document {
   name: string;
   lastName: string;
   email: string;
-  password: string | number;
+  password: string;
   confirmPassword: string | number;
 }
 

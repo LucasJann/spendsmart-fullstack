@@ -2,6 +2,7 @@ import { body } from "express-validator";
 import { User } from "../models/user";
 import { Router } from "express";
 import { Register, Login } from "../controllers/admin";
+import bcrypt from 'bcryptjs'
 
 const router = Router();
 
@@ -64,13 +65,13 @@ router.post(
     body("password", "Password can't be empty or lesser than 2 characters")
       .trim()
       .isLength({ min: 2, max: 32 })
-      .custom(async (value) => {
-        await User.findOne({ password: value }).then((user) => {
-          if (user?.password !== value) {
-            throw new Error("Password incorrect");
-          }
-        });
-      }),
+      // .custom(async (value) => {
+      //   await User.findOne({ password: value }).then((user) => {
+      //     if (user?.password !== value) {
+      //       throw new Error("Password incorrect");
+      //     }
+      //   });
+      // }),
   ],
   Login
 );
