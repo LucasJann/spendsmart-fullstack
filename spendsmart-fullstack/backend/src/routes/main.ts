@@ -65,13 +65,6 @@ router.post(
     body("password", "Password can't be empty or lesser than 2 characters")
       .trim()
       .isLength({ min: 2, max: 32 })
-      // .custom(async (value) => {
-      //   await User.findOne({ password: value }).then((user) => {
-      //     if (user?.password !== value) {
-      //       throw new Error("Password incorrect");
-      //     }
-      //   });
-      // }),
   ],
   Login
 );
