@@ -1,7 +1,8 @@
 import React, { ReactNode } from "react";
 
 interface ButtonProps {
-  onClick?: () => void;
+  id?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type: "submit" | "reset" | "button";
   children?: ReactNode;
   className?: string;
@@ -10,6 +11,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({
+  id,
   onClick,
   children,
   type,
@@ -25,6 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <>
       <button
+        id={id}
         onClick={onClick}
         type={type}
         className={className}
