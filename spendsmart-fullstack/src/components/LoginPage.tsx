@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
+import burningSkyImage from "../Images/burning-sky.jpg";
 
 interface LoginPageProps {}
 
@@ -81,9 +82,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             setPassword("");
             setConfirmPassword("");
             if (!isSelected) {
-              navigate("/login");
-            } else {
               navigate("/");
+            } else {
+              navigate("/menuPage");
             }
           }
         });
@@ -97,7 +98,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div
+      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${burningSkyImage})` }}
+    >
       <form
         className="max-w-md w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6"
         onSubmit={submitHandler}
@@ -166,7 +170,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         )}
         {!isSelected && (
           <section className="text-left font-serif text-gray-300">
-            <h2 className={nameError ? "mt-2 text-red-400" : "mt-2"}>Nome</h2>
+            <h2 className={nameError ? "mt-2 text-red-400" : "mt-2"}>Name</h2>
             <Input
               id="name"
               type="text"
@@ -183,7 +187,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             {nameError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <h2 className={lastNameError ? "mt-2 text-red-400" : "mt-2"}>
-              Sobrenome
+              Last Name
             </h2>
             <Input
               id="lastName"
@@ -219,7 +223,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             <hr />
             {emailError && <p className="text-red-400 text-xs">{error}</p>}
             <h2 className={passwordError ? "mt-2 text-red-400" : "mt-2"}>
-              Senha
+              Password
             </h2>
             <Input
               id="password"
@@ -237,7 +241,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             {passwordError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <h2 className={confirmPasswordError ? "mt-2 text-red-400" : "mt-2"}>
-              Confirmar Senha
+              Confirm Password
             </h2>
             <Input
               id="confirmPassword"
@@ -266,7 +270,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               }
               disabled={disabled}
             >
-              Confirmar
+              Confirm
             </Button>
           </section>
         )}
