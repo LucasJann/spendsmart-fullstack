@@ -45,7 +45,7 @@ export const Register = async (
       });
     }
     await user.save();
-    res.status(201).json({ message: "User created!" });
+    res.status(201).json({ message: "User created!"});
   } catch (err) {
     console.error(err);
   }
@@ -88,9 +88,25 @@ export const Login = async (
       });
     }
 
-    return res.status(200).json({ message: "Login successful", loadedUser: user });
+    return res
+      .status(200)
+      .json({ message: "Login successful", loadedUser: user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
+export const Balance = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.body.user;
+    const balanceValue = req.body.balance
+    await User.updateOne({ email: user, $set: { balance: balanceValue } });
+  } catch (err) {
+    console.error(err);
   }
 };

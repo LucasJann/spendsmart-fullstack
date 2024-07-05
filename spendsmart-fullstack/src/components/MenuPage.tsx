@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import morningSun from "../Images/morning.jpg";
 import Button from "./Button";
 
-const MainPage = () => {
+const Menu = () => {
   const navigate = useNavigate();
 
   const buttonOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -11,7 +11,7 @@ const MainPage = () => {
 
     switch (buttonId) {
       case "profile":
-        navigate("");
+        navigate("/profilePage");
         break;
       case "finances":
         navigate("");
@@ -59,4 +59,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default Menu;
