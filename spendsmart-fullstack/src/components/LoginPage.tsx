@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
-import burningSkyImage from "../Images/burning-sky.jpg";
+import burningSkyImage from "../images/burning-sky.jpg";
 
 const Login = () => {
   const [disabled, setDisabled] = useState(false);
@@ -30,6 +30,10 @@ const Login = () => {
     setPasswordError(false);
     setConfirmPasswordError(false);
   }, [name, lastName, email, password, confirmPassword]);
+
+  useEffect(() => {
+    localStorage.setItem("user", "");
+  });
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
