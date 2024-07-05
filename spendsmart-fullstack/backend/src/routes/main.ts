@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { User } from "../models/user";
 import { Router } from "express";
-import { Register, Login } from "../controllers/admin";
+import { Register, Login, Balance } from "../controllers/admin";
 
 const router = Router();
 
@@ -32,11 +32,11 @@ router.post(
         let validator = null;
         const splitedValue = value.split("@");
         const newValue = splitedValue[1];
-        
+
         for (const str in domains) {
           const domainString = domains[str];
           const validation = domainString === newValue ? true : false;
-          
+
           if (validation) {
             validator = validation;
           }
@@ -90,5 +90,7 @@ router.post(
   ],
   Login
 );
+
+router.post("/balance", Balance);
 
 export default router;

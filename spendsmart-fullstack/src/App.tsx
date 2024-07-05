@@ -1,14 +1,16 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import LoginPage from "./components/LoginPage";
-import MenuPage from "./components/MenuPage";
+import Login from "./components/LoginPage";
+import Menu from "./components/MenuPage";
+import Profile from "./components/ProfilePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     children: [
-      { path: "/", element: <LoginPage /> },
-      { path: "/menuPage", element: <MenuPage /> },
+      { path: "/", element: <Login /> },
+      { path: "/menuPage", element: <Menu /> },
+      { path: "/profilePage", element: <Profile /> },
     ],
   },
 ]);

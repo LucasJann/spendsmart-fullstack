@@ -4,9 +4,7 @@ import Input from "./Input";
 import Button from "./Button";
 import burningSkyImage from "../Images/burning-sky.jpg";
 
-interface LoginPageProps {}
-
-const LoginPage: React.FC<LoginPageProps> = () => {
+const Login = () => {
   const [disabled, setDisabled] = useState(false);
   const [isSelected, setIsSelected] = useState(true);
 
@@ -83,8 +81,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             setConfirmPassword("");
             if (!isSelected) {
               navigate("/");
+              setIsSelected(!isSelected);
             } else {
               navigate("/menuPage");
+              localStorage.setItem("user", JSON.stringify(email));
             }
           }
         });
@@ -95,6 +95,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
   const onSelected = () => {
     setIsSelected(!isSelected);
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -279,4 +281,4 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
