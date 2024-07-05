@@ -74,7 +74,7 @@ router.post(
 router.post(
   "/login",
   [
-    body("email", "Please enter a valid E-mail")
+    body("email", "Please enter a valid e-mail")
       .trim()
       .isLength({ min: 7 })
       .custom(async (value) => {

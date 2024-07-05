@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import morningSun from "../Images/morning.jpg";
+import morningSun from "../images/morning.jpg";
 import Button from "./Button";
 
 const Menu = () => {

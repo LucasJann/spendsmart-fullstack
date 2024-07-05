@@ -1,5 +1,5 @@
 import { useState } from "react";
-import landScape from "../Images/landscape.jpg";
+import landScape from "../images/landscape.jpg";
 import Input from "./Input";
 import Button from "./Button";
 
