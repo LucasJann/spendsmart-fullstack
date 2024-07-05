@@ -6,7 +6,7 @@ interface ImageProps {
 const Image: React.FC<ImageProps> = ({ src, alt }) => {
   return (
     <>
-      <img src={src} alt={alt} className="w-full mt-2 mb-8 rounded-md" />
+      <img src={src} alt={alt} className='w-64 h-64 rounded-full'/>
     </>
   );
 };
