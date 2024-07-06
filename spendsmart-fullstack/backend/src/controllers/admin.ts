@@ -34,6 +34,7 @@ export const Register = async (
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
+      balance: "0",
     });
 
     const emailFounder = await User.findOne({ email: user.email });
@@ -45,7 +46,7 @@ export const Register = async (
       });
     }
     await user.save();
-    res.status(201).json({ message: "User created!"});
+    res.status(201).json({ message: "User created!" });
   } catch (err) {
     console.error(err);
   }
@@ -97,16 +98,33 @@ export const Login = async (
   }
 };
 
-export const Balance = async (
+export const getBalance = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.params.user;
+  User.findOne({ email: user }).then((user) => {
+    console.log(user);
+    if (user !== null) {
+      const balanceValue = user.balance;
+      res.status(201).json({ balance: balanceValue });
+    }
+    throw new Error("Error");
+  });
+};
+
+export const postBalance = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const user = req.body.user;
-    const balanceValue = req.body.balance
+    const balanceValue = req.body.balance;
     await User.updateOne({ email: user, $set: { balance: balanceValue } });
   } catch (err) {
     console.error(err);
   }
 };
+

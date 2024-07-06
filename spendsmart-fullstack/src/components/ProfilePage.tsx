@@ -6,7 +6,8 @@ import Button from "./Button";
 import Image from "./Image";
 
 const Profile = () => {
-  const [balance, setBalance] = useState("");
+  const [balance, setBalance] = useState<string>("");
+  const [editBalance] = useState<boolean>(false);
 
   const valueState = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBalance(event.target.value);
@@ -21,11 +22,9 @@ const Profile = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ user, balance }),
-      }).then((resData) => {
-        console.log(resData);
       });
     } catch (err) {
-      console.error(err);
+      console.log("Não foi possível acessar o backend");
     }
   };
 
@@ -35,10 +34,7 @@ const Profile = () => {
       style={{ backgroundImage: `url(${landScape})` }}
     >
       <div className="flex flex-col items-center justify-center h-screen">
-        <Image
-          src={profilePic}
-          alt="Profile Pic"
-        />
+        <Image src={profilePic} alt="Profile Pic" />
         <div className="max-w-md w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6">
           <Input
             id="balance"
@@ -55,7 +51,7 @@ const Profile = () => {
             className="bg-yellow-500 mt-5 p-4 w-full text-white"
             onClick={valueHandler}
           >
-            Confirm
+            {editBalance ? "Confirm" : "Edit Balance"}
           </Button>
         </div>
       </div>
