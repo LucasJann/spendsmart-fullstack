@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { User } from "../models/user";
 import { Router } from "express";
-import { Register, Login, Balance } from "../controllers/admin";
+import { Register, Login, getBalance, postBalance } from "../controllers/admin";
 
 const router = Router();
 
@@ -91,6 +91,7 @@ router.post(
   Login
 );
 
-router.post("/balance", Balance);
+// router.get("/balance/:user", getBalance);
+router.post("/balance", postBalance);
 
 export default router;
