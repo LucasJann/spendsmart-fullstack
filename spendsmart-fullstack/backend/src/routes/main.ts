@@ -4,7 +4,6 @@ import { Router } from "express";
 import { Register, Login, getBalance, postBalance } from "../controllers/admin";
 
 const router = Router();
-
 router.post(
   "/",
   [
@@ -71,6 +70,10 @@ router.post(
   ],
   Register
 );
+
+router.get("/balance/:user", getBalance);
+router.post("/balance", postBalance);
+
 router.post(
   "/login",
   [
@@ -90,8 +93,5 @@ router.post(
   ],
   Login
 );
-
-// router.get("/balance/:user", getBalance);
-router.post("/balance", postBalance);
 
 export default router;
