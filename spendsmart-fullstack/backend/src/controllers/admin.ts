@@ -98,20 +98,24 @@ export const Login = async (
   }
 };
 
-export const getBalance = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getBalance = async (req: Request, res: Response) => {
   const user = req.params.user;
-  User.findOne({ email: user }).then((user) => {
-    console.log(user);
-    if (user !== null) {
-      const balanceValue = user.balance;
-      res.status(201).json({ balance: balanceValue });
+  console.log("Received request for user balance:", user);
+  try {
+    const userData = await User.findOne({ email: user });
+    console.log(userData)
+    if (userData) {
+      let balanceValue = userData.balance;
+      if (balanceValue === null) {
+        balanceValue = 0;
+      }
+      return res.status(200).json({ balance: balanceValue });
     }
-    throw new Error("Error");
-  });
+    return res.status(404).json({ errorMessage: "User not found" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
 };
 
 export const postBalance = async (
@@ -122,9 +126,17 @@ export const postBalance = async (
   try {
     const user = req.body.user;
     const balanceValue = req.body.balance;
-    await User.updateOne({ email: user, $set: { balance: balanceValue } });
+    const result = await User.updateOne(
+      { email: user },
+      { $set: { balance: balanceValue } }
+    );
+    if (result.modifiedCount > 0) {
+      return res.status(200).json({ message: "Balance updated successfully" });
+    } else {
+      return res.status(404).json({ errorMessage: "User not found" });
+    }
   } catch (err) {
     console.error(err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
-

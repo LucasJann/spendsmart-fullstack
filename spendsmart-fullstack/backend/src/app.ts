@@ -8,6 +8,8 @@ const MONGODB_URI =
 
 const app = express();
 
+
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -20,6 +22,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", mainRoute);
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 mongoose
   .connect(MONGODB_URI)

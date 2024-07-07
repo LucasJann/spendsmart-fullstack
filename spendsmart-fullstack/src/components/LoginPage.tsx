@@ -100,7 +100,9 @@ const Login = () => {
   const onSelected = () => {
     setIsSelected(!isSelected);
     setEmail("");
+    setEmailError(false);
     setPassword("");
+    setPasswordError(false);
   };
 
   return (
