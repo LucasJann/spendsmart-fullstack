@@ -1,23 +1,23 @@
 import React, { ReactNode } from "react";
 
 interface ButtonProps {
-  id?: string;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  id: string;
   type: "submit" | "reset" | "button";
-  children?: ReactNode;
-  className?: string;
-  isSelected?: boolean;
+  children: ReactNode;
+  className: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  isSelected?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
   id,
-  onClick,
-  children,
   type,
+  children,
   className,
-  isSelected,
+  onClick,
   disabled,
+  isSelected,
 }) => {
   if (isSelected) {
     disabled = true;
@@ -28,9 +28,9 @@ const Button: React.FC<ButtonProps> = ({
     <>
       <button
         id={id}
-        onClick={onClick}
         type={type}
         className={className}
+        onClick={onClick}
         disabled={disabled}
       >
         {children}

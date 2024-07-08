@@ -69,11 +69,14 @@ const Profile = () => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const image = files[0];
+      console.log(image);
       setProfileImage(URL.createObjectURL(image));
     }
   };
 
-  const onImageSubmitHandler = () => {};
+  const onImageSubmitHandler = () => {
+    
+  };
 
   return (
     <div
@@ -91,12 +94,17 @@ const Profile = () => {
             <Input
               id="image"
               name="image"
-              placeholder=""
               type="file"
               onChange={inputChange}
               className="border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1 mt-1"
             />
-            <Button type="button" className='border-2 border-l-0 text-center p-2 text-white bg-yellow-500 text-sm'>OK</Button>
+            <Button
+              id="image"
+              type="submit"
+              className="border-2 border-l-0 text-center p-2 text-white bg-yellow-500 text-sm"
+            >
+              OK
+            </Button>
           </form>
         )}
         <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6">
@@ -112,6 +120,7 @@ const Profile = () => {
           />
           <hr />
           <Button
+            id="balance"
             type="submit"
             className="bg-yellow-500 mt-5 p-4 w-full text-white"
             onClick={editBalance ? onValueHander : onEdit}

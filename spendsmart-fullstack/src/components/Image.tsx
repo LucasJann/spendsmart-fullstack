@@ -10,8 +10,8 @@ const Image: React.FC<ImageProps> = ({ src, alt, onClick }) => {
       <img
         src={src}
         alt={alt}
-        className="w-64 h-64 rounded-full"
         onClick={onClick}
+        className="w-64 h-64 rounded-full"
       />
     </>
   );
