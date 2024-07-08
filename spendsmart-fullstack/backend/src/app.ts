@@ -23,11 +23,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", mainRoute);
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
@@ -35,4 +30,4 @@ mongoose
       console.log("Server is running on port 8080");
     });
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.error(err));
