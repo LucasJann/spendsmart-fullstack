@@ -103,7 +103,6 @@ export const getBalance = async (req: Request, res: Response) => {
   console.log("Received request for user balance:", user);
   try {
     const userData = await User.findOne({ email: user });
-    console.log(userData)
     if (userData) {
       let balanceValue = userData.balance;
       if (balanceValue === null) {

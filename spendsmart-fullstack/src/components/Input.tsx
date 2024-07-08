@@ -4,33 +4,33 @@ interface InputProps {
   id: string;
   type: string;
   name: string;
-  placeholder: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className: string;
   value?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
   disabled?: boolean
+  placeholder?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   id,
   type,
   name,
-  placeholder,
-  value,
   onChange,
   className,
-  disabled
+  value,
+  disabled,
+  placeholder
 }) => {
   return (
     <input
       id={id}
       type={type}
       name={name}
-      placeholder={placeholder}
-      value={value}
       onChange={onChange}
       className={className}
+      value={value}
       disabled={disabled}
+      placeholder={placeholder}
     />
   );
 };
