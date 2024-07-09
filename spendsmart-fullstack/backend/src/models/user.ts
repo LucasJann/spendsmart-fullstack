@@ -6,7 +6,7 @@ interface User extends Document {
   email: string;
   password: string;
   confirmPassword: string | number;
-  balance: number;
+  balance: String;
   image: string;
 }
 
@@ -16,7 +16,7 @@ const UserSchema: Schema = new Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   confirmPassword: { type: String },
-  balance: { type: Number },
+  balance: { type: String },
   image: { type: String },
 });
 

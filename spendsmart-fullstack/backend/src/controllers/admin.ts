@@ -34,7 +34,8 @@ export const Register = async (
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
-      balance: "0",
+      balance: "R$ 0,00",
+      image: "images/profilePic",
     });
 
     const emailFounder = await User.findOne({ email: user.email });
@@ -105,7 +106,7 @@ export const getBalance = async (req: Request, res: Response) => {
     if (userData) {
       let balanceValue = userData.balance;
       if (balanceValue === null) {
-        balanceValue = 0;
+        balanceValue = 'R$ 0,00';
       }
       return res.status(200).json({ balance: balanceValue });
     }
@@ -124,6 +125,7 @@ export const postBalance = async (
   try {
     const user = req.body.user;
     const balanceValue = req.body.balance;
+    console.log(balanceValue)
     const result = await User.updateOne(
       { email: user },
       { $set: { balance: balanceValue } }
