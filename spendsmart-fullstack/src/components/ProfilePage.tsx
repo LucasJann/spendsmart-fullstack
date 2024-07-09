@@ -87,8 +87,6 @@ const Profile = () => {
   const onValueHander = async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
 
-
-    
     try {
       await fetch("http://localhost:8080/balance", {
         method: "POST",
@@ -134,6 +132,12 @@ const Profile = () => {
     setImage(false);
   };
 
+  const onCancel = () => {
+    setEditBalance(false);
+    setDisabled(true);
+    setOnConfirm(!onConfirm);
+  };
+
   return (
     <div
       className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
@@ -166,7 +170,22 @@ const Profile = () => {
             </Button>
           </form>
         )}
-        <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6">
+
+        <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
+          {editBalance && (
+            <>
+              <div className="flex items-center justify-end">
+                <Button
+                  id="editButton"
+                  type="button"
+                  className="text-red-300 hover:text-red-500"
+                  onClick={onCancel}
+                >
+                  X
+                </Button>
+              </div>
+            </>
+          )}
           <Input
             id="balance"
             name="balance"
@@ -178,6 +197,7 @@ const Profile = () => {
             disabled={disabled}
           />
           <hr />
+
           <Button
             id="balance"
             type="submit"
