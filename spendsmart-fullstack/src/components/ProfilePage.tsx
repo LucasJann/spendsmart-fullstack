@@ -8,7 +8,7 @@ import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
   const [image, setImage] = useState<boolean>(false);
-  const [disabled, setDisabled] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(true);
   const [onConfirm, setOnConfirm] = useState<boolean>(false);
   const [editBalance, setEditBalance] = useState<boolean>(false);
 
@@ -27,8 +27,13 @@ const Profile = () => {
         }
 
         const jsonResponse = await response.json();
-        const splitedProfilePic = jsonResponse.image.split("images\\")[1];
-        setProfileImage(splitedProfilePic);
+
+        if (jsonResponse.image !== "images/profilePic") {
+          const splitedProfilePic = jsonResponse.image.split("images\\")[1];
+          setProfileImage(splitedProfilePic);
+        } else {
+          setProfileImage(profilePic);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -58,7 +63,20 @@ const Profile = () => {
   }, [onConfirm]);
 
   const valueState = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBalance(event.target.value);
+    const formatMoney = (value: number) => {
+      const formatter = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        minimumFractionDigits: 2,
+      });
+
+      return formatter.format(value);
+    };
+
+    const value = event.target.value.replace(/[^0-9]/g, "");
+    const convertedValue = Number(value);
+    const formattedValue = formatMoney(convertedValue / 100);
+    setBalance(formattedValue);
   };
 
   const onEdit = () => {
@@ -68,6 +86,9 @@ const Profile = () => {
 
   const onValueHander = async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
+
+
+    
     try {
       await fetch("http://localhost:8080/balance", {
         method: "POST",
@@ -91,7 +112,7 @@ const Profile = () => {
   const onImageSubmitHandler = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault()
+    event.preventDefault();
     const formData = new FormData();
     const inputElement = event.currentTarget.getElementsByTagName("input")[0];
     if (inputElement.files && inputElement.files.length > 0) {
@@ -110,7 +131,7 @@ const Profile = () => {
     } catch (err) {
       console.error(err);
     }
-    setImage(false)
+    setImage(false);
   };
 
   return (
@@ -121,7 +142,7 @@ const Profile = () => {
       <div className="flex flex-col items-center justify-center h-screen">
         <Image
           src={
-            profileImage
+            profileImage !== profilePic
               ? `../../backend/src/images/${profileImage}`
               : profilePic
           }
@@ -154,7 +175,7 @@ const Profile = () => {
             placeholder="Insert your initial balance"
             className="block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400 text-white text-center text-lg"
             onChange={valueState}
-            disabled={!disabled}
+            disabled={disabled}
           />
           <hr />
           <Button
