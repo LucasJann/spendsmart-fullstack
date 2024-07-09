@@ -100,7 +100,6 @@ export const Login = async (
 
 export const getBalance = async (req: Request, res: Response) => {
   const user = req.params.user;
-  console.log("Received request for user balance:", user);
   try {
     const userData = await User.findOne({ email: user });
     if (userData) {
@@ -137,5 +136,33 @@ export const postBalance = async (
   } catch (err) {
     console.error(err);
     res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
+export const postImage = async (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const imagePath = req.file.path;
+  const user = req.body.user;
+
+  try {
+    await User.updateOne({ email: user, $set: { image: imagePath } });
+  } catch (err) {
+    console.error(err);
+  }
+
+  return res.status(200).json({ imagePath });
+};
+
+export const getImage = async (req: Request, res: Response) => {
+  const user = req.path.split('profile/')[1]
+  try {
+    await User.findOne({ email: user }).then((loggedUser) => {
+      const userImage = loggedUser?.image;
+      res.status(201).json({ image: userImage });
+    });
+  } catch (err) {
+    console.error(err);
   }
 };

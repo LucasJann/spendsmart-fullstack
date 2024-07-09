@@ -1,17 +1,40 @@
 import { useEffect, useState } from "react";
-import landScape from "../images/landscape.jpg";
-import profilePic from "../images/profilepic.jpg";
+
 import Input from "./Input";
 import Button from "./Button";
 import Image from "./Image";
+import landScape from "../images/landscape.jpg";
+import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
   const [image, setImage] = useState<boolean>(false);
-  const [balance, setBalance] = useState<string>("");
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
   const [onConfirm, setOnConfirm] = useState<boolean>(false);
   const [editBalance, setEditBalance] = useState<boolean>(false);
+
+  const [balance, setBalance] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
+
+  useEffect(() => {
+    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    const getImage = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/profile/${user}`);
+
+        if (!response.ok) {
+          console.log("Response is not ok");
+          return;
+        }
+
+        const jsonResponse = await response.json();
+        const splitedProfilePic = jsonResponse.image.split("images\\")[1];
+        setProfileImage(splitedProfilePic);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getImage();
+  });
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
@@ -65,17 +88,29 @@ const Profile = () => {
     setImage(true);
   };
 
-  const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const image = files[0];
-      console.log(image);
-      setProfileImage(URL.createObjectURL(image));
+  const onImageSubmitHandler = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault()
+    const formData = new FormData();
+    const inputElement = event.currentTarget.getElementsByTagName("input")[0];
+    if (inputElement.files && inputElement.files.length > 0) {
+      formData.append("image", inputElement.files[0]);
     }
-  };
 
-  const onImageSubmitHandler = () => {
-    
+    try {
+      const response = await fetch(`http://localhost:8080/profile/`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setImage(false)
   };
 
   return (
@@ -85,7 +120,11 @@ const Profile = () => {
     >
       <div className="flex flex-col items-center justify-center h-screen">
         <Image
-          src={profileImage ? profileImage : profilePic}
+          src={
+            profileImage
+              ? `../../backend/src/images/${profileImage}`
+              : profilePic
+          }
           alt="Profile Pic"
           onClick={imageHandler}
         />
@@ -95,7 +134,6 @@ const Profile = () => {
               id="image"
               name="image"
               type="file"
-              onChange={inputChange}
               className="border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1 mt-1"
             />
             <Button
@@ -116,7 +154,7 @@ const Profile = () => {
             placeholder="Insert your initial balance"
             className="block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400 text-white text-center text-lg"
             onChange={valueState}
-            disabled={disabled}
+            disabled={!disabled}
           />
           <hr />
           <Button

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { User } from "../models/user";
 import { Router } from "express";
-import { Register, Login, getBalance, postBalance } from "../controllers/admin";
+import { Register, Login, getBalance, postBalance, getImage, postImage } from "../controllers/admin";
 
 const router = Router();
 router.post(
@@ -93,5 +93,8 @@ router.post(
   ],
   Login
 );
+
+router.get('/profile/:user', getImage)
+router.post('/profile/', postImage)
 
 export default router;
