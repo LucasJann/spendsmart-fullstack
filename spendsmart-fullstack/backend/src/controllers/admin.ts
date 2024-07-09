@@ -106,7 +106,7 @@ export const getBalance = async (req: Request, res: Response) => {
     if (userData) {
       let balanceValue = userData.balance;
       if (balanceValue === null) {
-        balanceValue = 'R$ 0,00';
+        balanceValue = "R$ 0,00";
       }
       return res.status(200).json({ balance: balanceValue });
     }
@@ -144,11 +144,12 @@ export const postImage = async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
+  
   const imagePath = req.file.path;
-  const user = req.body.user;
+  const user = req.params.user;
 
   try {
-    await User.updateOne({ email: user, $set: { image: imagePath } });
+    await User.updateOne({ email: user }, { $set: { image: imagePath } });
   } catch (err) {
     console.error(err);
   }
@@ -157,7 +158,7 @@ export const postImage = async (req: Request, res: Response) => {
 };
 
 export const getImage = async (req: Request, res: Response) => {
-  const user = req.path.split('profile/')[1]
+  const user = req.path.split("profile/")[1];
   try {
     await User.findOne({ email: user }).then((loggedUser) => {
       const userImage = loggedUser?.image;

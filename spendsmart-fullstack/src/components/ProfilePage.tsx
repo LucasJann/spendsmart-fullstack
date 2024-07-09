@@ -113,12 +113,14 @@ const Profile = () => {
     event.preventDefault();
     const formData = new FormData();
     const inputElement = event.currentTarget.getElementsByTagName("input")[0];
+
     if (inputElement.files && inputElement.files.length > 0) {
       formData.append("image", inputElement.files[0]);
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/profile/`, {
+      const user = localStorage.getItem("user")?.replace(/"/g, "");
+      const response = await fetch(`http://localhost:8080/profile/${user}`, {
         method: "POST",
         body: formData,
       });
@@ -132,10 +134,77 @@ const Profile = () => {
     setImage(false);
   };
 
-  const onCancel = () => {
+  const cancelEdition = () => {
     setEditBalance(false);
     setDisabled(true);
     setOnConfirm(!onConfirm);
+  };
+
+  const invertValue = () => {
+    if (balance[0] !== "-") {
+      const splitedValue = balance.split("$")[1];
+      const cleanedString = splitedValue
+        .replace("R$", "")
+        .replace(/\./g, "")
+        .replace(",", ".");
+      const convertedValue = Number(cleanedString);
+
+      if (convertedValue === 0) {
+        return;
+      }
+
+      const negativeNumber = -convertedValue;
+      const formatMoney = (value: number) => {
+        const formatter = new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 2,
+        });
+
+        return formatter.format(value);
+      };
+
+      const formattedValue = formatMoney(negativeNumber);
+      setBalance(formattedValue);
+    } else {
+      const splitedValue = balance.split("$")[1];
+      const cleanedString = splitedValue
+        .replace("R$", "")
+        .replace(/\./g, "")
+        .replace(",", ".");
+      const convertedValue = Number(cleanedString);
+      if (convertedValue === 0) {
+        return;
+      }
+      const positiveNumber = +convertedValue;
+
+      const formatMoney = (value: number) => {
+        const formatter = new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 2,
+        });
+
+        return formatter.format(value);
+      };
+
+      const formattedValue = formatMoney(positiveNumber);
+      setBalance(formattedValue);
+    }
+  };
+
+  const tailwind = () => {
+    let textColor = "";
+
+    if (balance[0] !== "-" && balance[3] !== "0") {
+      textColor = "text-green-300";
+    } else if (balance[0] === "-") {
+      textColor = "text-red-300";
+    } else {
+      textColor = "text-gray-300";
+    }
+
+    return textColor;
   };
 
   return (
@@ -174,14 +243,26 @@ const Profile = () => {
         <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
           {editBalance && (
             <>
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-between ">
                 <Button
                   id="editButton"
                   type="button"
-                  className="text-red-300 hover:text-red-500"
-                  onClick={onCancel}
+                  onClick={invertValue}
+                  className={
+                    balance[0] === "-"
+                      ? "text-yellow-500 hover:text-green-500"
+                      : "text-yellow-500 hover:text-red-500"
+                  }
                 >
-                  X
+                  Invert
+                </Button>
+                <Button
+                  id="editButton"
+                  type="button"
+                  className="text-yellow-500 hover:text-red-500"
+                  onClick={cancelEdition}
+                >
+                  Cancel
                 </Button>
               </div>
             </>
@@ -192,7 +273,7 @@ const Profile = () => {
             type="text"
             value={balance}
             placeholder="Insert your initial balance"
-            className="block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400 text-white text-center text-lg"
+            className={`block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent ${tailwind()} bg-transparent text-center text-lg`}
             onChange={valueState}
             disabled={disabled}
           />
