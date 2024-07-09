@@ -125,7 +125,6 @@ export const postBalance = async (
   try {
     const user = req.body.user;
     const balanceValue = req.body.balance;
-    console.log(balanceValue)
     const result = await User.updateOne(
       { email: user },
       { $set: { balance: balanceValue } }
