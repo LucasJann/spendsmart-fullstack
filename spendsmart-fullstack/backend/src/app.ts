@@ -18,14 +18,13 @@ app.use(
   })
 );
 
-let randomHash = Math.random().toFixed(8);
-
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "images");
+    cb(null, path.join(__dirname, "images")); // Alterado para usar path.join para garantir caminho correto
   },
   filename: (req, file, cb) => {
-    cb(null, randomHash + "-" + file.originalname);
+    const randomHash = Math.random().toFixed(8);
+    cb(null, `${randomHash}-${file.originalname}`);
   },
 });
 
@@ -50,7 +49,6 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(upload.single('image'));
-app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/", mainRoute);

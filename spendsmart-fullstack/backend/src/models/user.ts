@@ -7,6 +7,7 @@ interface User extends Document {
   password: string;
   confirmPassword: string | number;
   balance: number;
+  image: string;
 }
 
 const UserSchema: Schema = new Schema({
@@ -16,6 +17,7 @@ const UserSchema: Schema = new Schema({
   password: { type: String, required: true },
   confirmPassword: { type: String },
   balance: { type: Number },
+  image: { type: String },
 });
 
 export const User = mongoose.model<User>("User", UserSchema);
