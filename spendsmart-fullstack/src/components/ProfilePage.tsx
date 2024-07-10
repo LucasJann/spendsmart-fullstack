@@ -11,23 +11,20 @@ const Profile = () => {
   const [disabled, setDisabled] = useState<boolean>(true);
   const [onConfirm, setOnConfirm] = useState<boolean>(false);
   const [editBalance, setEditBalance] = useState<boolean>(false);
-
+  
   const [balance, setBalance] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>(profilePic);
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getImage = async () => {
       try {
         const response = await fetch(`http://localhost:8080/profile/${user}`);
-
         if (!response.ok) {
-          console.log("Response is not ok");
+          console.log(response.statusText);
           return;
         }
-
         const jsonResponse = await response.json();
-
         if (jsonResponse.image !== "images/profilePic") {
           const splitedProfilePic = jsonResponse.image.split("images\\")[1];
           setProfileImage(splitedProfilePic);
@@ -46,19 +43,16 @@ const Profile = () => {
     const getBalance = async () => {
       try {
         const response = await fetch(`http://localhost:8080/balance/${user}`);
-
         if (!response.ok) {
-          console.log("Response is not ok");
+          console.log(response.statusText);
           return;
         }
-
         const jsonResponse = await response.json();
         setBalance(jsonResponse.balance);
       } catch (err) {
         console.error(err);
       }
     };
-
     getBalance();
   }, [onConfirm]);
 
@@ -69,10 +63,8 @@ const Profile = () => {
         currency: "BRL",
         minimumFractionDigits: 2,
       });
-
       return formatter.format(value);
     };
-
     const value = event.target.value.replace(/[^0-9]/g, "");
     const convertedValue = Number(value);
     const formattedValue = formatMoney(convertedValue / 100);
@@ -86,7 +78,6 @@ const Profile = () => {
 
   const onValueHander = async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
-
     try {
       await fetch("http://localhost:8080/balance", {
         method: "POST",
@@ -113,20 +104,17 @@ const Profile = () => {
     event.preventDefault();
     const formData = new FormData();
     const inputElement = event.currentTarget.getElementsByTagName("input")[0];
-
     if (inputElement.files && inputElement.files.length > 0) {
       formData.append("image", inputElement.files[0]);
     }
-
     try {
       const user = localStorage.getItem("user")?.replace(/"/g, "");
       const response = await fetch(`http://localhost:8080/profile/${user}`, {
         method: "POST",
         body: formData,
       });
-
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        console.error(response.statusText);
       }
     } catch (err) {
       console.error(err);
@@ -135,75 +123,42 @@ const Profile = () => {
   };
 
   const cancelEdition = () => {
-    setEditBalance(false);
     setDisabled(true);
+    setEditBalance(false);
     setOnConfirm(!onConfirm);
   };
 
   const invertValue = () => {
-    if (balance[0] !== "-") {
-      const splitedValue = balance.split("$")[1];
-      const cleanedString = splitedValue
-        .replace("R$", "")
-        .replace(/\./g, "")
-        .replace(",", ".");
-      const convertedValue = Number(cleanedString);
-
-      if (convertedValue === 0) {
-        return;
-      }
-
-      const negativeNumber = -convertedValue;
-      const formatMoney = (value: number) => {
-        const formatter = new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-          minimumFractionDigits: 2,
-        });
-
-        return formatter.format(value);
-      };
-
-      const formattedValue = formatMoney(negativeNumber);
-      setBalance(formattedValue);
-    } else {
-      const splitedValue = balance.split("$")[1];
-      const cleanedString = splitedValue
-        .replace("R$", "")
-        .replace(/\./g, "")
-        .replace(",", ".");
-      const convertedValue = Number(cleanedString);
-      if (convertedValue === 0) {
-        return;
-      }
-      const positiveNumber = +convertedValue;
-
-      const formatMoney = (value: number) => {
-        const formatter = new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-          minimumFractionDigits: 2,
-        });
-
-        return formatter.format(value);
-      };
-
-      const formattedValue = formatMoney(positiveNumber);
-      setBalance(formattedValue);
-    }
+    const splitedValue = balance.split("$")[1];
+    const cleanedString = splitedValue
+      .replace("R$", "")
+      .replace(/\./g, "")
+      .replace(",", ".");
+    const convertedValue = Number(cleanedString);
+    if (convertedValue === 0) return;
+    const negativeNumber = -convertedValue;
+    const formatMoney = (value: number) => {
+      const formatter = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        minimumFractionDigits: 2,
+      });
+      return formatter.format(value);
+    };
+    const formattedValue =
+      balance[0] !== "-"
+        ? formatMoney(negativeNumber)
+        : formatMoney(-negativeNumber);
+    setBalance(formattedValue);
   };
 
   const tailwind = () => {
-    let textColor = "";
-
+    let textColor = "text-gray-300";
     if (balance[0] !== "-" && balance[3] !== "0") {
       textColor = "text-green-300";
     } else if (balance[0] === "-") {
       textColor = "text-red-300";
-    } else {
-      textColor = "text-gray-300";
     }
-
     return textColor;
   };
 
@@ -239,33 +194,30 @@ const Profile = () => {
             </Button>
           </form>
         )}
-
         <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
           {editBalance && (
-            <>
-              <div className="flex items-center justify-between ">
-                <Button
-                  id="editButton"
-                  type="button"
-                  onClick={invertValue}
-                  className={
-                    balance[0] === "-"
-                      ? "text-yellow-500 hover:text-green-500"
-                      : "text-yellow-500 hover:text-red-500"
-                  }
-                >
-                  Invert
-                </Button>
-                <Button
-                  id="editButton"
-                  type="button"
-                  className="text-yellow-500 hover:text-red-500"
-                  onClick={cancelEdition}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </>
+            <div className="flex items-center justify-between">
+              <Button
+                id="editButton"
+                type="button"
+                onClick={invertValue}
+                className={
+                  balance[0] === "-"
+                    ? "text-yellow-500 hover:text-green-500"
+                    : "text-yellow-500 hover:text-red-500"
+                }
+              >
+                Invert
+              </Button>
+              <Button
+                id="editButton"
+                type="button"
+                className="text-yellow-500 hover:text-red-500"
+                onClick={cancelEdition}
+              >
+                Cancel
+              </Button>
+            </div>
           )}
           <Input
             id="balance"
@@ -278,7 +230,6 @@ const Profile = () => {
             disabled={disabled}
           />
           <hr />
-
           <Button
             id="balance"
             type="submit"
