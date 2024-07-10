@@ -8,9 +8,10 @@ describe("Input component", () => {
         id="test-input"
         type="text"
         name="test"
-        placeholder="Enter text"
+        className=""
         value="Test Value"
         onChange={() => {}}
+        placeholder="Enter text"
       />
     );
     const input = getByPlaceholderText("Enter text");
@@ -27,9 +28,10 @@ describe("Input component", () => {
         id="test-input"
         type="text"
         name="test"
-        placeholder="Enter text"
+        className=""
         value=""
         onChange={handleChange}
+        placeholder="Enter text"
       />
     );
     const input = getByPlaceholderText("Enter text");
@@ -43,10 +45,10 @@ describe("Input component", () => {
         id="test-input"
         type="text"
         name="test"
-        placeholder="Enter text"
+        className="custom-input"
         value=""
         onChange={() => {}}
-        className="custom-input"
+        placeholder="Enter text"
       />
     );
     const input = getByPlaceholderText("Enter text");
@@ -59,9 +61,10 @@ describe("Input component", () => {
         id="test-input"
         type="text"
         name="test"
-        placeholder="Enter text"
+        className=""
         value="Test Value"
         onChange={() => {}}
+        placeholder="Enter text"
       />
     );
     const input = getByDisplayValue("Test Value");
@@ -74,9 +77,10 @@ describe("Input component", () => {
         id="test-input"
         type="text"
         name="test"
-        placeholder="Enter text"
+        className=""
         value=""
         onChange={() => {}}
+        placeholder="Enter text"
       />
     );
     const input = getByPlaceholderText("Enter text");

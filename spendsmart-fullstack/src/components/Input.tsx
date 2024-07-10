@@ -7,7 +7,7 @@ interface InputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;
   value?: string | number;
-  disabled?: boolean
+  disabled?: boolean;
   placeholder?: string;
 }
 
@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({
   className,
   value,
   disabled,
-  placeholder
+  placeholder,
 }) => {
   return (
     <input

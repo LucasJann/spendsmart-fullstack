@@ -12,32 +12,38 @@
 
 | State Variable       | Type    | Default | Description                                                          |
 | -------------------- | ------- | ------- | -------------------------------------------------------------------- |
+| disabled             | boolean | false   | Determines if the submit button is disabled.                         |
+| isSelected           | boolean | true    | Toggles between login and register forms.                            |
 | name                 | string  | ""      | The user's first name.                                               |
 | lastName             | string  | ""      | The user's last name.                                                |
 | email                | string  | ""      | The user's email address.                                            |
 | password             | string  | ""      | The user's password.                                                 |
 | confirmPassword      | string  | ""      | The user's password confirmation.                                    |
 | error                | string  | ""      | Error message for form validation.                                   |
-| isSelected           | boolean | true    | Toggles between login and register forms.                            |
-| disabled             | boolean | false   | Determines if the submit button is disabled.                         |
 | nameError            | boolean | false   | Indicates if there is an error with the name input.                  |
 | lastNameError        | boolean | false   | Indicates if there is an error with the last name input.             |
 | emailError           | boolean | false   | Indicates if there is an error with the email input.                 |
 | passwordError        | boolean | false   | Indicates if there is an error with the password input.              |
 | confirmPasswordError | boolean | false   | Indicates if there is an error with the password confirmation input. |
 
-## Usage
+## Methods
 
-```tsx
+| submitHandler        | Handles the form submission, sends data to the server, and processes the response.|
+| onSelected           | Toggles between the login and register forms and resets email and password fields.|
+
+
+## Usage Example
+
 import React from 'react';
-import LoginPage from './path/to/LoginPage';
+import Login from './Login';
 
-const MyApp = () => {
-  return (
-    <div>
-      <LoginPage />
-    </div>
-  );
+const App = () => {
+  return <Login />;
 };
 
-export default MyApp;
+export default App;
+
+## Notes
+- This component switches between login and register forms based on the isSelected state.
+- The submitHandler function sends user data to the server and handles errors accordingly.
+- The onSelected function toggles between login and register forms, resetting the email and password fields.

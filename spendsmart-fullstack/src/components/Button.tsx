@@ -3,9 +3,9 @@ import React, { ReactNode } from "react";
 interface ButtonProps {
   id: string;
   type: "submit" | "reset" | "button";
-  children: ReactNode;
   className: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  children?: ReactNode;
   disabled?: boolean;
   isSelected?: boolean;
 }
@@ -13,9 +13,9 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({
   id,
   type,
-  children,
   className,
   onClick,
+  children,
   disabled,
   isSelected,
 }) => {
