@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import Button from "./Button";
 import Image from "./Image";
@@ -7,76 +6,74 @@ import landScape from "../images/landscape.jpg";
 import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
-  const [image, setImage] = useState<boolean>(false);
-  const [disabled, setDisabled] = useState<boolean>(true);
-  const [onConfirm, setOnConfirm] = useState<boolean>(false);
-  const [editBalance, setEditBalance] = useState<boolean>(false);
-  
-  const [balance, setBalance] = useState<string>("");
+  const [formState, setFormState] = useState({
+    image: false,
+    disabled: true,
+    onConfirm: false,
+    editBalance: false,
+  });
+
+  const [balance, setBalance] = useState<number>(0);
   const [profileImage, setProfileImage] = useState<string>(profilePic);
 
   useEffect(() => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
-    const getImage = async () => {
+    const fetchData = async () => {
+      const user = localStorage.getItem("user")?.replace(/"/g, "");
       try {
-        const response = await fetch(`http://localhost:8080/profile/${user}`);
-        if (!response.ok) {
-          console.log(response.statusText);
-          return;
+        const [profileResponse, balanceResponse] = await Promise.all([
+          fetch(`http://localhost:8080/profile/${user}`),
+          fetch(`http://localhost:8080/balance/${user}`),
+        ]);
+
+        if (!profileResponse.ok) {
+          throw new Error(
+            `Failed to fetch profile data. Status: ${profileResponse.status}`
+          );
         }
-        const jsonResponse = await response.json();
-        if (jsonResponse.image !== "images/profilePic") {
-          const splitedProfilePic = jsonResponse.image.split("images\\")[1];
-          setProfileImage(splitedProfilePic);
-        } else {
-          setProfileImage(profilePic);
+        const profileJson = await profileResponse.json();
+        const fetchedProfileImage = profileJson.image
+          ? `../../backend/src/images/${profileJson.image.split("images\\")[1]}`
+          : profilePic;
+        setProfileImage(fetchedProfileImage);
+
+        if (!balanceResponse.ok) {
+          throw new Error(
+            `Failed to fetch balance data. Status: ${balanceResponse.status}`
+          );
         }
-      } catch (err) {
-        console.error(err);
+        const balanceJson = await balanceResponse.json();
+        setBalance(balanceJson.balance || 0);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
-    getImage();
-  });
 
-  useEffect(() => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
-    const getBalance = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/balance/${user}`);
-        if (!response.ok) {
-          console.log(response.statusText);
-          return;
-        }
-        const jsonResponse = await response.json();
-        setBalance(jsonResponse.balance);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getBalance();
-  }, [onConfirm]);
+    fetchData();
+  }, [formState.onConfirm]);
 
-  const valueState = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const formatMoney = (value: number) => {
-      const formatter = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        minimumFractionDigits: 2,
-      });
-      return formatter.format(value);
-    };
+  const formatBalance = (value: number) => {
+    const formatter = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+    return formatter.format(value / 100);
+  };
+
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.replace(/[^0-9]/g, "");
-    const convertedValue = Number(value);
-    const formattedValue = formatMoney(convertedValue / 100);
-    setBalance(formattedValue);
+    setBalance(Number(value));
   };
 
-  const onEdit = () => {
-    setEditBalance(true);
-    setDisabled(false);
+  const handleEdit = () => {
+    setFormState((prevState) => ({
+      ...prevState,
+      editBalance: true,
+      disabled: false,
+    }));
   };
 
-  const onValueHander = async () => {
+  const handleConfirm = async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     try {
       await fetch("http://localhost:8080/balance", {
@@ -86,21 +83,17 @@ const Profile = () => {
         },
         body: JSON.stringify({ user, balance }),
       });
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Error updating balance:", error);
     }
-    setOnConfirm(!onConfirm);
-    setEditBalance(false);
-    setDisabled(true);
+    setFormState((prevState) => ({
+      ...prevState,
+      editBalance: false,
+      disabled: true,
+    }));
   };
 
-  const imageHandler = () => {
-    setImage(true);
-  };
-
-  const onImageSubmitHandler = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleImageUpload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData();
     const inputElement = event.currentTarget.getElementsByTagName("input")[0];
@@ -114,52 +107,47 @@ const Profile = () => {
         body: formData,
       });
       if (!response.ok) {
-        console.error(response.statusText);
+        console.error(`HTTP error! Status: ${response.status}`);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
     }
-    setImage(false);
+    setFormState((prevState) => ({
+      ...prevState,
+      image: false,
+      onConfirm: !formState.onConfirm,
+    }));
   };
 
-  const cancelEdition = () => {
-    setDisabled(true);
-    setEditBalance(false);
-    setOnConfirm(!onConfirm);
+  const handleImageClick = () => {
+    setFormState((prevState) => ({
+      ...prevState,
+      image: true,
+    }));
+  };
+
+  const handleCancel = () => {
+    setFormState((prevState) => ({
+      ...prevState,
+      disabled: true,
+      editBalance: false,
+    }));
   };
 
   const invertValue = () => {
-    const splitedValue = balance.split("$")[1];
-    const cleanedString = splitedValue
-      .replace("R$", "")
-      .replace(/\./g, "")
-      .replace(",", ".");
-    const convertedValue = Number(cleanedString);
-    if (convertedValue === 0) return;
-    const negativeNumber = -convertedValue;
-    const formatMoney = (value: number) => {
-      const formatter = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        minimumFractionDigits: 2,
-      });
-      return formatter.format(value);
-    };
-    const formattedValue =
-      balance[0] !== "-"
-        ? formatMoney(negativeNumber)
-        : formatMoney(-negativeNumber);
-    setBalance(formattedValue);
+    if (balance === 0) {
+      return;
+    }
+    setBalance((prevBalance) => -prevBalance);
   };
 
-  const tailwind = () => {
-    let textColor = "text-gray-300";
-    if (balance[0] !== "-" && balance[3] !== "0") {
-      textColor = "text-green-300";
-    } else if (balance[0] === "-") {
-      textColor = "text-red-300";
+  const getBalanceTextColor = () => {
+    if (balance > 0) {
+      return "text-green-300";
+    } else if (balance < 0) {
+      return "text-red-300";
     }
-    return textColor;
+    return "text-gray-300";
   };
 
   return (
@@ -169,20 +157,16 @@ const Profile = () => {
     >
       <div className="flex flex-col items-center justify-center h-screen">
         <Image
-          src={
-            profileImage !== profilePic
-              ? `../../backend/src/images/${profileImage}`
-              : profilePic
-          }
+          src={profileImage}
           alt="Profile Pic"
-          onClick={imageHandler}
+          onClick={handleImageClick}
         />
-        {image && (
-          <form onSubmit={onImageSubmitHandler}>
+        {formState.image && (
+          <form onSubmit={handleImageUpload}>
             <Input
               id="image"
-              name="image"
               type="file"
+              name="image"
               className="border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1 mt-1"
             />
             <Button
@@ -195,14 +179,14 @@ const Profile = () => {
           </form>
         )}
         <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
-          {editBalance && (
+          {formState.editBalance && (
             <div className="flex items-center justify-between">
               <Button
-                id="editButton"
+                id="invertButton"
                 type="button"
                 onClick={invertValue}
                 className={
-                  balance[0] === "-"
+                  balance < 0
                     ? "text-yellow-500 hover:text-green-500"
                     : "text-yellow-500 hover:text-red-500"
                 }
@@ -210,10 +194,10 @@ const Profile = () => {
                 Invert
               </Button>
               <Button
-                id="editButton"
+                id="cancelButton"
                 type="button"
                 className="text-yellow-500 hover:text-red-500"
-                onClick={cancelEdition}
+                onClick={handleCancel}
               >
                 Cancel
               </Button>
@@ -221,22 +205,21 @@ const Profile = () => {
           )}
           <Input
             id="balance"
-            name="balance"
             type="text"
-            value={balance}
-            placeholder="Insert your initial balance"
-            className={`block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent ${tailwind()} bg-transparent text-center text-lg`}
-            onChange={valueState}
-            disabled={disabled}
+            name="balance"
+            className={`block w-full mb-2 px-12 rounded-md shadow-sm focus:ring-0 border-transparent ${getBalanceTextColor()} bg-transparent text-center text-lg`}
+            value={formatBalance(balance)}
+            onChange={handleValueChange}
+            disabled={formState.disabled}
           />
           <hr />
           <Button
-            id="balance"
+            id="balanceButton"
             type="submit"
             className="bg-yellow-500 mt-5 p-4 w-full text-white"
-            onClick={editBalance ? onValueHander : onEdit}
+            onClick={formState.editBalance ? handleConfirm : handleEdit}
           >
-            {editBalance ? "Confirm" : "Edit Balance"}
+            {formState.editBalance ? "Confirm" : "Edit Balance"}
           </Button>
         </div>
       </div>

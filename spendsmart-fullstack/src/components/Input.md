@@ -4,38 +4,47 @@
 
 | Property   | Type                                                   | Default   | Description                                               |
 | ---------- | ------------------------------------------------------ | --------- | ----------------------------------------------------------|
-| id         | string                                                 | --------- | The unique identifier for the input element.              |
-| type       | string                                                 | --------- | The type of the input element (e.g., text, number, etc.). |
-| name       | string                                                 | --------- | The name of the input element.                            |
-| placeholder| string                                                 | --------- | The placeholder text for the input element.               |
-| value      | string \| number                                       | --------- | The value of the input element.                           |
-| onChange   | (e: React.ChangeEvent<HTMLInputElement>) => void       | --------- | Function called when the value of the input changes.      |
+| id         | string                                                 | undefined | The unique identifier for the input element.              |
+| type       | string                                                 | undefined | The type of the input element (e.g., text, number, etc.). |
+| name       | string                                                 | undefined | The name of the input element.                            |
+| onChange   | (e: React.ChangeEvent<HTMLInputElement>) => void       | undefined | Function called when the value of the input changes.      |
 | className  | string                                                 | undefined | Additional CSS classes for the input element.             |
+| value      | string \| number                                       | undefined | The value of the input element.                           |
+| disabled   | boolean                                                | false     | 	If true, disables the input field.                      |
+| placeholder| string                                                 | undefined | The placeholder text for the input element.               |
 
-## Usage
+## Events
+Event	Returns	Description
+| onChange| e: React.ChangeEvent<HTMLInputElement>                    | Triggered when the input value changes.               |
 
-```tsx
+
+## Usage Example
+
 import React, { useState } from 'react';
-import Input from './path/to/Input';
+import Input from './Input';
 
-const MyComponent = () => {
-  const [value, setValue] = useState('');
+const App = () => {
+  const [inputValue, setInputValue] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
   };
 
   return (
-    <div>
-      <Input
-        id="my-input"
-        type="text"
-        name="myInput"
-        placeholder="Enter text"
-        value={value}
-        onChange={handleChange}
-        className="my-custom-class"
-      />
-    </div>
+    <Input
+      id="myInput"
+      type="text"
+      name="myInput"
+      className="my-custom-class"
+      value={inputValue}
+      onChange={handleChange}
+      placeholder="Enter text"
+      disabled={false}
+    />
   );
 };
+
+export default App;
+
+## Notes
+- The onChange property is used to handle changes in the input value.

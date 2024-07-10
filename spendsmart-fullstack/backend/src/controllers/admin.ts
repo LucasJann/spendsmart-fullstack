@@ -34,8 +34,6 @@ export const Register = async (
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
-      balance: "R$ 0,00",
-      image: "images/profilePic",
     });
 
     const emailFounder = await User.findOne({ email: user.email });

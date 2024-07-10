@@ -93,7 +93,7 @@ const Login = () => {
           }
         });
     } catch (err) {
-      throw new Error("Internal Error");
+      console.log(err)
     }
   };
 
@@ -115,7 +115,8 @@ const Login = () => {
         onSubmit={submitHandler}
       >
         <Button
-          type="button"
+          id="loginButton"
+          type="submit"
           className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 "
           onClick={onSelected}
           isSelected={isSelected}
@@ -123,7 +124,8 @@ const Login = () => {
           Login
         </Button>
         <Button
-          type="button"
+          id="registerButton"
+          type="submit"
           className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 "
           onClick={onSelected}
           isSelected={!isSelected}
@@ -136,10 +138,9 @@ const Login = () => {
               E-mail
             </h2>
             <Input
-              id="email"
+              id="loginEmail"
               type="email"
               name="email"
-              placeholder="Insira seu e-mail"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={email}
               onChange={(e) => {
@@ -147,6 +148,7 @@ const Login = () => {
                 setEmailError(false);
                 setDisabled(false);
               }}
+              placeholder="Insira seu e-mail"
             />
             {emailError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
@@ -154,10 +156,9 @@ const Login = () => {
               Password
             </h2>
             <Input
-              id="password"
+              id="loginPassword"
               type="password"
               name="password"
-              placeholder="Insira sua senha"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={password}
               onChange={(e) => {
@@ -165,10 +166,12 @@ const Login = () => {
                 setPasswordError(false);
                 setDisabled(false);
               }}
+              placeholder="Insira sua senha"
             />
             {passwordError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
             <Button
+              id="entranceButton"
               type="submit"
               className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
             >
@@ -183,7 +186,6 @@ const Login = () => {
               id="name"
               type="text"
               name="name"
-              placeholder="Insira seu nome"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={name}
               onChange={(e) => {
@@ -191,6 +193,7 @@ const Login = () => {
                 setNameError(false);
                 setDisabled(false);
               }}
+              placeholder="Insira seu nome"
             />
             {nameError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
@@ -201,7 +204,6 @@ const Login = () => {
               id="lastName"
               type="text"
               name="lastName"
-              placeholder="Insira seu sobrenome"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={lastName}
               onChange={(e) => {
@@ -209,6 +211,7 @@ const Login = () => {
                 setLastNameError(false);
                 setDisabled(false);
               }}
+              placeholder="Insira seu sobrenome"
             />
             {lastNameError && <p className="text-red-400 text-xs">{error}</p>}
             <hr />
@@ -216,7 +219,7 @@ const Login = () => {
               E-mail
             </h2>
             <Input
-              id="email"
+              id="registerEmail"
               type="email"
               name="email"
               placeholder="Insira seu e-mail"
@@ -234,7 +237,7 @@ const Login = () => {
               Password
             </h2>
             <Input
-              id="password"
+              id="registerPassword"
               type="password"
               name="password"
               placeholder="Insira sua senha"
@@ -270,6 +273,7 @@ const Login = () => {
             )}
             <hr />
             <Button
+              id="confirmButton"
               type="submit"
               className={
                 disabled

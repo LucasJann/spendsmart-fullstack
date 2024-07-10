@@ -19,6 +19,7 @@ describe('Image component', () => {
     const { getByAltText } = render(<Image src={testSrc} alt={testAlt} />);
     const imageElement = getByAltText(testAlt);
 
-    expect(imageElement).toHaveClass('w-full mt-2 mb-8 rounded-md');
+    expect(imageElement).toHaveClass('rounded-full');
+    expect(imageElement).toHaveClass('w-64 h-64 rounded-full');
   });
 });
