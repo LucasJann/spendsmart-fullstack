@@ -6,15 +6,16 @@ import landScape from "../images/landscape.jpg";
 import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
+  const [balance, setBalance] = useState<number>(0);
+  const [oldBalance, setOldBalance] = useState<number>();
+  const [profileImage, setProfileImage] = useState<string>(profilePic);
+
   const [formState, setFormState] = useState({
     image: false,
     disabled: true,
     onConfirm: false,
     editBalance: false,
   });
-
-  const [balance, setBalance] = useState<number>(0);
-  const [profileImage, setProfileImage] = useState<string>(profilePic);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,36 +61,10 @@ const Profile = () => {
     return formatter.format(value / 100);
   };
 
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]/g, "");
-    setBalance(Number(value));
-  };
-
-  const handleEdit = () => {
+  const handleImageClick = () => {
     setFormState((prevState) => ({
       ...prevState,
-      editBalance: true,
-      disabled: false,
-    }));
-  };
-
-  const handleConfirm = async () => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
-    try {
-      await fetch("http://localhost:8080/balance", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user, balance }),
-      });
-    } catch (error) {
-      console.log("Error updating balance:", error);
-    }
-    setFormState((prevState) => ({
-      ...prevState,
-      editBalance: false,
-      disabled: true,
+      image: true,
     }));
   };
 
@@ -119,26 +94,26 @@ const Profile = () => {
     }));
   };
 
-  const handleImageClick = () => {
-    setFormState((prevState) => ({
-      ...prevState,
-      image: true,
-    }));
+  const handleInvertion = () => {
+    if (oldBalance === undefined) {
+      setOldBalance(balance);
+    }
+
+    if (balance === 0) {
+      return;
+    }
+    setBalance((prevBalance) => -prevBalance);
   };
 
   const handleCancel = () => {
+    if (oldBalance !== undefined) {
+      setBalance(oldBalance);
+    }
     setFormState((prevState) => ({
       ...prevState,
       disabled: true,
       editBalance: false,
     }));
-  };
-
-  const invertValue = () => {
-    if (balance === 0) {
-      return;
-    }
-    setBalance((prevBalance) => -prevBalance);
   };
 
   const getBalanceTextColor = () => {
@@ -148,6 +123,41 @@ const Profile = () => {
       return "text-red-300";
     }
     return "text-gray-300";
+  };
+
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOldBalance(balance);
+    const value = event.target.value.replace(/[^0-9]/g, "");
+    setBalance(Number(value));
+  };
+
+  const handleConfirm = async () => {
+    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    try {
+      await fetch("http://localhost:8080/balance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user, balance }),
+      });
+    } catch (error) {
+      console.log("Error updating balance:", error);
+    }
+    setOldBalance(undefined);
+    setFormState((prevState) => ({
+      ...prevState,
+      editBalance: false,
+      disabled: true,
+    }));
+  };
+
+  const handleEdit = () => {
+    setFormState((prevState) => ({
+      ...prevState,
+      editBalance: true,
+      disabled: false,
+    }));
   };
 
   return (
@@ -163,7 +173,7 @@ const Profile = () => {
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
-            <label htmlFor="image">Upload Profile Picture</label>
+            {/* <label htmlFor="image">Upload Profile Picture</label> */}
             <Input
               id="image"
               type="file"
@@ -185,7 +195,7 @@ const Profile = () => {
               <Button
                 id="invertButton"
                 type="button"
-                onClick={invertValue}
+                onClick={handleInvertion}
                 className={
                   balance < 0
                     ? "text-yellow-500 hover:text-green-500"
