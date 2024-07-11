@@ -44,7 +44,7 @@ const Profile = () => {
         const balanceJson = await balanceResponse.json();
         setBalance(balanceJson.balance || 0);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log("Error fetching data:", error);
       }
     };
 
@@ -84,7 +84,7 @@ const Profile = () => {
         body: JSON.stringify({ user, balance }),
       });
     } catch (error) {
-      console.error("Error updating balance:", error);
+      console.log("Error updating balance:", error);
     }
     setFormState((prevState) => ({
       ...prevState,
@@ -107,10 +107,10 @@ const Profile = () => {
         body: formData,
       });
       if (!response.ok) {
-        console.error(`HTTP error! Status: ${response.status}`);
+        console.log(`HTTP error! Status: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error uploading profile image:", error);
+      console.log("Error uploading profile image:", error);
     }
     setFormState((prevState) => ({
       ...prevState,
@@ -163,6 +163,7 @@ const Profile = () => {
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
+            <label htmlFor="image">Upload Profile Picture</label>
             <Input
               id="image"
               type="file"
