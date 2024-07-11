@@ -20,6 +20,7 @@ router.post(
       .custom((value) => {
         const domains = [
           "gmail.com",
+          "hotmail.com",
           "yahoo.com",
           "outlook.com",
           "icloud.com",
