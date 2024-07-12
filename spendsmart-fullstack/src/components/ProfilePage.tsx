@@ -10,12 +10,21 @@ const Profile = () => {
   const [oldBalance, setOldBalance] = useState<number>();
   const [profileImage, setProfileImage] = useState<string>(profilePic);
 
-  const [formState, setFormState] = useState({
+  interface formProperties {
+    image: boolean;
+    disabled: boolean;
+    onConfirm: boolean;
+    editBalance: boolean;
+  }
+
+  const formValues = {
     image: false,
     disabled: true,
     onConfirm: false,
     editBalance: false,
-  });
+  };
+
+  const [formState, setFormState] = useState<formProperties>(formValues);
 
   useEffect(() => {
     const fetchData = async () => {

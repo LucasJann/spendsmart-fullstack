@@ -98,4 +98,5 @@ router.post(
 router.get('/profile/:user', getImage)
 router.post('/profile/:user', postImage)
 
+
 export default router;
