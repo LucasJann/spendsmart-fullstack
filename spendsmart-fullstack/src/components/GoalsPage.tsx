@@ -65,21 +65,6 @@ const Goals = () => {
     getBalance();
   }, []);
 
-  // const handleGoalDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.currentTarget.value;
-  //   if (value === "") {
-  //     setFormData((prevState) => ({
-  //       ...prevState,
-  //       goal: "",
-  //     }));
-  //   } else {
-  //     setFormData((prevState) => ({
-  //       ...prevState,
-  //       goal: value,
-  //     }));
-  //   }
-  // };
-
   const handleGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.currentTarget.value;
     if (value[0] === "R") {
