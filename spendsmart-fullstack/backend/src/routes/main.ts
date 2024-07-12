@@ -20,6 +20,7 @@ router.post(
       .custom((value) => {
         const domains = [
           "gmail.com",
+          "hotmail.com",
           "yahoo.com",
           "outlook.com",
           "icloud.com",
@@ -96,5 +97,6 @@ router.post(
 
 router.get('/profile/:user', getImage)
 router.post('/profile/:user', postImage)
+
 
 export default router;

@@ -10,12 +10,21 @@ const Profile = () => {
   const [oldBalance, setOldBalance] = useState<number>();
   const [profileImage, setProfileImage] = useState<string>(profilePic);
 
-  const [formState, setFormState] = useState({
+  interface formProperties {
+    image: boolean;
+    disabled: boolean;
+    onConfirm: boolean;
+    editBalance: boolean;
+  }
+
+  const formValues = {
     image: false,
     disabled: true,
     onConfirm: false,
     editBalance: false,
-  });
+  };
+
+  const [formState, setFormState] = useState<formProperties>(formValues);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -178,12 +187,12 @@ const Profile = () => {
               id="image"
               type="file"
               name="image"
-              className="border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1 mt-1"
+              className="w-full sm:w-5/6 border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1"
             />
             <Button
               id="image"
               type="submit"
-              className="border-2 border-l-0 text-center p-2 text-white bg-yellow-500 text-sm"
+              className="border-2 border-l-0 text-center p-2 text-white bg-yellow-500 text-sm w-full sm:w-1/6 mt-1 md:w-1/6 lg:w-1/6 xl:w-1/6 "
             >
               OK
             </Button>

@@ -17,7 +17,7 @@ const Menu = () => {
         navigate("");
         break;
       case "goals":
-        navigate("");
+        navigate("/goalsPage");
         break;
       default:
         navigate("");

@@ -4,6 +4,7 @@ interface InputProps {
   id: string;
   type: string;
   name: string;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;
   value?: string | number;
@@ -15,6 +16,7 @@ const Input: React.FC<InputProps> = ({
   id,
   type,
   name,
+  onClick,
   onChange,
   className,
   value,
@@ -26,6 +28,7 @@ const Input: React.FC<InputProps> = ({
       id={id}
       type={type}
       name={name}
+      onClick={onClick}
       onChange={onChange}
       className={className}
       value={value}
