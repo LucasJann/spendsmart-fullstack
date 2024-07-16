@@ -3,12 +3,16 @@ import { useEffect, useState } from "react";
 import beach from "../images/afternoon.jpg";
 import Input from "./Input";
 import Button from "./Button";
+import GoalItem from "./GoalItem";
+
+import "../index.css";
 
 const Goals = () => {
   interface formProperties {
     goal: string;
     balance: string;
     goalValue: string;
+    goals: any;
     confirm: boolean;
     focusedGoalEntry: boolean;
     focusedGoalValueEntry: boolean;
@@ -18,6 +22,7 @@ const Goals = () => {
     goal: "",
     balance: "R$ 0,00",
     goalValue: "",
+    goals: [],
     confirm: false,
     focusedGoalEntry: false,
     focusedGoalValueEntry: false,
@@ -81,7 +86,10 @@ const Goals = () => {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
+        setFormData((prevState) => ({
+          ...prevState,
+          goals: responseData.data,
+        }));
       } catch (err) {
         console.log(err);
       }
@@ -156,7 +164,7 @@ const Goals = () => {
       style={{ backgroundImage: `url(${beach})` }}
     >
       <form
-        className="sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+        className="mt-1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
         onSubmit={handleSubmit}
       >
         <div className="items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">
@@ -176,6 +184,7 @@ const Goals = () => {
             name="goalText"
             type="text"
             value={formData.goal}
+            placeholder="Resume your goal"
             className="w-3/4 mb-2 text-black text-center rounded-md"
             onClick={handleTextInput}
             onChange={handleGoal}
@@ -203,6 +212,15 @@ const Goals = () => {
           )}
         </div>
       </form>
+      {
+        <section className="w-3/4 max-h-100 mt-2 p-2 shadow-mg bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full h-1/4 mt-2 ">
+            {formData.goals.map((goal: {}, key: number) => (
+              <GoalItem item={goal} key={key}/>
+            ))}
+          </div>
+        </section>
+      }
     </div>
   );
 };
