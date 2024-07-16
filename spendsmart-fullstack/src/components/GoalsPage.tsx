@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import beach from "../images/afternoon.jpg";
 import Input from "./Input";
 import Button from "./Button";
@@ -33,12 +34,15 @@ const Goals = () => {
   };
 
   useEffect(() => {
-    console.log(formData.goal);
-
     if (formData.goal !== "" && formData.goalValue !== "") {
       setFormData((prevState) => ({
         ...prevState,
         confirm: true,
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        confirm: false,
       }));
     }
   }, [formData.goal, formData.goalValue]);
@@ -52,6 +56,7 @@ const Goals = () => {
         if (!response.ok) {
           console.log("Response is not ok");
         }
+
         const responseData = await response.json();
         const responseBalance = responseData.balance;
 
@@ -65,40 +70,40 @@ const Goals = () => {
     getBalance();
   }, []);
 
+  useEffect(() => {
+    const getGoals = async () => {
+      const user = localStorage.getItem("user")?.replace(/"/g, "");
+      try {
+        const response = await fetch(`http://localhost:8080/goalsPage/${user}`);
+
+        if (!response.ok) {
+          console.log("Response is not ok");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getGoals();
+  }, []);
+
   const handleGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.currentTarget.value;
-    if (value[0] === "R") {
-      value = value.replace(/[^0-9]/g, "");
-    }
-    console.log(value);
-    if (formData.focusedGoalEntry) {
-      if (value === "") {
-        setFormData((prevState) => ({
-          ...prevState,
-          goal: "",
-        }));
-      } else {
-        setFormData((prevState) => ({
-          ...prevState,
-          goal: value,
-        }));
-      }
-    } else {
-      if (value === "0") {
-        const formattedValue = formatBalance(0);
-        setFormData((prevState) => ({
-          ...prevState,
-          goalValue: formattedValue,
-        }));
-      } else {
-        const integerValue = Number(value);
-        const formattedValue = formatBalance(integerValue);
-        console.log(formattedValue);
-        setFormData((prevState) => ({
-          ...prevState,
-          goalValue: formattedValue,
-        }));
-      }
+    const { id, value } = e.currentTarget;
+
+    if (id === "goalText") {
+      setFormData((prevState) => ({
+        ...prevState,
+        goal: value,
+      }));
+    } else if (id === "goalValue") {
+      const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10) || 0;
+      const formattedValue = formatBalance(numericValue);
+      setFormData((prevState) => ({
+        ...prevState,
+        goalValue: formattedValue,
+      }));
     }
   };
 
@@ -118,12 +123,42 @@ const Goals = () => {
     }));
   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const user = localStorage.getItem("user")?.replace(/"/g, "");
+
+    const data = {
+      goal: formData.goal,
+      value: formData.goalValue,
+    };
+
+    try {
+      await fetch(`http://localhost:8080/goalsPage/${user}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    setFormData((prevState) => ({
+      ...prevState,
+      goal: "",
+      goalValue: "",
+      confirm: false,
+    }));
+  };
+
   return (
     <div
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${beach})` }}
     >
-      <form className="sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+      <form
+        className="sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+        onSubmit={handleSubmit}
+      >
         <div className="items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">
           <label htmlFor="currentBalance">Your balance</label>
           <Input

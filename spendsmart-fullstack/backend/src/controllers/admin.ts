@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import { User } from "../models/user";
+import User from "../models/user";
 import bcrypt from "bcryptjs";
 
 interface ValidationErrorProps {
@@ -34,6 +34,7 @@ export const Register = async (
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
+      goals: [],
     });
 
     const emailFounder = await User.findOne({ email: user.email });
@@ -45,9 +46,10 @@ export const Register = async (
       });
     }
     await user.save();
-    res.status(201).json({ message: "User created!" });
+    return res.status(201).json({ message: "User created!" });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
 
@@ -71,14 +73,12 @@ export const Login = async (
 
   try {
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(422).json({
         errorMessage: "User not found",
         path: "email",
       });
     }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -87,13 +87,12 @@ export const Login = async (
         path: "password",
       });
     }
-
     return res
       .status(200)
       .json({ message: "Login successful", loadedUser: user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ errorMessage: "Internal Server Error" });
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
 
@@ -111,7 +110,7 @@ export const getBalance = async (req: Request, res: Response) => {
     return res.status(404).json({ errorMessage: "User not found" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ errorMessage: "Internal Server Error" });
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
 
@@ -134,7 +133,18 @@ export const postBalance = async (
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ errorMessage: "Internal Server Error" });
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
+export const getImage = async (req: Request, res: Response) => {
+  const user = req.path.split("profile/")[1];
+  try {
+    const result = await User.findOne({ email: user });
+    const userImage = result?.image;
+    res.status(201).json({ image: userImage });
+  } catch (err) {
+    console.error(err);
   }
 };
 
@@ -142,27 +152,39 @@ export const postImage = async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
-  
+
   const imagePath = req.file.path;
   const user = req.params.user;
 
   try {
     await User.updateOne({ email: user }, { $set: { image: imagePath } });
+    return res.status(200).json({ imagePath });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
-
-  return res.status(200).json({ imagePath });
 };
 
-export const getImage = async (req: Request, res: Response) => {
-  const user = req.path.split("profile/")[1];
+export const getGoals = async (req: Request, res: Response) => {
+  const user = req.params.user;
   try {
-    await User.findOne({ email: user }).then((loggedUser) => {
-      const userImage = loggedUser?.image;
-      res.status(201).json({ image: userImage });
-    });
+    const result = await User.findOne({ email: user });
+    return res.status(200).json({ data: result.goals });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
+export const postGoals = async (req: Request, res: Response) => {
+  const userEmail = req.params.user;
+  const goalData = req.body;
+
+  try {
+    await User.updateOne({ email: userEmail }, { $push: { goals: goalData } });
+    return res.status(200).json({ message: "Goal added successfully!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
