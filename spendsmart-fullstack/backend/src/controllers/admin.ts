@@ -169,7 +169,9 @@ export const getGoals = async (req: Request, res: Response) => {
   const user = req.params.user;
   try {
     const result = await User.findOne({ email: user });
-    return res.status(200).json({ data: result.goals });
+    return res
+      .status(200)
+      .json({ data: result.goals, balance: result.balance });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
