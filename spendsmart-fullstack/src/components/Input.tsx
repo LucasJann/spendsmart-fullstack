@@ -5,6 +5,7 @@ interface InputProps {
   type: string;
   name: string;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;
   value?: string | number;
