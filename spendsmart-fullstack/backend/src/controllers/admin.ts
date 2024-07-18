@@ -190,3 +190,26 @@ export const postGoals = async (req: Request, res: Response) => {
     return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
+
+export const deleteGoal = async (req: Request, res: Response) => {
+  const userArray = req.params.user;
+  const user = userArray.split(",");
+  try {
+    const userLogged = await User.findOne({ email: user[0] });
+    if (!userLogged) {
+      return res.status(404).json({ errorMessage: "User not found" });
+    }
+
+    const goalIdToRemove = user[1];
+    userLogged.goals = userLogged.goals.filter(
+      (item: any) => item.id.toString() !== goalIdToRemove
+    );
+
+    await userLogged.save();
+
+    res.status(200).json({ message: "Goal removed" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};

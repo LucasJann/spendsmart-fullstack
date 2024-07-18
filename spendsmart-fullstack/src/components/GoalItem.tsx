@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import Button from "./Button";
 
 interface GoalItemProperties {
   item: any;
 }
 
 const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
-  const { goal, value } = item;
+  const { id, goal, value } = item;
 
   const [balance, setBalance] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -60,8 +61,38 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
+  const deleteGoalHandler = async () => {
+    const email = localStorage.getItem("user")?.replace(/"/g, "");
+    const user = [email, id];
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/goalsPage/deleteGoal/${user}`
+      );
+
+      if (!response.ok) {
+        console.log("Response is not Ok");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <section className="w-full h-full p-4 border rounded-md shadow-mg bg-white shadow flex flex-col">
+    <section className="w-full h-full pt-auto pb-2 pl-1 pr-2 border rounded-md shadow-mg bg-white shadow flex flex-col">
+      <form>
+        <div className="flex justify-end">
+          <Button
+            id={id}
+            type="submit"
+            onClick={deleteGoalHandler}
+            className="flex justify-end w-1/6 hover:text-red-500 font-bold"
+          >
+            x
+          </Button>
+        </div>
+      </form>
+
       <h2 className="font-bold text-lg p-1">Goal: </h2>
       <p className="p-1 text-start break-words">{goal}</p>
       <h2 className="font-bold text-lg p-1">Value: </h2>
