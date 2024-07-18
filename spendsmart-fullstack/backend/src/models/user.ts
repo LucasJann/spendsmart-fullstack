@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 interface Goal {
+  id: string;
   goal: string;
   value: string;
 }
@@ -12,10 +13,11 @@ interface User extends Document {
   password: string;
   balance: string;
   image?: string;
-  goals: Goal[]; // Usar diretamente a interface Goal aqui
+  goals: Goal[];
 }
 
 const GoalSchema = new Schema({
+  id: { type: String, required: true },
   goal: { type: String, required: true },
   value: { type: String, required: true },
 });
@@ -25,11 +27,10 @@ const UserSchema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  balance: { type: String, default: '0' }, // Valor inicial de balance
+  balance: { type: String, default: "0" },
   image: { type: String },
-  goals: { type: [GoalSchema], default: [] }, // Utilizar o esquema GoalSchema aqui
+  goals: { type: [GoalSchema], default: [] },
 });
 
-export const User = mongoose.model<User>('User', UserSchema);
-export default User
-
+export const User = mongoose.model<User>("User", UserSchema);
+export default User;

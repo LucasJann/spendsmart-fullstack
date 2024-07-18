@@ -62,15 +62,15 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
 
   return (
     <section className="w-full h-full p-4 border rounded-md shadow-mg bg-white shadow flex flex-col">
-      <div className="grid grid-cols-2 gap-2 bg-white">
-        <h2 className="font-bold text-lg p-1">Goal: </h2>
-        <p className="p-1 text-start break-words">{goal}</p>
-        <h2 className="font-bold text-lg p-1">Value: </h2>
-        <p className="p-1 text-start overflow-hidden truncate">{value}</p>
-        <h2 className="font-bold text-lg p-1">Progress:</h2>
-        <div className="relative w-full h-5 mt-2 bg-gray-200 rounded-md overflow-hidden">
+      <h2 className="font-bold text-lg p-1">Goal: </h2>
+      <p className="p-1 text-start break-words">{goal}</p>
+      <h2 className="font-bold text-lg p-1">Value: </h2>
+      <p className="p-1 text-start overflow-hidden truncate">{value}</p>
+      <div className="flex-grow">
+        <h2 className="flex font-bold text-lg p-1 h-auto">Progress:</h2>
+        <div className="relative w-full h-5 bg-gray-200 rounded-md overflow-hidden ml-1">
           <div
-            className="absolute left-0 top-0 h-full rounded-md text-center"
+            className="h-full rounded-md text-center"
             style={itemPercentageStyle}
           >
             <div className="absolute text-center font-bold text-sm bottom-0 left-1  ">
