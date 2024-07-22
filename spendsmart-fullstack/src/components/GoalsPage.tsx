@@ -124,7 +124,7 @@ const Goals = () => {
               ...prevState,
               divStyle:
                 "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-2 lg:grid-cols-3",
-              sectionStyle: "w-2/4",
+              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
             }));
             break;
           case 4:
@@ -132,7 +132,7 @@ const Goals = () => {
               ...prevState,
               divStyle:
                 "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4",
-              sectionStyle: "w-2/4",
+              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
             }));
             break;
           default:
