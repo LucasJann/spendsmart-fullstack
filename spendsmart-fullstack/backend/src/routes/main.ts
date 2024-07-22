@@ -1,7 +1,17 @@
 import { body } from "express-validator";
 import { User } from "../models/user";
 import { Router } from "express";
-import { Register, Login, getBalance, postBalance, getImage, postImage, getGoals, postGoals } from "../controllers/admin";
+import {
+  Register,
+  Login,
+  getBalance,
+  postBalance,
+  getImage,
+  postImage,
+  getGoals,
+  postGoals,
+  deleteGoal,
+} from "../controllers/admin";
 
 const router = Router();
 router.post(
@@ -95,11 +105,12 @@ router.post(
   Login
 );
 
-router.get('/profile/:user', getImage)
-router.post('/profile/:user', postImage)
+router.get("/profile/:user", getImage);
+router.post("/profile/:user", postImage);
 
-router.get('/goalsPage/:user', getGoals)
-router.post('/goalsPage/:user', postGoals)
+router.get("/goalsPage/:user", getGoals);
+router.post("/goalsPage/:user", postGoals);
 
+router.get("/goalsPage/deleteGoal/:user", deleteGoal);
 
 export default router;

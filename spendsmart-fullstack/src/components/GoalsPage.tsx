@@ -12,7 +12,8 @@ import "../index.css";
 const Goals = () => {
   interface formProperties {
     goal: string;
-    style: string;
+    sectionStyle: string;
+    divStyle: string;
     balance: string;
     goalValue: string;
     goals: any;
@@ -24,7 +25,8 @@ const Goals = () => {
 
   const formValues = {
     goal: "",
-    style: "",
+    divStyle: "",
+    sectionStyle: "",
     balance: "R$ 0,00",
     goalValue: "",
     goals: [],
@@ -93,7 +95,6 @@ const Goals = () => {
 
       const responseData = await response.json();
 
-      console.log(responseData.data.length);
       setLength(responseData.data.length);
 
       setFormData((prevState) => ({
@@ -106,35 +107,40 @@ const Goals = () => {
           case 1:
             setFormData((prevState) => ({
               ...prevState,
-              style: "grid grid-cols-1",
+              divStyle: "grid grid-cols-1",
+              sectionStyle: "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4",
             }));
             break;
           case 2:
             setFormData((prevState) => ({
               ...prevState,
-              style:
+              divStyle:
                 "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2",
+              sectionStyle: "w-2/4",
             }));
             break;
           case 3:
             setFormData((prevState) => ({
               ...prevState,
-              style:
+              divStyle:
                 "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-2 lg:grid-cols-3",
+              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
             }));
             break;
           case 4:
             setFormData((prevState) => ({
               ...prevState,
-              style:
+              divStyle:
                 "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4",
+              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
             }));
             break;
           default:
             setFormData((prevState) => ({
               ...prevState,
-              style:
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4",
+              divStyle:
+                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-5",
+              sectionStyle: "w-4/5",
             }));
             break;
         }
@@ -145,11 +151,13 @@ const Goals = () => {
   };
 
   useEffect(() => {
-    setFormData((prevState) => ({
-      ...prevState,
-      goalsSection: true,
-    }));
-  }, [length > 0]);
+    if (length > 0) {
+      setFormData((prevState) => ({
+        ...prevState,
+        goalsSection: true,
+      }));
+    }
+  }, [length]);
 
   useEffect(() => {
     getGoals();
@@ -228,7 +236,7 @@ const Goals = () => {
       style={{ backgroundImage: `url(${beach})` }}
     >
       <form
-        className="mt-1 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+        className="mt-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
         onSubmit={handleSubmit}
       >
         <div className="items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">
@@ -276,9 +284,12 @@ const Goals = () => {
           )}
         </div>
       </form>
+
       {formData.goalsSection && (
-        <section className="w-3/4 max-h-100 mt-2 p-2 shadow-mg bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom">
-          <div className={formData.style + " gap-3 w-full mt-2"}>
+        <section
+          className={`${formData.sectionStyle} max-h-100 mt-2 p-2  bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+        >
+          <div className={formData.divStyle + " gap-3 w-full mt-2"}>
             {formData.goals.map((goal: {}, key: number) => (
               <GoalItem item={goal} key={key} />
             ))}
