@@ -108,7 +108,7 @@ const Goals = () => {
             setFormData((prevState) => ({
               ...prevState,
               divStyle: "grid grid-cols-1",
-              sectionStyle: "w-1/4",
+              sectionStyle: "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4",
             }));
             break;
           case 2:
@@ -141,7 +141,6 @@ const Goals = () => {
               divStyle:
                 "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-5",
               sectionStyle: "w-4/5",
-
             }));
             break;
         }
