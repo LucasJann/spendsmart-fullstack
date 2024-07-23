@@ -91,7 +91,7 @@ const Profile = () => {
         body: formData,
       });
       if (!response.ok) {
-        console.log(`HTTP error! Status: ${response.status}`);
+        return console.log(`HTTP error! Status: ${response.status}`);
       }
     } catch (error) {
       console.log("Error uploading profile image:", error);
@@ -182,7 +182,7 @@ const Profile = () => {
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
-            {/* <label htmlFor="image">Upload Profile Picture</label> */}
+            <label htmlFor="image">Upload Profile Picture</label>
             <Input
               id="image"
               type="file"

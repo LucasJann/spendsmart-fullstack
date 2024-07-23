@@ -201,8 +201,9 @@ export const deleteGoal = async (req: Request, res: Response) => {
     }
 
     const goalIdToRemove = user[1];
+    console.log(goalIdToRemove)
     userLogged.goals = userLogged.goals.filter(
-      (item: any) => item.id.toString() !== goalIdToRemove
+      (item: any) => item._id.toString() !== goalIdToRemove
     );
 
     await userLogged.save();

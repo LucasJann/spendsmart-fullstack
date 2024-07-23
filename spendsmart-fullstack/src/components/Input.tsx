@@ -2,39 +2,38 @@ import React from "react";
 
 interface InputProps {
   id: string;
-  type: string;
   name: string;
-  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
-  onFocus?: (e: React.MouseEvent<HTMLInputElement>) => void;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className: string;
+  type: string;
   value?: string | number;
   disabled?: boolean;
+  className: string;
   placeholder?: string;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input: React.FC<InputProps> = ({
   id,
   type,
   name,
-  onClick,
-  onChange,
-  className,
   value,
   disabled,
+  className,
   placeholder,
+  onClick,
+  onChange,
 }) => {
   return (
     <input
       id={id}
-      type={type}
       name={name}
-      onClick={onClick}
-      onChange={onChange}
-      className={className}
+      type={type}
       value={value}
       disabled={disabled}
+      className={className}
       placeholder={placeholder}
+      onClick={onClick}
+      onChange={onChange}
     />
   );
 };

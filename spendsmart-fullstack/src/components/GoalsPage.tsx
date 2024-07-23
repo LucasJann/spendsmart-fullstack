@@ -1,42 +1,40 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useCallback } from "react";
 import beach from "../images/afternoon.jpg";
 import Input from "./Input";
 import Button from "./Button";
 import GoalItem from "./GoalItem";
-
-import { v4 as uuidv4 } from "uuid";
-
 import "../index.css";
 
 const Goals = () => {
-  interface formProperties {
+  interface Goal {
+    _id: string;
     goal: string;
-    sectionStyle: string;
-    divStyle: string;
-    balance: string;
-    goalValue: string;
-    goals: any;
-    confirm: boolean;
-    goalsSection: boolean;
-    focusedGoalEntry: boolean;
-    focusedGoalValueEntry: boolean;
+    value: string;
   }
 
-  const formValues = {
-    goal: "",
-    divStyle: "",
-    sectionStyle: "",
+  interface FormProperties {
+    balance: string;
+    goal: string;
+    goalValue: string;
+    confirm: boolean;
+    goals: Goal[];
+    goalsSection: boolean;
+    sectionStyle: string;
+    divStyle: string;
+  }
+
+  const initialFormValues: FormProperties = {
     balance: "R$ 0,00",
+    goal: "",
     goalValue: "",
-    goals: [],
     confirm: false,
+    goals: [],
     goalsSection: false,
-    focusedGoalEntry: false,
-    focusedGoalValueEntry: false,
+    sectionStyle: "",
+    divStyle: "",
   };
-  const [formData, setFormData] = useState<formProperties>(formValues);
-  const [length, setLength] = useState(0);
+
+  const [formData, setFormData] = useState<FormProperties>(initialFormValues);
 
   const formatBalance = (value: number) => {
     const formatter = new Intl.NumberFormat("pt-BR", {
@@ -47,187 +45,129 @@ const Goals = () => {
     return formatter.format(value / 100);
   };
 
-  useEffect(() => {
-    if (formData.goal !== "" && formData.goalValue !== "") {
-      setFormData((prevState) => ({
-        ...prevState,
-        confirm: true,
-      }));
-    } else {
-      setFormData((prevState) => ({
-        ...prevState,
-        confirm: false,
-      }));
-    }
-  }, [formData.goal, formData.goalValue]);
-
-  useEffect(() => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
-    const getBalance = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/balance/${user}`);
-
-        if (!response.ok) {
-          console.log("Response is not ok");
-        }
-
-        const responseData = await response.json();
-        const responseBalance = responseData.balance;
-
-        const formattedValue = formatBalance(responseBalance);
-        setFormData((prevState) => ({
-          ...prevState,
-          balance: formattedValue,
-        }));
-      } catch (err) {}
-    };
-    getBalance();
-  }, []);
-
-  const getGoals = async () => {
+  const getGoals = useCallback(async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     try {
       const response = await fetch(`http://localhost:8080/goalsPage/${user}`);
-
-      if (!response.ok) {
-        console.log("Response is not ok");
-      }
+      if (!response.ok) throw new Error("Failed to fetch goals");
 
       const responseData = await response.json();
-
-      setLength(responseData.data.length);
+      const goals = responseData.data;
+      const goalsLength = goals.length;
 
       setFormData((prevState) => ({
         ...prevState,
-        goals: responseData.data,
+        goals,
+        goalsSection: goalsLength > 0,
+        divStyle: getDivStyle(goalsLength),
+        sectionStyle: getSectionStyle(goalsLength),
       }));
-
-      if (responseData.data.length > 0) {
-        switch (responseData.data.length) {
-          case 1:
-            setFormData((prevState) => ({
-              ...prevState,
-              divStyle: "grid grid-cols-1",
-              sectionStyle: "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4",
-            }));
-            break;
-          case 2:
-            setFormData((prevState) => ({
-              ...prevState,
-              divStyle:
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2",
-              sectionStyle: "w-2/4",
-            }));
-            break;
-          case 3:
-            setFormData((prevState) => ({
-              ...prevState,
-              divStyle:
-                "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-2 lg:grid-cols-3",
-              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
-            }));
-            break;
-          case 4:
-            setFormData((prevState) => ({
-              ...prevState,
-              divStyle:
-                "grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4",
-              sectionStyle: "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4",
-            }));
-            break;
-          default:
-            setFormData((prevState) => ({
-              ...prevState,
-              divStyle:
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-5",
-              sectionStyle: "w-4/5",
-            }));
-            break;
-        }
-      }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    }
+  }, []);
+
+  const getDivStyle = (goalsLength: number) => {
+    switch (goalsLength) {
+      case 1:
+        return "grid grid-cols-1";
+      case 2:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2";
+      case 3:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      default:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5";
     }
   };
 
-  useEffect(() => {
-    if (length > 0) {
+  const getSectionStyle = (goalsLength: number) => {
+    switch (goalsLength) {
+      case 1:
+        return "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4";
+      case 2:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-2/4";
+      case 3:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4";
+      case 4:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4";
+      default:
+        return "w-4/5";
+    }
+  };
+
+  const fetchBalance = useCallback(async () => {
+    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    try {
+      const response = await fetch(`http://localhost:8080/balance/${user}`);
+      if (!response.ok) throw new Error("Failed to fetch balance");
+
+      const responseData = await response.json();
+      const formattedValue = formatBalance(responseData.balance);
       setFormData((prevState) => ({
         ...prevState,
-        goalsSection: true,
+        balance: formattedValue,
       }));
+    } catch (err) {
+      console.error(err);
     }
-  }, [length]);
+  }, []);
 
   useEffect(() => {
+    fetchBalance();
     getGoals();
-  }, [formData.confirm]);
+  }, [fetchBalance, getGoals]);
+
+  useEffect(() => {
+    setFormData((prevState) => ({
+      ...prevState,
+      confirm: formData.goal !== "" && formData.goalValue !== "",
+    }));
+  }, [formData.goal, formData.goalValue]);
 
   const handleGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.currentTarget;
-
-    if (id === "goalText") {
-      if (value.length > 20) {
-        return;
+    if (id === "goalTitle") {
+      if (value.length <= 20) {
+        setFormData((prevState) => ({
+          ...prevState,
+          goal: value,
+        }));
       }
-      setFormData((prevState) => ({
-        ...prevState,
-        goal: value,
-      }));
-    } else if (id === "goalValue") {
-      const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10) || 0;
-      const formattedValue = formatBalance(numericValue);
-      setFormData((prevState) => ({
-        ...prevState,
-        goalValue: formattedValue,
-      }));
+    } else {
+      if (value.length <= 18) {
+        const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10) || 0;
+        const formattedValue = formatBalance(numericValue);
+        setFormData((prevState) => ({
+          ...prevState,
+          goalValue: formattedValue,
+        }));
+      }
     }
-  };
-
-  const handleTextInput = () => {
-    setFormData((prevState) => ({
-      ...prevState,
-      focusedGoalEntry: true,
-      focusedGoalValueEntry: false,
-    }));
-  };
-
-  const handleValueInput = () => {
-    setFormData((prevState) => ({
-      ...prevState,
-      focusedGoalEntry: false,
-      focusedGoalValueEntry: true,
-    }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const user = localStorage.getItem("user")?.replace(/"/g, "");
-
-    const id = uuidv4();
-    const data = {
-      id: id,
-      goal: formData.goal,
-      value: formData.goalValue,
-    };
-
+    const data = { id: 1, goal: formData.goal, value: formData.goalValue };
     try {
       await fetch(`http://localhost:8080/goalsPage/${user}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      setFormData((prevState) => ({
+        ...prevState,
+        goal: "",
+        goalValue: "",
+        confirm: false,
+        goalsSection: true,
+      }));
+      getGoals(); 
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
-
-    setFormData((prevState) => ({
-      ...prevState,
-      goal: "",
-      goalValue: "",
-      confirm: false,
-      goalsSection: true,
-    }));
   };
 
   return (
@@ -246,19 +186,18 @@ const Goals = () => {
             name="currentBalance"
             type="text"
             value={formData.balance}
-            className="w-3/4 mb-2 border rounded-md text-center"
             disabled
+            className="w-3/4 mb-2 border rounded-md text-center"
           />
           <hr />
-          <label htmlFor="goalText">Describe your goal</label>
+          <label htmlFor="goalTitle">What is your goal?</label>
           <Input
-            id="goalText"
-            name="goalText"
+            id="goalTitle"
+            name="goalTitle"
             type="text"
             value={formData.goal}
-            placeholder="Resume your goal"
             className="w-3/4 mb-2 text-black text-center rounded-md"
-            onClick={handleTextInput}
+            placeholder="Resume your goal"
             onChange={handleGoal}
           />
           <hr />
@@ -269,28 +208,26 @@ const Goals = () => {
             type="text"
             value={formData.goalValue}
             className="w-3/4 mb-2 text-black rounded-md text-center"
-            onClick={handleValueInput}
             onChange={handleGoal}
           />
           <hr />
           {formData.confirm && (
             <Button
               id="goalSubmitButton"
-              className="w-full bg-blue-400 p-3 mt-2 rounded-md hover:bg-blue-600"
               type="submit"
+              className="w-full bg-blue-400 p-3 mt-2 rounded-md hover:bg-blue-600"
             >
               Confirm
             </Button>
           )}
         </div>
       </form>
-
       {formData.goalsSection && (
         <section
-          className={`${formData.sectionStyle} max-h-100 mt-2 p-2  bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`${formData.sectionStyle} max-h-100 mt-2 p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
-          <div className={formData.divStyle + " gap-3 w-full mt-2"}>
-            {formData.goals.map((goal: {}, key: number) => (
+          <div className={`${formData.divStyle} gap-3 w-full mt-2`}>
+            {formData.goals.map((goal, key) => (
               <GoalItem item={goal} key={key} />
             ))}
           </div>
