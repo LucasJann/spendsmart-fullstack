@@ -17,7 +17,6 @@ interface User extends Document {
 }
 
 const GoalSchema = new Schema({
-  id: { type: String, required: true },
   goal: { type: String, required: true },
   value: { type: String, required: true },
 });

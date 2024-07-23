@@ -6,7 +6,9 @@ interface GoalItemProperties {
 }
 
 const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
-  const { id, goal, value } = item;
+  const { _id, goal, value } = item;
+
+  console.log(_id);
 
   const [balance, setBalance] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -19,7 +21,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
         const response = await fetch(`http://localhost:8080/balance/${user}`);
 
         if (!response.ok) {
-          console.log("Response is not ok");
+          return console.log("Response is not ok");
         }
 
         const responseData = await response.json();
@@ -63,7 +65,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
 
   const deleteGoalHandler = async () => {
     const email = localStorage.getItem("user")?.replace(/"/g, "");
-    const user = [email, id];
+    const user = [email, _id];
 
     try {
       const response = await fetch(
@@ -71,7 +73,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
       );
 
       if (!response.ok) {
-        console.log("Response is not Ok");
+        return console.log("Response is not ok");
       }
     } catch (err) {
       console.log(err);
@@ -83,7 +85,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
       <form>
         <div className="flex justify-end">
           <Button
-            id={id}
+            id={_id}
             type="submit"
             onClick={deleteGoalHandler}
             className="flex justify-end w-1/6 hover:text-red-500 font-bold"
@@ -92,7 +94,6 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
           </Button>
         </div>
       </form>
-
       <h2 className="font-bold text-lg p-1">Goal: </h2>
       <p className="p-1 text-start break-words">{goal}</p>
       <h2 className="font-bold text-lg p-1">Value: </h2>
