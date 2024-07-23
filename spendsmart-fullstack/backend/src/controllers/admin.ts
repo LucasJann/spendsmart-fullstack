@@ -192,20 +192,17 @@ export const postGoals = async (req: Request, res: Response) => {
 };
 
 export const deleteGoal = async (req: Request, res: Response) => {
-  const userArray = req.params.user;
-  const user = userArray.split(",");
+  const _id = req.body._id;
+  const user = req.body.email;
+
   try {
-    const userLogged = await User.findOne({ email: user[0] });
+    const userLogged = await User.findOne({ email: user });
     if (!userLogged) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
-
-    const goalIdToRemove = user[1];
-    console.log(goalIdToRemove)
     userLogged.goals = userLogged.goals.filter(
-      (item: any) => item._id.toString() !== goalIdToRemove
+      (item: any) => item._id.toString() !== _id
     );
-
     await userLogged.save();
 
     res.status(200).json({ message: "Goal removed" });

@@ -111,6 +111,6 @@ router.post("/profile/:user", postImage);
 router.get("/goalsPage/:user", getGoals);
 router.post("/goalsPage/:user", postGoals);
 
-router.get("/goalsPage/deleteGoal/:user", deleteGoal);
+router.delete("/goalsPage/deleteGoal", deleteGoal);
 
 export default router;

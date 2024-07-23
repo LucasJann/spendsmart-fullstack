@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
+
 import Button from "./Button";
 
+interface Goal {
+  _id: string;
+  goal: string;
+  value: string;
+}
+
 interface GoalItemProperties {
-  item: any;
+  item: Goal;
 }
 
 const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
   const { _id, goal, value } = item;
-
-  console.log(_id);
 
   const [balance, setBalance] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -16,17 +21,18 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
     const getBalance = async () => {
       try {
         const response = await fetch(`http://localhost:8080/balance/${user}`);
-
         if (!response.ok) {
-          return console.log("Response is not ok");
+          throw new Error("Failed to fetch balance");
         }
-
         const responseData = await response.json();
-        const responseBalance = responseData.balance;
-        setBalance(responseBalance);
+        setBalance(responseData.balance);
       } catch (err) {
         console.error("Failed to fetch balance:", err);
       }
@@ -45,39 +51,45 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
       setProgress(roundedProgress);
 
       const percentageColor = getPercentageColor(roundedProgress);
-      const itemPercentageStyle = {
+      setItemPercentageStyle({
         backgroundColor: percentageColor,
-        width: roundedProgress >= 10 ? roundedProgress + "%" : "10%",
-      };
-      setItemPercentageStyle(itemPercentageStyle);
+        width: roundedProgress >= 10 ? `${roundedProgress}%` : "10%",
+      });
     }
   }, [balance, value]);
+
+  const deleteGoalHandler = async () => {
+    const email = localStorage.getItem("user")?.replace(/"/g, "");
+    if (!email) {
+      console.error("User not logged in");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/goalsPage/deleteGoal`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, _id }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete goal");
+      }
+    } catch (err) {
+      console.error("Failed to delete goal:", err);
+    }
+  };
 
   const getPercentageColor = (percentage: number) => {
     const minHue = 0;
     const maxHue = 120;
     const hue = (percentage * (maxHue - minHue)) / 100 + minHue;
-    const saturation = 100;
-    const lightness = 50;
-
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-  };
-
-  const deleteGoalHandler = async () => {
-    const email = localStorage.getItem("user")?.replace(/"/g, "");
-    const user = [email, _id];
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/goalsPage/deleteGoal/${user}`
-      );
-
-      if (!response.ok) {
-        return console.log("Response is not ok");
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    return `hsl(${hue}, 100%, 50%)`;
   };
 
   return (
@@ -105,7 +117,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
             className="h-full rounded-md text-center"
             style={itemPercentageStyle}
           >
-            <div className="absolute text-center font-bold text-sm bottom-0 left-1  ">
+            <div className="absolute text-center font-bold text-sm bottom-0 left-1">
               {progress === 100 ? "Completed" : `${progress}%`}
             </div>
           </div>
