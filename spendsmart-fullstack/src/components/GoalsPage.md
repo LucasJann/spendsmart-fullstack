@@ -1,4 +1,4 @@
-# Documentation
+### Documentation
 
 ## Goals Component
 
@@ -35,7 +35,7 @@ The `Goal` interface represents a goal object with the following properties:
 
 ## Methods
 
-### formatBalance
+# formatBalance
 
 Formats a given numeric value into the BRL currency format.
 
@@ -50,7 +50,7 @@ const formatBalance = (value: number) => {
 };
 ```
 
-### getGoals
+# getGoals
 
 Fetches the goals of the user from the backend and updates the state accordingly.
 
@@ -77,7 +77,7 @@ const getGoals = async () => {
 };
 ```
 
-### handleGoal
+# handleGoal
 
 Handles the input changes for the goal description and goal value.
 
@@ -106,7 +106,7 @@ const handleGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 ```
 
-### handleSubmit
+# handleSubmit
 
 Handles the form submission to create a new goal.
 
@@ -137,7 +137,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 };
 ```
 
-### Events
+# Events
 
 The Goals component handles the following events internall:
 
@@ -162,7 +162,7 @@ const App = () => {
 export default App;
 ```
 
-### Notes
+## Notes
 
 The Goals component fetches the user's balance and goals from the backend when it is first rendered.
 The grid layout for displaying goals adjusts dynamically based on the number of goals.
