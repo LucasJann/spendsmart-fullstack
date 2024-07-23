@@ -182,7 +182,7 @@ const Profile = () => {
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
-            <label htmlFor="image">Upload Profile Picture</label>
+            {/* <label htmlFor="image">Upload Profile Picture</label> */}
             <Input
               id="image"
               type="file"
