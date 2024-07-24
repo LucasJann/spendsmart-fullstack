@@ -179,10 +179,11 @@ const Profile = () => {
           src={profileImage}
           alt="Profile Pic"
           onClick={handleImageClick}
+          className="w-64 h-64 rounded-full"
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
-            <label htmlFor="image">Upload Profile Picture</label>
+            {/* <label htmlFor="image">Upload Profile Picture</label> */}
             <Input
               id="image"
               type="file"

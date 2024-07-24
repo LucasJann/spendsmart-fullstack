@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import morningSun from "../images/morning.jpg"
+import morningSun from "../images/morning.jpg";
 import Button from "./Button";
 
 const Menu = () => {
@@ -14,7 +14,7 @@ const Menu = () => {
         navigate("/profilePage");
         break;
       case "finances":
-        navigate("");
+        navigate("/financesPage");
         break;
       case "goals":
         navigate("/goalsPage");

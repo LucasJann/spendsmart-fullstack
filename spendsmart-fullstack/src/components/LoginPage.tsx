@@ -152,7 +152,7 @@ const Login = () => {
       >
         <Button
           id="loginButton"
-          type="submit"
+          type="button"
           className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 "
           onClick={handleSelected}
           isSelected={isSelected}
@@ -161,7 +161,7 @@ const Login = () => {
         </Button>
         <Button
           id="registerButton"
-          type="submit"
+          type="button"
           className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 "
           onClick={handleSelected}
           isSelected={!isSelected}
