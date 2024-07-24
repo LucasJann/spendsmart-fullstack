@@ -4,6 +4,7 @@ import Login from "./components/LoginPage";
 import Menu from "./components/MenuPage";
 import Profile from "./components/ProfilePage";
 import Goals from "./components/GoalsPage";
+import Finances from "./components/FinancesPage";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,7 @@ const router = createBrowserRouter([
       { path: "/menuPage", element: <Menu /> },
       { path: "/profilePage", element: <Profile /> },
       { path: "/goalsPage", element: <Goals /> },
+      { path: "/financesPage", element: <Finances /> },
     ],
   },
 ]);

@@ -179,6 +179,7 @@ const Profile = () => {
           src={profileImage}
           alt="Profile Pic"
           onClick={handleImageClick}
+          className="w-64 h-64 rounded-full"
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
