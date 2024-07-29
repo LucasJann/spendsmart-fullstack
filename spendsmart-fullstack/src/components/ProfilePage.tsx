@@ -174,7 +174,7 @@ const Profile = () => {
       className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${landScape})` }}
     >
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-screen caret-transparent">
         <Image
           src={profileImage}
           alt="Profile Pic"
