@@ -211,3 +211,17 @@ export const deleteGoal = async (req: Request, res: Response) => {
     return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
+
+export const postItem = async (req: Request, res: Response) => {
+  const email = req.params.user;
+  const item = req.body
+
+  console.log(email)
+  try {
+    await User.updateOne({ email: email }, { $push: { items: item } });
+    res.status(201).json({ message: "Item added" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};

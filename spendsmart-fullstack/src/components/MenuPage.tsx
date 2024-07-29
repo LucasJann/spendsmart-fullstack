@@ -33,7 +33,7 @@ const Menu = () => {
         <Button
           id="profile"
           type="button"
-          className="bg-orange-500 mt-5 ml-10 p-4 w-4/5 mx-auto text-white"
+          className="w-full mt-4 p-4 bg-orange-500 text-white rounded-md"
           onClick={buttonOptions}
         >
           Profile
@@ -41,7 +41,7 @@ const Menu = () => {
         <Button
           id="finances"
           type="button"
-          className="bg-orange-500 mt-5 ml-10 p-4 w-4/5 mx-auto text-white"
+          className="w-full mt-4 p-4 bg-orange-500 text-white rounded-md"
           onClick={buttonOptions}
         >
           My Finances
@@ -49,7 +49,7 @@ const Menu = () => {
         <Button
           id="goals"
           type="button"
-          className="bg-orange-500 mt-5 ml-10 p-4 w-4/5 mx-auto text-white"
+          className="w-full mt-4 p-4 bg-orange-500 text-white rounded-md"
           onClick={buttonOptions}
         >
           Next Goals

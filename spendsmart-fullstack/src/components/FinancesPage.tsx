@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Button from "./Button";
 import Input from "./Input";
@@ -16,13 +16,39 @@ import education from "../Icons/Education.svg";
 import investments from "../Icons/Investments.svg";
 
 const Finances = () => {
-  const [balance, setBalance] = useState<string>("R$0.00");
-  const [category, setCategory] = useState<string>("");
-  const [isSelected, setIsSelected] = useState<boolean>(true);
+  interface financesProps {
+    date: string;
+    income: string;
+    expense: string;
+    category: string;
+  }
+  const formDataProperties = {
+    date: "",
+    income: "R$ 0,00",
+    expense: "R$ 0,00",
+    category: "",
+  };
 
-  const formatter = (value: string) => {
-    const newValue = value.replace(/[^0-9]/g, "");
-    console.log(newValue);
+  const [confirmButton, setConfirmButton] = useState<boolean>(false);
+  const [isSelected, setIsSelected] = useState<boolean>(true);
+  const [formData, setFormData] = useState<financesProps>(formDataProperties);
+
+  useEffect(() => {
+    const date = formData.date;
+    const category = formData.category;
+
+    if (date !== "" && category !== "") {
+      setConfirmButton(true);
+    }
+  }, [formData.date, formData.category, formData.expense, formData.income]);
+
+  const formatNumber = (value: number) => {
+    const formatter = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+    return formatter.format(value / 100);
   };
 
   const handleSelected = () => {
@@ -31,13 +57,69 @@ const Finances = () => {
 
   const selectedImage = (e: React.MouseEvent<HTMLImageElement>) => {
     const selectedCategory = e.currentTarget.alt;
-    setCategory(selectedCategory);
+    setFormData((prevState) => ({
+      ...prevState,
+      category: selectedCategory,
+    }));
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    console.log(value);
-    formatter(value);
+    if (e.currentTarget.name === "dataInput") {
+      const dateValue = e.currentTarget.value;
+      setFormData((prevState) => ({
+        ...prevState,
+        date: dateValue,
+      }));
+    } else if (e.currentTarget.name === "expenseInput") {
+      const value = e.currentTarget.value;
+      const parsedValue = value.replace(/[^0-9]/g, "");
+      const number = Number(parsedValue);
+      const formattedExpense = formatNumber(number);
+      setFormData((prevState) => ({
+        ...prevState,
+        expense: formattedExpense,
+      }));
+    } else {
+      const value = e.currentTarget.value;
+      const parsedValue = value.replace(/[^0-9]/g, "");
+      const number = Number(parsedValue);
+      const formattedIncome = formatNumber(number);
+      setFormData((prevState) => ({
+        ...prevState,
+        income: formattedIncome,
+      }));
+    }
+  };
+
+  const handleSubmit = async () => {
+    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    let item = {};
+
+    if (isSelected) {
+      item = {
+        date: formData.date,
+        expense: formData.expense,
+        category: formData.category,
+      };
+    } else {
+      item = {
+        date: formData.date,
+        income: formData.income,
+        category: formData.category,
+      };
+    }
+
+    try {
+      await fetch(`http://localhost:8080/finances/${user}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item),
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -45,10 +127,7 @@ const Finances = () => {
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${evening})` }}
     >
-      <form
-        className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white"
-        // onSubmit={handleSubmit}
-      >
+      <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white">
         <div className="text-center">
           <Button
             id="loginButton"
@@ -69,19 +148,20 @@ const Finances = () => {
             Income
           </Button>
         </div>
-        <form className="flex flex-col">
+        <form className="flex flex-col" onSubmit={handleSubmit}>
           <label className="ml-1">Data</label>
           <Input
             id="dataInput"
             name="dataInput"
+            onChange={inputChangeHandler}
             type="date"
             className="mb-1 text-black text-center rounded-md"
           />
-          <label className="ml-1">Expense</label>
+          <label className="ml-1">{isSelected ? "Expense" : "Income"}</label>
           <Input
-            id="expenseInput"
-            name="expenseInput"
-            value={balance}
+            id={isSelected ? "expenseInput" : "incomeInput"}
+            name={isSelected ? "expenseInput" : "incomeInput"}
+            value={isSelected ? formData.expense : formData.income}
             onChange={inputChangeHandler}
             type="text"
             className="mb-1 text-black text-center rounded-md"
@@ -93,9 +173,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Cutlery"
+                      formData.category === "Cutlery"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -110,9 +190,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Mortarboard"
+                      formData.category === "Mortarboard"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -127,9 +207,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Heart"
+                      formData.category === "Heart"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -144,9 +224,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Rocket"
+                      formData.category === "Rocket"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -161,9 +241,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "House"
+                      formData.category === "House"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -178,9 +258,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Airplane"
+                      formData.category === "Airplane"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -199,9 +279,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Rising bar"
+                      formData.category === "Rising bar"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -216,9 +296,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Pigbank"
+                      formData.category === "Pigbank"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -233,9 +313,9 @@ const Finances = () => {
                 <li className="text-center">
                   <div
                     className={`${
-                      category === "Coin"
+                      formData.category === "Coin"
                         ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex p-2 h-16 w-16 mx-auto"
+                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                     }`}
                   >
                     <Image
@@ -250,8 +330,17 @@ const Finances = () => {
               </ul>
             )}
           </div>
+          {confirmButton && (
+            <Button
+              id="confirmItemButton"
+              type="submit"
+              className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
+            >
+              Confirm
+            </Button>
+          )}
         </form>
-      </form>
+      </section>
     </div>
   );
 };
