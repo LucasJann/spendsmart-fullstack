@@ -189,7 +189,6 @@ const Goals = () => {
             disabled
             className="w-3/4 mb-2 border rounded-md text-center"
           />
-          <hr />
           <label htmlFor="goalTitle">What is your goal?</label>
           <Input
             id="goalTitle"
@@ -200,7 +199,6 @@ const Goals = () => {
             placeholder="Resume your goal"
             onChange={handleGoal}
           />
-          <hr />
           <label htmlFor="goalValue">Insert the goal's value</label>
           <Input
             id="goalValue"
@@ -210,7 +208,6 @@ const Goals = () => {
             className="w-3/4 mb-2 text-black rounded-md text-center"
             onChange={handleGoal}
           />
-          <hr />
           {formData.confirm && (
             <Button
               id="goalSubmitButton"

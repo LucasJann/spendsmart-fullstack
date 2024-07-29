@@ -221,7 +221,7 @@ const Login = () => {
             <Button
               id="entranceButton"
               type="submit"
-              className="bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+              className="w-full mt-5 p-4 bg-red-500"
             >
               Entrar
             </Button>
@@ -358,8 +358,8 @@ const Login = () => {
               type="submit"
               className={
                 disabled
-                  ? "bg-red-300 mt-5 ml-10 p-4 w-4/5 mx-auto"
-                  : "bg-red-500 mt-5 ml-10 p-4 w-4/5 mx-auto"
+                  ? "bg-red-300 mt-5 p-4 w-full"
+                  : "bg-red-500 mt-5 p-4 w-full"
               }
               disabled={disabled}
             >

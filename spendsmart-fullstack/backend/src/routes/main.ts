@@ -8,6 +8,7 @@ import {
   postBalance,
   getImage,
   postImage,
+  postItem,
   getGoals,
   postGoals,
   deleteGoal,
@@ -108,9 +109,10 @@ router.post(
 router.get("/profile/:user", getImage);
 router.post("/profile/:user", postImage);
 
+router.post('/finances/:user', postItem)
+
 router.get("/goalsPage/:user", getGoals);
 router.post("/goalsPage/:user", postGoals);
-
 router.delete("/goalsPage/deleteGoal", deleteGoal);
 
 export default router;

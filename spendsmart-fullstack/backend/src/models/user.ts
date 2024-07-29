@@ -1,5 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+interface Item {
+  id: string;
+  date: string;
+  income?: string;
+  expense?: string;
+  category: string;
+}
+
 interface Goal {
   id: string;
   goal: string;
@@ -13,8 +21,16 @@ interface User extends Document {
   password: string;
   balance: string;
   image?: string;
+  items: Item[];
   goals: Goal[];
 }
+
+const ItemSchema = new Schema({
+  date: { type: String, required: true },
+  income: { type: String },
+  expense: { type: String },
+  category: { type: String, required: true },
+});
 
 const GoalSchema = new Schema({
   goal: { type: String, required: true },
@@ -28,6 +44,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   balance: { type: String, default: "0" },
   image: { type: String },
+  items: { type: [ItemSchema], default: [] },
   goals: { type: [GoalSchema], default: [] },
 });
 
