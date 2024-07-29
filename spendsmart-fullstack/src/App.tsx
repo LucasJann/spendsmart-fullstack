@@ -5,6 +5,7 @@ import Menu from "./components/MenuPage";
 import Profile from "./components/ProfilePage";
 import Goals from "./components/GoalsPage";
 import Finances from "./components/FinancesPage";
+import History from "./components/HistoryPage";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
       { path: "/profilePage", element: <Profile /> },
       { path: "/goalsPage", element: <Goals /> },
       { path: "/financesPage", element: <Finances /> },
+      { path: "/historyPage", element: <History /> },
     ],
   },
 ]);

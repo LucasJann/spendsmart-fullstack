@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Button from "./Button";
 import Input from "./Input";
@@ -29,9 +30,18 @@ const Finances = () => {
     category: "",
   };
 
-  const [confirmButton, setConfirmButton] = useState<boolean>(false);
-  const [isSelected, setIsSelected] = useState<boolean>(true);
   const [formData, setFormData] = useState<financesProps>(formDataProperties);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [isSelected, setIsSelected] = useState<boolean>(true);
+  const [confirmButton, setConfirmButton] = useState<boolean>(false);
+
+  const navigation = useNavigate()
+
+  useEffect(() => {
+    if (formData.date !== "") {
+      setShowForm(true);
+    }
+  }, [formData.date]);
 
   useEffect(() => {
     const date = formData.date;
@@ -120,6 +130,8 @@ const Finances = () => {
     } catch (err) {
       console.error(err);
     }
+
+    setShowForm(false);
   };
 
   return (
@@ -149,7 +161,7 @@ const Finances = () => {
           </Button>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label className="ml-1">Data</label>
+          <label className="ml-1">Date</label>
           <Input
             id="dataInput"
             name="dataInput"
@@ -157,187 +169,206 @@ const Finances = () => {
             type="date"
             className="mb-1 text-black text-center rounded-md"
           />
-          <label className="ml-1">{isSelected ? "Expense" : "Income"}</label>
-          <Input
-            id={isSelected ? "expenseInput" : "incomeInput"}
-            name={isSelected ? "expenseInput" : "incomeInput"}
-            value={isSelected ? formData.expense : formData.income}
-            onChange={inputChangeHandler}
-            type="text"
-            className="mb-1 text-black text-center rounded-md"
-          />
-          <label className="ml-1">Categories</label>
-          <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md">
-            {isSelected && (
-              <ul className="grid grid-cols-3 gap-3 w-full">
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Cutlery"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={food}
-                      alt="Cutlery"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Food</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Mortarboard"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={education}
-                      alt="Mortarboard"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Education</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Heart"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={health}
-                      alt="Heart"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Health</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Rocket"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={leisure}
-                      alt="Rocket"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Leisure</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "House"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={home}
-                      alt="House"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Home</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Airplane"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={trip}
-                      alt="Airplane"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Trip</p>
-                </li>
-              </ul>
-            )}
-            {!isSelected && (
-              <ul className="grid grid-cols-3 gap-3 w-full">
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Rising bar"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={investments}
-                      alt="Rising bar"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Investments</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Pigbank"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={extra}
-                      alt="Pigbank"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Extra Income</p>
-                </li>
-                <li className="text-center">
-                  <div
-                    className={`${
-                      formData.category === "Coin"
-                        ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
-                        : "bg-white rounded-sm flex h-16 w-16 mx-auto"
-                    }`}
-                  >
-                    <Image
-                      src={salary}
-                      alt="Coin"
-                      className="max-h-full max-w-full"
-                      onClick={selectedImage}
-                    />
-                  </div>
-                  <p className="mt-2">Salary</p>
-                </li>
-              </ul>
-            )}
-          </div>
-          {confirmButton && (
-            <Button
-              id="confirmItemButton"
-              type="submit"
-              className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
-            >
-              Confirm
-            </Button>
+          {!showForm && (
+            <Fragment>
+              <p className="text-gray-400 text-center">-----Select a date to start-----</p>
+              <Button
+                id="confirmItemButton"
+                type="submit"
+                className="mt-2 p-3 bg-red-500 rounded-md"
+                onClick={() => {navigation('/historyPage')}}
+              >
+                History
+              </Button>
+            </Fragment>
+          )}
+          {showForm && (
+            <Fragment>
+              <label className="ml-1">
+                {isSelected ? "Expense" : "Income"}
+              </label>
+              <Input
+                id={isSelected ? "expenseInput" : "incomeInput"}
+                name={isSelected ? "expenseInput" : "incomeInput"}
+                value={isSelected ? formData.expense : formData.income}
+                onChange={inputChangeHandler}
+                type="text"
+                className="mb-1 text-black text-center rounded-md"
+              />
+              <label className="ml-1">Categories</label>
+              <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md">
+                {isSelected && (
+                  <ul className="grid grid-cols-3 gap-3 w-full">
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Cutlery"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={food}
+                          alt="Cutlery"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Food</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Mortarboard"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={education}
+                          alt="Mortarboard"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Education</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Heart"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={health}
+                          alt="Heart"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Health</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Rocket"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={leisure}
+                          alt="Rocket"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Leisure</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "House"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={home}
+                          alt="House"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Home</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Airplane"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={trip}
+                          alt="Airplane"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Trip</p>
+                    </li>
+                  </ul>
+                )}
+                {!isSelected && (
+                  <ul className="grid grid-cols-3 gap-3 w-full">
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Rising bar"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={investments}
+                          alt="Rising bar"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Investments</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Pigbank"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={extra}
+                          alt="Pigbank"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Extra Income</p>
+                    </li>
+                    <li className="text-center">
+                      <div
+                        className={`${
+                          formData.category === "Coin"
+                            ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
+                            : "bg-white rounded-sm flex h-16 w-16 mx-auto"
+                        }`}
+                      >
+                        <Image
+                          src={salary}
+                          alt="Coin"
+                          className="max-h-full max-w-full"
+                          onClick={selectedImage}
+                        />
+                      </div>
+                      <p className="mt-2">Salary</p>
+                    </li>
+                  </ul>
+                )}
+              </div>
+              {confirmButton && (
+                <Button
+                  id="confirmItemButton"
+                  type="submit"
+                  className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
+                >
+                  Confirm
+                </Button>
+              )}
+            </Fragment>
           )}
         </form>
       </section>
