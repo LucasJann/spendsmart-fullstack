@@ -4,12 +4,13 @@ import { Router } from "express";
 import {
   Register,
   Login,
-  getBalance,
-  postBalance,
   getImage,
-  postImage,
-  postItem,
+  getBalance,
+  getItems,
   getGoals,
+  postImage,
+  postBalance,
+  postItem,
   postGoals,
   deleteGoal,
 } from "../controllers/admin";
@@ -109,6 +110,7 @@ router.post(
 router.get("/profile/:user", getImage);
 router.post("/profile/:user", postImage);
 
+router.get('/finances/:user', getItems)
 router.post('/finances/:user', postItem)
 
 router.get("/goalsPage/:user", getGoals);

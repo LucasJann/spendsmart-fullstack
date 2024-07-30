@@ -26,7 +26,7 @@ const Menu = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
+      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${morningSun})` }}
     >
       <div className="max-w-md w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6">
