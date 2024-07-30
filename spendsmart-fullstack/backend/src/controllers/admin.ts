@@ -212,11 +212,23 @@ export const deleteGoal = async (req: Request, res: Response) => {
   }
 };
 
+export const getItems = async (req: Request, res: Response) => {
+  const email = req.params.user;
+  try {
+    const user = await User.findOne({ email: email });
+    const items = user.items
+    res.status(201).json({ message: "Items fetched", items: items });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
 export const postItem = async (req: Request, res: Response) => {
   const email = req.params.user;
-  const item = req.body
+  const item = req.body;
 
-  console.log(email)
+  console.log(email);
   try {
     await User.updateOne({ email: email }, { $push: { items: item } });
     res.status(201).json({ message: "Item added" });

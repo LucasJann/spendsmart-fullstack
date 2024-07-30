@@ -20,7 +20,7 @@ app.use(
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "images")); // Alterado para usar path.join para garantir caminho correto
+    cb(null, path.join(__dirname, "images")); 
   },
   filename: (req, file, cb) => {
     const randomHash = Math.random().toFixed(8);

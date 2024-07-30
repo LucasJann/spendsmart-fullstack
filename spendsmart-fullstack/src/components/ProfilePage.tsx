@@ -171,7 +171,7 @@ const Profile = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
+      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${landScape})` }}
     >
       <div className="flex flex-col items-center justify-center h-screen">

@@ -35,7 +35,7 @@ const Finances = () => {
   const [isSelected, setIsSelected] = useState<boolean>(true);
   const [confirmButton, setConfirmButton] = useState<boolean>(false);
 
-  const navigation = useNavigate()
+  const navigation = useNavigate();
 
   useEffect(() => {
     if (formData.date !== "") {
@@ -74,8 +74,11 @@ const Finances = () => {
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.name === "dataInput") {
+    if (e.currentTarget.name === "dateInput") {
       const dateValue = e.currentTarget.value;
+      if (dateValue === "") {
+        setConfirmButton(false);
+      }
       setFormData((prevState) => ({
         ...prevState,
         date: dateValue,
@@ -136,7 +139,7 @@ const Finances = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
+      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${evening})` }}
     >
       <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white">
@@ -163,20 +166,24 @@ const Finances = () => {
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <label className="ml-1">Date</label>
           <Input
-            id="dataInput"
-            name="dataInput"
+            id="dateInput"
+            name="dateInput"
             onChange={inputChangeHandler}
             type="date"
             className="mb-1 text-black text-center rounded-md"
           />
           {!showForm && (
             <Fragment>
-              <p className="text-gray-400 text-center">-----Select a date to start-----</p>
+              <p className="text-gray-400 text-center">
+                -----Select a date to start-----
+              </p>
               <Button
                 id="confirmItemButton"
                 type="submit"
                 className="mt-2 p-3 bg-red-500 rounded-md"
-                onClick={() => {navigation('/historyPage')}}
+                onClick={() => {
+                  navigation("/historyPage");
+                }}
               >
                 History
               </Button>
@@ -366,6 +373,18 @@ const Finances = () => {
                   className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
                 >
                   Confirm
+                </Button>
+              )}
+              {!confirmButton && (
+                <Button
+                  id="confirmItemButton"
+                  type="submit"
+                  className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
+                  onClick={() => {
+                    navigation("/historyPage");
+                  }}
+                >
+                  History
                 </Button>
               )}
             </Fragment>
