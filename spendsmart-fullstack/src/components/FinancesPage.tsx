@@ -18,12 +18,14 @@ import investments from "../Icons/Investments.svg";
 
 const Finances = () => {
   interface financesProps {
+    id: string;
     date: string;
     income: string;
     expense: string;
     category: string;
   }
   const formDataProperties = {
+    id: "",
     date: "",
     income: "R$ 0,00",
     expense: "R$ 0,00",
@@ -85,6 +87,10 @@ const Finances = () => {
       }));
     } else if (e.currentTarget.name === "expenseInput") {
       const value = e.currentTarget.value;
+
+      if (value.length > 17) {
+        return;
+      }
       const parsedValue = value.replace(/[^0-9]/g, "");
       const number = Number(parsedValue);
       const formattedExpense = formatNumber(number);
@@ -107,7 +113,6 @@ const Finances = () => {
   const handleSubmit = async () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     let item = {};
-
     if (isSelected) {
       item = {
         date: formData.date,
@@ -370,7 +375,7 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="submit"
-                  className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
+                  className="mt-2 p-3 bg-red-500 rounded-md "
                 >
                   Confirm
                 </Button>
@@ -379,7 +384,7 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="submit"
-                  className="mt-2 p-3 bg-red-300 rounded-md hover:bg-red-500"
+                  className="mt-2 p-3 bg-red-500 rounded-md"
                   onClick={() => {
                     navigation("/historyPage");
                   }}

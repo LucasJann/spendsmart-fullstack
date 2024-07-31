@@ -31,13 +31,13 @@ const Login = () => {
     passwordError: false,
     confirmPasswordError: false,
   };
-  
+
   const [formData, setFormData] = useState<formValuesProperties>(formValues);
-  
+
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
-  
+
   useEffect(() => {
     localStorage.setItem("user", "");
   }, []);
@@ -65,7 +65,7 @@ const Login = () => {
       await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type":"application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       })
@@ -356,11 +356,7 @@ const Login = () => {
             <Button
               id="confirmButton"
               type="submit"
-              className={
-                disabled
-                  ? "bg-red-300 mt-5 p-4 w-full"
-                  : "bg-red-500 mt-5 p-4 w-full"
-              }
+              className="bg-red-500 mt-5 p-4 w-full"
               disabled={disabled}
             >
               Confirm

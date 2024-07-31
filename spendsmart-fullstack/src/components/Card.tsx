@@ -9,9 +9,10 @@ import health from "../Icons/Health.svg";
 import leisure from "../Icons/Leisure.svg";
 import education from "../Icons/Education.svg";
 import investments from "../Icons/Investments.svg";
+import { Fragment } from "react/jsx-runtime";
 
 interface cardProperties {
-  key: number;
+  _id: string;
   date: string;
   income?: string;
   expense?: string;
@@ -19,7 +20,7 @@ interface cardProperties {
 }
 
 const Card: React.FC<cardProperties> = ({
-  key,
+  _id,
   date,
   income,
   expense,
@@ -67,20 +68,32 @@ const Card: React.FC<cardProperties> = ({
     default:
       "";
   }
-
   return (
     <div
-      key={key}
-      className="p-2 border-b border-gray-500 bg-white text-black rounded-md"
+      id={_id}
+      className="flex p-2 border rounded-md shadow-mg bg-white shadow "
     >
-      <p>Date: {date}</p>
-      {income && <p>Income: {income}</p>}
-      {expense && <p>Expense: {expense}</p>}
       <Image
         src={ctgry}
         alt={alt}
-        className="bg-white rounded-sm flex h-16 w-16 mx-auto"
+        className="bg-white rounded-sm flex h-16 w-20 mr-2"
       />
+      <div className="w-full grid grid-cols-2 p-1 font-serif">
+        <p>Date: </p>
+        <p className="text-end">{date}</p>
+        {income && (
+          <Fragment>
+            <p>Income: </p>
+            <p className="text-end">{income}</p>
+          </Fragment>
+        )}
+        {expense && (
+          <Fragment>
+            <p>Expense: </p>
+            <p className="text-end">{expense}</p>
+          </Fragment>
+        )}
+      </div>
     </div>
   );
 };
