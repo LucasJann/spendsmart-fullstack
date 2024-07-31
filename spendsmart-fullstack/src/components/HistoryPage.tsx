@@ -8,6 +8,7 @@ import Button from "./Button";
 
 const HistoryPage = () => {
   interface itemsInterface {
+    _id: string;
     date: string;
     income?: string;
     expense?: string;
@@ -15,6 +16,7 @@ const HistoryPage = () => {
   }
 
   const [items, setItems] = useState<itemsInterface[]>([]);
+  const [itemsLength, setItemsLength] = useState<number>(0);
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
@@ -26,6 +28,7 @@ const HistoryPage = () => {
         }
         const responseData = await response.json();
         setItems(responseData.items);
+        setItemsLength(responseData.items.length);
       } catch (err) {
         console.error(err);
       }
@@ -33,12 +36,44 @@ const HistoryPage = () => {
     getFinances();
   }, []);
 
+  const getDivStyle = (goalsLength: number) => {
+    switch (goalsLength) {
+      case 1:
+        return "grid grid-cols-1";
+      case 2:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2";
+      case 3:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      default:
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5";
+    }
+  };
+
+  const getSectionStyle = (itemsLength: number) => {
+    switch (itemsLength) {
+      case 1:
+        return "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4";
+      case 2:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-1/3";
+      case 3:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-1/2";
+      case 4:
+        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4";
+      default:
+        return "w-full";
+    }
+  };
+
   return (
     <div
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${night})` }}
     >
-      <section className="mas-w-sm w-1/4 bg-black bg-opacity-60 rounded-md text-white">
+      <section
+        className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1`}
+      >
         <form className="flex flex-col items-center">
           <label className="">Initial Date</label>
           <Input
@@ -63,24 +98,26 @@ const HistoryPage = () => {
           </Button>
         </form>
       </section>
-      <section className="mas-w-sm mt-5 w-1/4 bg-black bg-opacity-60 rounded-md text-white">
-        {items &&
-          items.map((item, index) => (
-            <Card
-              key={index}
-              date={item.date}
-              income={item.income}
-              expense={item.expense}
-              category={item.category}
-            />
-            // <div key={index} className="p-2 border-b border-gray-500 bg-white text-black rounded-md">
-            //   <p>Date: {item.date}</p>
-            //   {item.income && <p>Income: {item.income}</p>}
-            //   {item.expense && <p>Expense: {item.expense}</p>}
-            //   <p>Category: {item.category}</p>
-            // </div>
-          ))}
-      </section>
+      {items && (
+        <section
+          className={`${getSectionStyle(
+            itemsLength
+          )} max-h-100 mt-2 p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+        >
+          <div className={`${getDivStyle(itemsLength)} gap-3 w-full mt-2`}>
+            {items.map((item) => (
+              <Card
+                key={item._id}
+                _id={item._id}
+                date={item.date}
+                income={item.income}
+                expense={item.expense}
+                category={item.category}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
