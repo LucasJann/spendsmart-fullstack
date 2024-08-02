@@ -88,7 +88,7 @@ const Finances = () => {
     } else if (e.currentTarget.name === "expenseInput") {
       const value = e.currentTarget.value;
 
-      if (value.length > 17) {
+      if (value.length > 15) {
         return;
       }
       const parsedValue = value.replace(/[^0-9]/g, "");

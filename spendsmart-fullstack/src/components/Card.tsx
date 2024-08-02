@@ -28,6 +28,7 @@ const Card: React.FC<cardProperties> = ({
 }) => {
   let alt = "";
   let ctgry = category;
+
   switch (ctgry) {
     case "Airplane":
       ctgry = trip;
@@ -43,7 +44,7 @@ const Card: React.FC<cardProperties> = ({
       break;
     case "Heart":
       ctgry = health;
-      alt = "heHeartart";
+      alt = "Heart";
       break;
     case "Mortarboard":
       ctgry = education;
@@ -52,10 +53,6 @@ const Card: React.FC<cardProperties> = ({
     case "Cutlery":
       ctgry = food;
       alt = "Cutlery";
-      break;
-    case "Rising Bar":
-      ctgry = investments;
-      alt = "Rising Bar";
       break;
     case "Pigbank":
       ctgry = extra;
@@ -66,7 +63,8 @@ const Card: React.FC<cardProperties> = ({
       alt = "Coin";
       break;
     default:
-      "";
+      ctgry = investments;
+      alt = "Rising Bar";
   }
   return (
     <div
@@ -90,7 +88,7 @@ const Card: React.FC<cardProperties> = ({
         {expense && (
           <Fragment>
             <p>Expense: </p>
-            <p className="text-end">{expense}</p>
+            <p className="text-end truncate">{expense}</p>
           </Fragment>
         )}
       </div>
