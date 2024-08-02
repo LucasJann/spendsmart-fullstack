@@ -93,7 +93,7 @@ const Goals = () => {
       case 4:
         return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4";
       default:
-        return "w-4/5";
+        return "w-full";
     }
   };
 
@@ -164,7 +164,7 @@ const Goals = () => {
         confirm: false,
         goalsSection: true,
       }));
-      getGoals(); 
+      getGoals();
     } catch (err) {
       console.error(err);
     }
@@ -176,10 +176,10 @@ const Goals = () => {
       style={{ backgroundImage: `url(${beach})` }}
     >
       <form
-        className="mt-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+        className="mt-2 w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
         onSubmit={handleSubmit}
       >
-        <div className="items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">
+        <div className="flex flex-col items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">
           <label htmlFor="currentBalance">Your balance</label>
           <Input
             id="currentBalance"

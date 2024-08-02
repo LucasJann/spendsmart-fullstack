@@ -7,6 +7,11 @@ import Input from "./Input";
 import Button from "./Button";
 
 const HistoryPage = () => {
+  interface dateInterface {
+    initialDate: string;
+    finalDate: string;
+  }
+
   interface itemsInterface {
     _id: string;
     date: string;
@@ -15,8 +20,27 @@ const HistoryPage = () => {
     category: string;
   }
 
+  interface filteredItemsInterface {
+    _id: string;
+    date: string;
+    income?: string;
+    expense?: string;
+    category: string;
+  }
+
+  const dateObject = {
+    initialDate: "",
+    finalDate: "",
+  };
+
   const [items, setItems] = useState<itemsInterface[]>([]);
   const [itemsLength, setItemsLength] = useState<number>(0);
+  const [filteredItems, setFilteredItems] = useState<filteredItemsInterface[]>(
+    []
+  );
+  const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
+  const [financesFiltered, setFinancesFiltered] = useState<boolean>(false);
+  const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
@@ -36,34 +60,60 @@ const HistoryPage = () => {
     getFinances();
   }, []);
 
-  const getDivStyle = (goalsLength: number) => {
-    switch (goalsLength) {
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
+  const getDivStyle = (itemsLength: number) => {
+    switch (itemsLength) {
       case 1:
         return "grid grid-cols-1";
       case 2:
-        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2";
+        return "grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2";
       case 3:
-        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+        return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3";
       case 4:
-        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+        return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
-        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5";
+        return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
     }
   };
 
-  const getSectionStyle = (itemsLength: number) => {
-    switch (itemsLength) {
-      case 1:
-        return "w-3/4 sm:w-2/4 md:w-2/4 lg:w-1/4";
-      case 2:
-        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-1/3";
-      case 3:
-        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-1/2";
-      case 4:
-        return "w-3/4 sm:w-5/6 md:w-4/5 lg:w-3/4";
-      default:
-        return "w-full";
+  const dateChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const id = e.currentTarget.id;
+    const value = e.currentTarget.value;
+
+    if (id === "startDate") {
+      setSelectedDate((prevState) => ({
+        ...prevState,
+        initialDate: formatDate(value),
+      }));
+    } else {
+      setSelectedDate((prevState) => ({
+        ...prevState,
+        finalDate: formatDate(value),
+      }));
     }
+  };
+
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFinancesFiltered(true);
+
+    const filteredItems = items.filter((e) => {
+      const date = e.date;
+      const initialDate = formatDate(selectedDate.initialDate);
+      const finalDate = formatDate(selectedDate.finalDate);
+
+      if (date >= initialDate && date <= finalDate) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    setFilteredItems(filteredItems);
+    setfilteredItemsLength(filteredItems.length);
   };
 
   return (
@@ -72,14 +122,15 @@ const HistoryPage = () => {
       style={{ backgroundImage: `url(${night})` }}
     >
       <section
-        className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1`}
+        className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-2`}
       >
-        <form className="flex flex-col items-center">
+        <form className="flex flex-col items-center" onSubmit={submitHandler}>
           <label className="">Initial Date</label>
           <Input
             id="startDate"
             name="startDate"
             type="date"
+            onChange={dateChangeHandler}
             className="w-3/4 mb-1 text-black text-center rounded-md"
           />
           <label className="">Final Date</label>
@@ -87,6 +138,7 @@ const HistoryPage = () => {
             id="endDate"
             name="endDate"
             type="date"
+            onChange={dateChangeHandler}
             className="w-3/4 mb-1 text-black text-center rounded-md"
           />
           <Button
@@ -98,18 +150,43 @@ const HistoryPage = () => {
           </Button>
         </form>
       </section>
-      {items && (
+
+      {!financesFiltered && items.length !== 0 && (
         <section
-          className={`${getSectionStyle(
-            itemsLength
-          )} max-h-100 mt-2 p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`max-h-100 mt-2 p-5 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
-          <div className={`${getDivStyle(itemsLength)} gap-3 w-full mt-2`}>
+          <div
+            className={`${getDivStyle(
+              filteredItemsLength || itemsLength
+            )} gap-3 w-full mt-2`}
+          >
             {items.map((item) => (
               <Card
                 key={item._id}
                 _id={item._id}
-                date={item.date}
+                date={formatDate(item.date)}
+                income={item.income}
+                expense={item.expense}
+                category={item.category}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+      {financesFiltered && filteredItems.length !== 0 && (
+        <section
+          className={`max-h-100 mt-2 p-5 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+        >
+          <div
+            className={`${getDivStyle(
+              filteredItemsLength || itemsLength
+            )} gap-3 w-full mt-2`}
+          >
+            {filteredItems.map((item) => (
+              <Card
+                key={item._id}
+                _id={item._id}
+                date={formatDate(item.date)}
                 income={item.income}
                 expense={item.expense}
                 category={item.category}
