@@ -143,7 +143,7 @@ const Login = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
+      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat "
       style={{ backgroundImage: `url(${burningSkyImage})` }}
     >
       <form
@@ -153,7 +153,7 @@ const Login = () => {
         <Button
           id="loginButton"
           type="button"
-          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 "
+          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 caret-transparent "
           onClick={handleSelected}
           isSelected={isSelected}
         >
@@ -162,14 +162,14 @@ const Login = () => {
         <Button
           id="registerButton"
           type="button"
-          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 "
+          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 caret-transparent"
           onClick={handleSelected}
           isSelected={!isSelected}
         >
           Register
         </Button>
         {isSelected && (
-          <section className="text-left font-serif text-gray-300">
+          <section className="text-left font-serif text-gray-300 caret-transparent">
             <h2 className={formData.emailError ? "mt-2 text-red-400" : "mt-2"}>
               E-mail
             </h2>
@@ -202,7 +202,7 @@ const Login = () => {
               id="loginPassword"
               type="password"
               name="password"
-              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400 caret-transparent"
               value={formData.password}
               onChange={(e) => {
                 setFormData((prevState) => ({

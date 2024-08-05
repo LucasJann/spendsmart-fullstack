@@ -212,7 +212,7 @@ const Goals = () => {
             <Button
               id="goalSubmitButton"
               type="submit"
-              className="w-full bg-blue-400 p-3 mt-2 rounded-md hover:bg-blue-600"
+              className="w-full bg-teal-400 p-3 mt-2 rounded-md text-white"
             >
               Confirm
             </Button>
