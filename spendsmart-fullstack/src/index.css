@@ -10,3 +10,22 @@
   background-color: #363636;
   border-radius: 4px;
 }
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(to right, #3498db 50%, #2ecc71 50%);
+  transition: left 0.7s ease-in-out; 
+}
+
+.button:hover::before {
+  left: 0;
+}
+
+.button:hover {
+  background: none; 
+}

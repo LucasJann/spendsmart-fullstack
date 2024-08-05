@@ -42,6 +42,8 @@ const HistoryPage = () => {
   const [financesFiltered, setFinancesFiltered] = useState<boolean>(false);
   const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
 
+  const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
+
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
@@ -99,21 +101,66 @@ const HistoryPage = () => {
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFinancesFiltered(true);
 
-    const filteredItems = items.filter((e) => {
-      const date = e.date;
-      const initialDate = formatDate(selectedDate.initialDate);
-      const finalDate = formatDate(selectedDate.finalDate);
+    if (filterClicked !== null) {
+      if (filterClicked) {
+        const incomeItems = items.filter((e) => {
+          return e.income ? true : false;
+        });
+        const filteredItems = incomeItems.filter((e) => {
+          const date = e.date;
+          const initialDate = formatDate(selectedDate.initialDate);
+          const finalDate = formatDate(selectedDate.finalDate);
 
-      if (date >= initialDate && date <= finalDate) {
-        return true;
+          if (date >= initialDate && date <= finalDate) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setFinancesFiltered(true);
+        setFilteredItems(filteredItems);
+        setfilteredItemsLength(filteredItems.length);
       } else {
-        return false;
+        const expenseItems = items.filter((e) => {
+          return e.expense ? true : false;
+        });
+        const filteredItems = expenseItems.filter((e) => {
+          const date = e.date;
+          const initialDate = formatDate(selectedDate.initialDate);
+          const finalDate = formatDate(selectedDate.finalDate);
+
+          if (date >= initialDate && date <= finalDate) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setFinancesFiltered(true);
+        setFilteredItems(filteredItems);
+        setfilteredItemsLength(filteredItems.length);
       }
-    });
-    setFilteredItems(filteredItems);
-    setfilteredItemsLength(filteredItems.length);
+    } else {
+      const filteredItems = items.filter((e) => {
+        const date = e.date;
+        const initialDate = formatDate(selectedDate.initialDate);
+        const finalDate = formatDate(selectedDate.finalDate);
+
+        if (date >= initialDate && date <= finalDate) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      setFinancesFiltered(true);
+      setFilteredItems(filteredItems);
+      setfilteredItemsLength(filteredItems.length);
+    }
+  };
+
+  const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const id = e.currentTarget.id;
+    id === "incomeButton" ? setFilterClicked(true) : setFilterClicked(false);
   };
 
   return (
@@ -125,6 +172,25 @@ const HistoryPage = () => {
         className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-2`}
       >
         <form className="flex flex-col items-center" onSubmit={submitHandler}>
+          <div className="flex w-full justify-between ">
+            <Button
+              id="incomeButton"
+              type="button"
+              className="w-1/2 bg-green-600 p-1 m-1 rounded-md"
+              onClick={filter}
+            >
+              Incomes
+            </Button>
+            <Button
+              id="expenseButton"
+              type="button"
+              className="w-1/2 bg-red-600 p-1 m-1 rounded-md"
+              onClick={filter}
+            >
+              Expenses
+            </Button>
+          </div>
+
           <label className="">Initial Date</label>
           <Input
             id="startDate"
@@ -144,7 +210,7 @@ const HistoryPage = () => {
           <Button
             id="searchButton"
             type="submit"
-            className="w-full bg-purple-400 p-3 mt-2 rounded-md hover:bg-purple-500"
+            className="w-full bg-blue-600 p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out"
           >
             Search by Date
           </Button>
@@ -173,7 +239,7 @@ const HistoryPage = () => {
           </div>
         </section>
       )}
-      {financesFiltered && filteredItems.length !== 0 && (
+      {financesFiltered && filteredItemsLength !== 0 && (
         <section
           className={`max-h-100 mt-2 p-5 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
