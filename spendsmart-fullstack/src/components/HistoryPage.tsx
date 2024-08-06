@@ -43,7 +43,10 @@ const HistoryPage = () => {
   const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
 
   const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
-
+  const [backgroundTransition, setBackgroundTransition] = useState<string>("");
+  const [background, setBackground] = useState<boolean | null>(null);
+  const [searchMessage, setSearchMessage] = useState<string>("Search By Date");
+ 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
@@ -160,7 +163,17 @@ const HistoryPage = () => {
 
   const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.id;
-    id === "incomeButton" ? setFilterClicked(true) : setFilterClicked(false);
+    if (id === "incomeButton") {
+      setBackground(true);
+      setFilterClicked(true);
+      setBackgroundTransition("bg-green-600");
+      setSearchMessage("Search Incomes By Date");
+    } else {
+      setBackground(false);
+      setFilterClicked(false);
+      setSearchMessage("Search Expenses By Date");
+      setBackgroundTransition("bg-red-500");
+    }
   };
 
   return (
@@ -176,7 +189,9 @@ const HistoryPage = () => {
             <Button
               id="incomeButton"
               type="button"
-              className="w-1/2 bg-green-600 p-1 m-1 rounded-md"
+              className={`w-1/2 bg-green-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
+                background ? "bg-gray-600" : ""
+              }`}
               onClick={filter}
             >
               Incomes
@@ -184,7 +199,9 @@ const HistoryPage = () => {
             <Button
               id="expenseButton"
               type="button"
-              className="w-1/2 bg-red-600 p-1 m-1 rounded-md"
+              className={`w-1/2 bg-red-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
+                background === false ? "bg-gray-600" : ""
+              }`}
               onClick={filter}
             >
               Expenses
@@ -210,9 +227,9 @@ const HistoryPage = () => {
           <Button
             id="searchButton"
             type="submit"
-            className="w-full bg-blue-600 p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out"
+            className={`w-full bg-blue-600 p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${backgroundTransition}`}
           >
-            Search by Date
+            {searchMessage}
           </Button>
         </form>
       </section>

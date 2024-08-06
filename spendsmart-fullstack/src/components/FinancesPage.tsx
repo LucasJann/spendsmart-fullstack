@@ -36,14 +36,52 @@ const Finances = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
   const [confirmButton, setConfirmButton] = useState<boolean>(false);
+  const [profileBalanceChanged, setProfileBalanceChanged] =
+    useState<boolean>(false);
 
   const navigation = useNavigate();
+
+  const patchBalance = async (isSelected: boolean) => {
+    if (isSelected) {
+      const expense = { expense: formData.expense.replace(/[^0-9]/g, "") };
+      try {
+        const user = localStorage.getItem("user")?.replace(/"/g, "");
+        await fetch(`http://localhost:8080/balance/addExpense/${user}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(expense),
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      const income = { income: formData.income.replace(/[^0-9]/g, "") };
+      try {
+        const user = localStorage.getItem("user")?.replace(/"/g, "");
+        await fetch(`http://localhost:8080/balance/addIncome/${user}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(income),
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (formData.date !== "") {
       setShowForm(true);
     }
   }, [formData.date]);
+
+  useEffect(() => {
+    patchBalance(isSelected);
+  }, [profileBalanceChanged]);
 
   useEffect(() => {
     const date = formData.date;
@@ -110,7 +148,8 @@ const Finances = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     let item = {};
     if (isSelected) {
@@ -140,6 +179,7 @@ const Finances = () => {
     }
 
     setShowForm(false);
+    setProfileBalanceChanged(!profileBalanceChanged);
   };
 
   return (
