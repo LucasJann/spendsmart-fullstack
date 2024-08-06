@@ -46,7 +46,7 @@ const HistoryPage = () => {
   const [backgroundTransition, setBackgroundTransition] = useState<string>("");
   const [background, setBackground] = useState<boolean | null>(null);
   const [searchMessage, setSearchMessage] = useState<string>("Search By Date");
- 
+
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
@@ -163,6 +163,7 @@ const HistoryPage = () => {
 
   const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.id;
+    console.log(id);
     if (id === "incomeButton") {
       setBackground(true);
       setFilterClicked(true);
@@ -189,8 +190,8 @@ const HistoryPage = () => {
             <Button
               id="incomeButton"
               type="button"
-              className={`w-1/2 bg-green-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
-                background ? "bg-gray-600" : ""
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
+                background ? "bg-gray-600" : "bg-green-600"
               }`}
               onClick={filter}
             >
@@ -199,8 +200,8 @@ const HistoryPage = () => {
             <Button
               id="expenseButton"
               type="button"
-              className={`w-1/2 bg-red-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
-                background === false ? "bg-gray-600" : ""
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
+                background ? "bg-red-600" : "bg-gray-600"
               }`}
               onClick={filter}
             >

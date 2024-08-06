@@ -73,12 +73,14 @@ export const Login = async (
 
   try {
     const user = await User.findOne({ email });
+    
     if (!user) {
       return res.status(422).json({
         errorMessage: "User not found",
         path: "email",
       });
     }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -86,7 +88,8 @@ export const Login = async (
         errorMessage: "Invalid Password",
         path: "password",
       });
-    }
+    } 
+
     return res
       .status(200)
       .json({ message: "Login successful", loadedUser: user });
@@ -98,10 +101,12 @@ export const Login = async (
 
 export const getBalance = async (req: Request, res: Response) => {
   const user = req.params.user;
+
   try {
     const userData = await User.findOne({ email: user });
     if (userData) {
       let balanceValue = userData.balance;
+
       if (balanceValue === null) {
         balanceValue = "R$ 0,00";
       }
@@ -126,6 +131,7 @@ export const postBalance = async (
       { email: user },
       { $set: { balance: balanceValue } }
     );
+
     if (result.modifiedCount > 0) {
       return res.status(200).json({ message: "Balance updated successfully" });
     } else {
@@ -144,10 +150,12 @@ export const patchBalance = async (
 ) => {
   const value = req.body;
   const user = req.params.user;
+
   try {
     const userData = await User.findOne({ email: user });
     const parsedBalance = Number(userData.balance);
     let newValue = 0;
+
     if ("expense" in value) {
       const parsedValue = Number(value.expense);
       newValue = parsedBalance - parsedValue;
@@ -155,7 +163,6 @@ export const patchBalance = async (
       const parsedValue = Number(value.income);
       newValue = parsedBalance + parsedValue;
     }
-
     const newBalance = String(newValue);
 
     await User.updateOne({ email: user }, { $set: { balance: newBalance } });
@@ -166,6 +173,7 @@ export const patchBalance = async (
 
 export const getImage = async (req: Request, res: Response) => {
   const user = req.path.split("profile/")[1];
+
   try {
     const result = await User.findOne({ email: user });
     const userImage = result?.image;
@@ -194,6 +202,7 @@ export const postImage = async (req: Request, res: Response) => {
 
 export const getGoals = async (req: Request, res: Response) => {
   const user = req.params.user;
+
   try {
     const result = await User.findOne({ email: user });
     return res
@@ -224,14 +233,16 @@ export const deleteGoal = async (req: Request, res: Response) => {
 
   try {
     const userLogged = await User.findOne({ email: user });
+
     if (!userLogged) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
+
     userLogged.goals = userLogged.goals.filter(
       (item: any) => item._id.toString() !== _id
     );
-    await userLogged.save();
 
+    await userLogged.save();
     res.status(200).json({ message: "Goal removed" });
   } catch (err) {
     console.error(err);
@@ -241,6 +252,7 @@ export const deleteGoal = async (req: Request, res: Response) => {
 
 export const getItems = async (req: Request, res: Response) => {
   const email = req.params.user;
+
   try {
     const user = await User.findOne({ email: email });
     const items = user.items;
