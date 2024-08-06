@@ -137,6 +137,33 @@ export const postBalance = async (
   }
 };
 
+export const patchBalance = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const value = req.body;
+  const user = req.params.user;
+  try {
+    const userData = await User.findOne({ email: user });
+    const parsedBalance = Number(userData.balance);
+    let newValue = 0;
+    if ("expense" in value) {
+      const parsedValue = Number(value.expense);
+      newValue = parsedBalance - parsedValue;
+    } else {
+      const parsedValue = Number(value.income);
+      newValue = parsedBalance + parsedValue;
+    }
+
+    const newBalance = String(newValue);
+
+    await User.updateOne({ email: user }, { $set: { balance: newBalance } });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getImage = async (req: Request, res: Response) => {
   const user = req.path.split("profile/")[1];
   try {
@@ -216,7 +243,7 @@ export const getItems = async (req: Request, res: Response) => {
   const email = req.params.user;
   try {
     const user = await User.findOne({ email: email });
-    const items = user.items
+    const items = user.items;
     res.status(201).json({ message: "Items fetched", items: items });
   } catch (err) {
     console.error(err);
@@ -228,7 +255,6 @@ export const postItem = async (req: Request, res: Response) => {
   const email = req.params.user;
   const item = req.body;
 
-  console.log(email);
   try {
     await User.updateOne({ email: email }, { $push: { items: item } });
     res.status(201).json({ message: "Item added" });

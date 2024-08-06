@@ -1,6 +1,6 @@
 import path from "path";
 import cors from "cors";
-import multer, { FileFilterCallback } from 'multer';
+import multer, { FileFilterCallback } from "multer";
 import express, { Request } from "express";
 import mongoose from "mongoose";
 import mainRoute from "./routes/main";
@@ -20,7 +20,7 @@ app.use(
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "images")); 
+    cb(null, path.join(__dirname, "images"));
   },
   filename: (req, file, cb) => {
     const randomHash = Math.random().toFixed(8);
@@ -48,7 +48,7 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(upload.single('image'));
+app.use(upload.single("image"));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/", mainRoute);

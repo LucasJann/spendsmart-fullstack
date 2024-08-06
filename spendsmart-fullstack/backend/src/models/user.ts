@@ -40,7 +40,7 @@ const GoalSchema = new Schema({
 const UserSchema = new Schema({
   name: { type: String, required: true },
   lastName: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
+  email: { type: String, required: true },
   password: { type: String, required: true },
   balance: { type: String, default: "0" },
   image: { type: String },

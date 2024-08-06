@@ -13,6 +13,7 @@ import {
   postItem,
   postGoals,
   deleteGoal,
+  patchBalance,
 } from "../controllers/admin";
 
 const router = Router();
@@ -86,6 +87,8 @@ router.post(
 
 router.get("/balance/:user", getBalance);
 router.post("/balance", postBalance);
+router.patch("/balance/addExpense/:user", patchBalance);
+router.patch("/balance/addIncome/:user", patchBalance);
 
 router.post(
   "/login",
@@ -110,8 +113,8 @@ router.post(
 router.get("/profile/:user", getImage);
 router.post("/profile/:user", postImage);
 
-router.get('/finances/:user', getItems)
-router.post('/finances/:user', postItem)
+router.get("/finances/:user", getItems);
+router.post("/finances/:user", postItem);
 
 router.get("/goalsPage/:user", getGoals);
 router.post("/goalsPage/:user", postGoals);

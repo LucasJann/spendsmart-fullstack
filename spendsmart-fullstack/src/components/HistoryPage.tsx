@@ -46,9 +46,7 @@ const HistoryPage = () => {
   const [backgroundTransition, setBackgroundTransition] = useState<string>("");
   const [background, setBackground] = useState<boolean | null>(null);
   const [searchMessage, setSearchMessage] = useState<string>("Search By Date");
-  // const [incomeBackground, setIncomeBackground] = useState<string>("");
-  // const [expenseBackground, setExpenseBackground] = useState<string>("");
-
+ 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
