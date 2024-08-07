@@ -35,18 +35,22 @@ const HistoryPage = () => {
 
   const [items, setItems] = useState<itemsInterface[]>([]);
   const [itemsLength, setItemsLength] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
+
+  const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
+  const [financesFiltered, setFinancesFiltered] = useState<boolean>(false);
+  const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
   const [filteredItems, setFilteredItems] = useState<filteredItemsInterface[]>(
     []
   );
-  const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
-  const [financesFiltered, setFinancesFiltered] = useState<boolean>(false);
-  const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
+  const [incomeBackground, setIncomeBackground] =
+    useState<string>("bg-green-600");
+  const [expenseBackground, setExpenseBackground] =
+    useState<string>("bg-red-600");
 
-  const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
   const [backgroundTransition, setBackgroundTransition] = useState<string>("");
-  const [background, setBackground] = useState<boolean | null>(null);
   const [searchMessage, setSearchMessage] = useState<string>("Search By Date");
- 
+
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
@@ -102,9 +106,7 @@ const HistoryPage = () => {
     }
   };
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const submitHandler = () => {
     if (filterClicked !== null) {
       if (filterClicked) {
         const incomeItems = items.filter((e) => {
@@ -163,16 +165,19 @@ const HistoryPage = () => {
 
   const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.id;
+    console.log(id);
     if (id === "incomeButton") {
-      setBackground(true);
+      setIncomeBackground("bg-gray-500");
+      setExpenseBackground("bg-red-600");
       setFilterClicked(true);
       setBackgroundTransition("bg-green-600");
       setSearchMessage("Search Incomes By Date");
     } else {
-      setBackground(false);
+      setExpenseBackground("bg-gray-500");
+      setIncomeBackground("bg-green-600");
       setFilterClicked(false);
       setSearchMessage("Search Expenses By Date");
-      setBackgroundTransition("bg-red-500");
+      setBackgroundTransition("bg-red-600");
     }
   };
 
@@ -189,9 +194,7 @@ const HistoryPage = () => {
             <Button
               id="incomeButton"
               type="button"
-              className={`w-1/2 bg-green-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
-                background ? "bg-gray-600" : ""
-              }`}
+              className={`w-1/2  ${incomeBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
               onClick={filter}
             >
               Incomes
@@ -199,9 +202,7 @@ const HistoryPage = () => {
             <Button
               id="expenseButton"
               type="button"
-              className={`w-1/2 bg-red-600 p-1 m-1 rounded-md transition duration-700 ease-in-out ${
-                background === false ? "bg-gray-600" : ""
-              }`}
+              className={`w-1/2  ${expenseBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
               onClick={filter}
             >
               Expenses

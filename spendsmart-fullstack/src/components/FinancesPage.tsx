@@ -27,8 +27,8 @@ const Finances = () => {
   const formDataProperties = {
     id: "",
     date: "",
-    income: "R$ 0,00",
-    expense: "R$ 0,00",
+    income: "",
+    expense: "",
     category: "",
   };
 
@@ -44,6 +44,12 @@ const Finances = () => {
   const patchBalance = async (isSelected: boolean) => {
     if (isSelected) {
       const expense = { expense: formData.expense.replace(/[^0-9]/g, "") };
+      setFormData((prevState) => ({
+        ...prevState,
+        income: "",
+        expense: "",
+        category: "",
+      }));
       try {
         const user = localStorage.getItem("user")?.replace(/"/g, "");
         await fetch(`http://localhost:8080/balance/addExpense/${user}`, {
@@ -58,6 +64,12 @@ const Finances = () => {
       }
     } else {
       const income = { income: formData.income.replace(/[^0-9]/g, "") };
+      setFormData((prevState) => ({
+        ...prevState,
+        income: "",
+        expense: "",
+        category: "",
+      }));
       try {
         const user = localStorage.getItem("user")?.replace(/"/g, "");
         await fetch(`http://localhost:8080/balance/addIncome/${user}`, {
@@ -102,6 +114,7 @@ const Finances = () => {
   };
 
   const handleSelected = () => {
+    setConfirmButton(false);
     setIsSelected(!isSelected);
   };
 
@@ -150,6 +163,7 @@ const Finances = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     let item = {};
     if (isSelected) {
@@ -180,19 +194,24 @@ const Finances = () => {
 
     setShowForm(false);
     setProfileBalanceChanged(!profileBalanceChanged);
+    setFormData((prevState) => ({
+      ...prevState,
+      date: "",
+    }));
+    setConfirmButton(false);
   };
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
+      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat "
       style={{ backgroundImage: `url(${evening})` }}
     >
-      <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white">
-        <div className="text-center">
+      <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white ">
+        <div className="text-center caret-transparent">
           <Button
             id="loginButton"
             type="button"
-            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 "
+            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300"
             onClick={handleSelected}
             isSelected={isSelected}
           >
@@ -201,7 +220,7 @@ const Finances = () => {
           <Button
             id="registerButton"
             type="button"
-            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 "
+            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 caret-transparent"
             onClick={handleSelected}
             isSelected={!isSelected}
           >
@@ -209,23 +228,24 @@ const Finances = () => {
           </Button>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label className="ml-1">Date</label>
+          <label className="ml-1 caret-transparent">Date:</label>
           <Input
             id="dateInput"
             name="dateInput"
-            onChange={inputChangeHandler}
             type="date"
-            className="mb-1 text-black text-center rounded-md"
+            value={formData.date}
+            onChange={inputChangeHandler}
+            className="mb-1 text-black text-center rounded-md caret-transparent"
           />
           {!showForm && (
             <Fragment>
-              <p className="text-gray-400 text-center">
+              <p className="text-gray-400 text-center caret-transparent">
                 -----Select a date to start-----
               </p>
               <Button
                 id="confirmItemButton"
                 type="submit"
-                className="mt-2 p-3 bg-red-500 rounded-md"
+                className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
                 onClick={() => {
                   navigation("/historyPage");
                 }}
@@ -236,8 +256,8 @@ const Finances = () => {
           )}
           {showForm && (
             <Fragment>
-              <label className="ml-1">
-                {isSelected ? "Expense" : "Income"}
+              <label className="ml-1 caret-transparent">
+                {isSelected ? "Expense:" : "Income:"}
               </label>
               <Input
                 id={isSelected ? "expenseInput" : "incomeInput"}
@@ -247,8 +267,8 @@ const Finances = () => {
                 type="text"
                 className="mb-1 text-black text-center rounded-md"
               />
-              <label className="ml-1">Categories</label>
-              <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md">
+              <label className="ml-1 caret-transparent">Categories:</label>
+              <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md caret-transparent">
                 {isSelected && (
                   <ul className="grid grid-cols-3 gap-3 w-full">
                     <li className="text-center">
@@ -415,7 +435,7 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="submit"
-                  className="mt-2 p-3 bg-red-500 rounded-md "
+                  className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
                 >
                   Confirm
                 </Button>
@@ -423,8 +443,8 @@ const Finances = () => {
               {!confirmButton && (
                 <Button
                   id="confirmItemButton"
-                  type="submit"
-                  className="mt-2 p-3 bg-red-500 rounded-md"
+                  type="button"
+                  className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
                   onClick={() => {
                     navigation("/historyPage");
                   }}
