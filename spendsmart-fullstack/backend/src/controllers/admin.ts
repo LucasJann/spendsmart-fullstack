@@ -187,7 +187,6 @@ export const postImage = async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
-
   const imagePath = req.file.path;
   const user = req.params.user;
 
@@ -237,7 +236,6 @@ export const deleteGoal = async (req: Request, res: Response) => {
     if (!userLogged) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
-
     userLogged.goals = userLogged.goals.filter(
       (item: any) => item._id.toString() !== _id
     );

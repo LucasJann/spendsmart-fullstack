@@ -1,9 +1,9 @@
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "./Button";
 import Input from "./Input";
 import Image from "./Image";
+import Button from "./Button";
 
 import trip from "../Icons/Trip.svg";
 import home from "../Icons/Home.svg";
@@ -139,7 +139,7 @@ const Finances = () => {
     } else if (e.currentTarget.name === "expenseInput") {
       const value = e.currentTarget.value;
 
-      if (value.length > 15) {
+      if (value.length > 13) {
         return;
       }
       const parsedValue = value.replace(/[^0-9]/g, "");
@@ -151,6 +151,10 @@ const Finances = () => {
       }));
     } else {
       const value = e.currentTarget.value;
+
+      if (value.length > 13) {
+        return;
+      }
       const parsedValue = value.replace(/[^0-9]/g, "");
       const number = Number(parsedValue);
       const formattedIncome = formatNumber(number);
@@ -169,13 +173,13 @@ const Finances = () => {
     if (isSelected) {
       item = {
         date: formData.date,
-        expense: formData.expense,
+        expense: formData.expense === "" ? "R$0,00" : formData.expense,
         category: formData.category,
       };
     } else {
       item = {
         date: formData.date,
-        income: formData.income,
+        income: formData.income === "" ? "R$0,00" : formData.income,
         category: formData.category,
       };
     }

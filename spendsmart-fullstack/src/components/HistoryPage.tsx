@@ -60,6 +60,17 @@ const HistoryPage = () => {
           console.log("Failed to fetch");
         }
         const responseData = await response.json();
+
+        const parseDate = (dateString: string) => {
+          const [year, month, day] = dateString.split("-");
+          return new Date(Number(year), Number(month) - 1, Number(day)); 
+        };
+
+        responseData.items.sort(
+          (a: itemsInterface, b: itemsInterface) =>
+            parseDate(b.date).getTime() - parseDate(a.date).getTime()
+        );
+
         setItems(responseData.items);
         setItemsLength(responseData.items.length);
       } catch (err) {
@@ -106,7 +117,8 @@ const HistoryPage = () => {
     }
   };
 
-  const submitHandler = () => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (filterClicked !== null) {
       if (filterClicked) {
         const incomeItems = items.filter((e) => {
@@ -167,16 +179,16 @@ const HistoryPage = () => {
     const id = e.currentTarget.id;
     console.log(id);
     if (id === "incomeButton") {
+      setSearchMessage("Search Incomes By Date");
+      setFilterClicked(true);
       setIncomeBackground("bg-gray-500");
       setExpenseBackground("bg-red-600");
-      setFilterClicked(true);
       setBackgroundTransition("bg-green-600");
-      setSearchMessage("Search Incomes By Date");
     } else {
-      setExpenseBackground("bg-gray-500");
-      setIncomeBackground("bg-green-600");
-      setFilterClicked(false);
       setSearchMessage("Search Expenses By Date");
+      setFilterClicked(false);
+      setIncomeBackground("bg-green-600");
+      setExpenseBackground("bg-gray-500");
       setBackgroundTransition("bg-red-600");
     }
   };
@@ -237,7 +249,7 @@ const HistoryPage = () => {
 
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`max-h-100 mt-2 p-5 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`max-h-100 mt-2 p-3 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div
             className={`${getDivStyle(
@@ -259,7 +271,7 @@ const HistoryPage = () => {
       )}
       {financesFiltered && filteredItemsLength !== 0 && (
         <section
-          className={`max-h-100 mt-2 p-5 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`max-h-100 mt-2 p-3 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div
             className={`${getDivStyle(
