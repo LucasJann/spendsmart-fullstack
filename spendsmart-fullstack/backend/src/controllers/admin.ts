@@ -1,5 +1,8 @@
-import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
+import { Request, Response, NextFunction } from "express";
+
+import fs from "fs";
+import path from "path";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 
@@ -10,6 +13,11 @@ interface ValidationErrorProps {
   path: string;
   location: string;
 }
+
+const clearImage = (filePath: string) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.error(err));
+};
 
 export const Register = async (
   req: Request,
@@ -73,7 +81,7 @@ export const Login = async (
 
   try {
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       return res.status(422).json({
         errorMessage: "User not found",
@@ -88,7 +96,7 @@ export const Login = async (
         errorMessage: "Invalid Password",
         path: "password",
       });
-    } 
+    }
 
     return res
       .status(200)
@@ -188,12 +196,18 @@ export const postImage = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  const imagePath = req.file.path;
+  const body = req.body.profileImage;
   const user = req.params.user;
+  const imagePath = req.file.path;
 
   try {
     await User.updateOne({ email: user }, { $set: { image: imagePath } });
-    return res.status(200).json({ imagePath });
+    if (body.includes("profilepic.jpg")) {
+      return res.status(200).json({ path: imagePath });
+    } else {
+      clearImage(body);
+      return res.status(200).json({ path: imagePath });
+    }
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -237,7 +251,6 @@ export const deleteGoal = async (req: Request, res: Response) => {
     if (!userLogged) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
-
     userLogged.goals = userLogged.goals.filter(
       (item: any) => item._id.toString() !== _id
     );
