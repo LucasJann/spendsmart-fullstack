@@ -12,7 +12,6 @@ import investments from "../Icons/Investments.svg";
 import { Fragment } from "react/jsx-runtime";
 
 interface cardProperties {
-  key: string;
   _id: string;
   date: string;
   income?: string;
@@ -21,7 +20,6 @@ interface cardProperties {
 }
 
 const Card: React.FC<cardProperties> = ({
-  key,
   _id,
   date,
   income,
@@ -70,7 +68,6 @@ const Card: React.FC<cardProperties> = ({
   }
   return (
     <div
-      key={key}
       id={_id}
       className="flex p-2 border rounded-md shadow-mg bg-white shadow "
     >

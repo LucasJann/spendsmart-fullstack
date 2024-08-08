@@ -57,13 +57,13 @@ const HistoryPage = () => {
       try {
         const response = await fetch(`http://localhost:8080/finances/${user}`);
         if (!response.ok) {
-          console.log("Failed to fetch");
+          console.error("Failed to fetch");
         }
         const responseData = await response.json();
 
         const parseDate = (dateString: string) => {
           const [year, month, day] = dateString.split("-");
-          return new Date(Number(year), Number(month) - 1, Number(day)); 
+          return new Date(Number(year), Number(month) - 1, Number(day));
         };
 
         responseData.items.sort(
@@ -177,7 +177,6 @@ const HistoryPage = () => {
 
   const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.id;
-    console.log(id);
     if (id === "incomeButton") {
       setSearchMessage("Search Incomes By Date");
       setFilterClicked(true);

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
+
+import Image from "./Image";
 import Input from "./Input";
 import Button from "./Button";
-import Image from "./Image";
 import landScape from "../images/landscape.jpg";
 import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
-  const [balance, setBalance] = useState<number>(0);
-  const [oldBalance, setOldBalance] = useState<number>();
-  const [profileImage, setProfileImage] = useState<string>(profilePic);
-
   interface formProperties {
     image: boolean;
     disabled: boolean;
@@ -23,8 +20,11 @@ const Profile = () => {
     onConfirm: false,
     editBalance: false,
   };
-
   const [formState, setFormState] = useState<formProperties>(formValues);
+
+  const [balance, setBalance] = useState<number>(0);
+  const [oldBalance, setOldBalance] = useState<number>();
+  const [profileImage, setProfileImage] = useState<string>(profilePic);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +54,7 @@ const Profile = () => {
         const balanceJson = await balanceResponse.json();
         setBalance(balanceJson.balance || 0);
       } catch (error) {
-        console.log("Error fetching data:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -81,20 +81,23 @@ const Profile = () => {
     event.preventDefault();
     const formData = new FormData();
     const inputElement = event.currentTarget.getElementsByTagName("input")[0];
+
     if (inputElement.files && inputElement.files.length > 0) {
       formData.append("image", inputElement.files[0]);
     }
+
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
+
     try {
       const user = localStorage.getItem("user")?.replace(/"/g, "");
-      const response = await fetch(`http://localhost:8080/profile/${user}`, {
+      await fetch(`http://localhost:8080/profile/${user}`, {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) {
-        return console.log(`HTTP error! Status: ${response.status}`);
-      }
     } catch (error) {
-      console.log("Error uploading profile image:", error);
+      console.error("Error uploading profile image:", error);
     }
     setFormState((prevState) => ({
       ...prevState,
@@ -151,7 +154,7 @@ const Profile = () => {
         body: JSON.stringify({ user, balance }),
       });
     } catch (error) {
-      console.log("Error updating balance:", error);
+      console.error("Error updating balance:", error);
     }
     setOldBalance(undefined);
     setFormState((prevState) => ({
@@ -169,37 +172,47 @@ const Profile = () => {
     }));
   };
 
+  const imageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const inputImage = e.currentTarget;
+    const formData = new FormData();
+
+    if (inputImage.files && inputImage.files.length > 0) {
+      formData.append("image", inputImage.files[0]);
+    }
+  };
+
   return (
     <div
-      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
+      className="flex items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent w-full"
       style={{ backgroundImage: `url(${landScape})` }}
     >
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="w-full flex flex-col items-center justify-center h-screen">
         <Image
           src={profileImage}
           alt="Profile Pic"
           onClick={handleImageClick}
-          className="w-64 h-64 rounded-full"
+          className="w-64 h-64 rounded-full mb-2"
         />
         {formState.image && (
           <form onSubmit={handleImageUpload}>
-            {/* <label htmlFor="image">Upload Profile Picture</label> */}
             <Input
               id="image"
               type="file"
               name="image"
-              className="w-full sm:w-5/6 border-2 border-r-0 text-white bg-black bg-opacity-60 shadow-mg p-0.5 pb-1"
+              onChange={imageChanged}
+              className="w-5/6 border-2 border-r-0 text-white mb-5 p-0.5 pb-1 bg-black bg-opacity-60 shadow-mg"
             />
             <Button
               id="image"
               type="submit"
-              className="border-2 border-l-0 text-center p-2 text-white bg-yellow-500 text-sm w-full sm:w-1/6 mt-1 md:w-1/6 lg:w-1/6 xl:w-1/6 "
+              className=" w-1/6 border-2 border-l-0 text-center p-2 bg-yellow-500 text-white text-sm"
             >
               OK
             </Button>
           </form>
         )}
-        <div className="max-w-md mt-12 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
+        <div className="max-w-md mt-10 w-full bg-black bg-opacity-60 shadow-mg rounded-md p-6 mb-5">
           {formState.editBalance && (
             <div className="flex items-center justify-between">
               <Button
