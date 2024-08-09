@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
+import { clear } from "console";
 
 interface ValidationErrorProps {
   type: string;
@@ -212,6 +213,19 @@ export const postImage = async (req: Request, res: Response) => {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
+};
+
+export const deleteImage = (req: Request, res: Response) => {
+  const image = req.body.image;
+  clearImage(image);
+};
+
+export const imageChanged = async (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const imagePath = req.file.path;
+  res.status(201).json({ path: imagePath });
 };
 
 export const getGoals = async (req: Request, res: Response) => {

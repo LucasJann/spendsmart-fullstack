@@ -24,7 +24,34 @@ const Profile = () => {
 
   const [balance, setBalance] = useState<number>(0);
   const [oldBalance, setOldBalance] = useState<number>();
+
+  const [saveImage, setSaveImage] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>(profilePic);
+  const [oldProfileImage, setOldProfileImage] = useState<string>("");
+
+  useEffect(() => {
+    if (saveImage) {
+      const clearImage = async () => {
+        const oldProfile = {
+          image: oldProfileImage,
+        };
+
+        console.log(oldProfile)
+        try {
+          await fetch("http://localhost:8080/profile/clearImage", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(oldProfile),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      clearImage();
+    }
+  }, [saveImage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +123,7 @@ const Profile = () => {
         method: "POST",
         body: formData,
       });
+      setSaveImage(!saveImage);
     } catch (error) {
       console.error("Error uploading profile image:", error);
     }
@@ -172,13 +200,33 @@ const Profile = () => {
     }));
   };
 
-  const imageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const imageChanged = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const inputImage = e.currentTarget;
     const formData = new FormData();
 
     if (inputImage.files && inputImage.files.length > 0) {
       formData.append("image", inputImage.files[0]);
+    }
+    try {
+      const response = await fetch("http://localhost:8080/profile/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error("Error to fetch");
+      }
+
+      const responseData = await response.json();
+      const newProfileImage = responseData.path
+        ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
+        : profilePic;
+
+      setProfileImage(newProfileImage);
+      setOldProfileImage(profileImage);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -198,8 +246,8 @@ const Profile = () => {
           <form onSubmit={handleImageUpload}>
             <Input
               id="image"
-              type="file"
               name="image"
+              type="file"
               onChange={imageChanged}
               className="w-5/6 border-2 border-r-0 text-white mb-5 p-0.5 pb-1 bg-black bg-opacity-60 shadow-mg"
             />

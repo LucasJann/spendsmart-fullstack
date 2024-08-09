@@ -4,6 +4,8 @@ import { Router } from "express";
 import {
   Register,
   Login,
+  deleteImage,
+  imageChanged,
   getImage,
   getBalance,
   getItems,
@@ -111,7 +113,9 @@ router.post(
 );
 
 router.get("/profile/:user", getImage);
+router.post("/profile/image", imageChanged);
 router.post("/profile/:user", postImage);
+router.delete("/profile/clearImage", deleteImage);
 
 router.get("/finances/:user", getItems);
 router.post("/finances/:user", postItem);
