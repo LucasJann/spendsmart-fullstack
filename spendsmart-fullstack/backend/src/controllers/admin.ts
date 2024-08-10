@@ -5,7 +5,6 @@ import fs from "fs";
 import path from "path";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
-import { clear } from "console";
 
 interface ValidationErrorProps {
   type: string;
@@ -17,6 +16,7 @@ interface ValidationErrorProps {
 
 const clearImage = (filePath: string) => {
   filePath = path.join(__dirname, "..", filePath);
+  console.log(filePath);
   fs.unlink(filePath, (err) => console.error(err));
 };
 
@@ -197,18 +197,18 @@ export const postImage = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  const body = req.body.profileImage;
   const user = req.params.user;
   const imagePath = req.file.path;
+  const profileImagePath = req.body.profileImage;
 
   try {
+    const loggedUser = await User.findOne({ email: user });
+    const userImage = loggedUser.image.split("src\\")[1];
     await User.updateOne({ email: user }, { $set: { image: imagePath } });
-    if (body.includes("profilepic.jpg")) {
-      return res.status(200).json({ path: imagePath });
-    } else {
-      clearImage(body);
-      return res.status(200).json({ path: imagePath });
-    }
+
+    clearImage(userImage);
+    clearImage(profileImagePath);
+    return res.status(200).json({ path: imagePath });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -224,8 +224,28 @@ export const imageChanged = async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
-  const imagePath = req.file.path;
-  res.status(201).json({ path: imagePath });
+
+  const user = req.params.user;
+  const newImage = req.file.path;
+  const currentImage = req.body.profileImage;
+
+  if (currentImage.includes("profilepic.jpg")) {
+    res.status(201).json({ path: newImage });
+  }
+
+  try {
+    const userLogged = await User.findOne({ email: user });
+    const splittedUserImage = userLogged.image.split("images\\")[1];
+    const splittedCurrentImage = currentImage.split("images/")[1];
+    if (splittedUserImage !== splittedCurrentImage) {
+      clearImage(currentImage);
+      res.status(201).json({ path: newImage });
+    } else {
+      res.status(201).json({ path: newImage });
+    }
+  } catch (err) {
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
 };
 
 export const getGoals = async (req: Request, res: Response) => {

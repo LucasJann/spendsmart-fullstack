@@ -25,33 +25,7 @@ const Profile = () => {
   const [balance, setBalance] = useState<number>(0);
   const [oldBalance, setOldBalance] = useState<number>();
 
-  const [saveImage, setSaveImage] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>(profilePic);
-  const [oldProfileImage, setOldProfileImage] = useState<string>("");
-
-  useEffect(() => {
-    if (saveImage) {
-      const clearImage = async () => {
-        const oldProfile = {
-          image: oldProfileImage,
-        };
-
-        console.log(oldProfile)
-        try {
-          await fetch("http://localhost:8080/profile/clearImage", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(oldProfile),
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      clearImage();
-    }
-  }, [saveImage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +78,49 @@ const Profile = () => {
     }));
   };
 
+  const imageChanged = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const formData = new FormData();
+    const inputImage = e.currentTarget;
+
+    if (inputImage.files && inputImage.files.length > 0) {
+      formData.append("image", inputImage.files[0]);
+    }
+
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
+
+    // const profile = {
+    //   image: profileImage,
+    // };
+
+    try {
+      const user = localStorage.getItem("user")?.replace(/"/g, "");
+      const response = await fetch(
+        `http://localhost:8080/profile/image/${user}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Error to fetch");
+      }
+
+      const responseData = await response.json();
+      const newProfileImage = responseData.path
+        ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
+        : profilePic;
+
+      // setOldProfileImage(profileImage);
+      setProfileImage(newProfileImage);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleImageUpload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData();
@@ -123,7 +140,6 @@ const Profile = () => {
         method: "POST",
         body: formData,
       });
-      setSaveImage(!saveImage);
     } catch (error) {
       console.error("Error uploading profile image:", error);
     }
@@ -198,36 +214,6 @@ const Profile = () => {
       editBalance: true,
       disabled: false,
     }));
-  };
-
-  const imageChanged = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const inputImage = e.currentTarget;
-    const formData = new FormData();
-
-    if (inputImage.files && inputImage.files.length > 0) {
-      formData.append("image", inputImage.files[0]);
-    }
-    try {
-      const response = await fetch("http://localhost:8080/profile/image", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        console.error("Error to fetch");
-      }
-
-      const responseData = await response.json();
-      const newProfileImage = responseData.path
-        ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
-        : profilePic;
-
-      setProfileImage(newProfileImage);
-      setOldProfileImage(profileImage);
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   return (

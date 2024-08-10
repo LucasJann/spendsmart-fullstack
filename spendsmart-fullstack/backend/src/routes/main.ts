@@ -113,8 +113,8 @@ router.post(
 );
 
 router.get("/profile/:user", getImage);
-router.post("/profile/image", imageChanged);
 router.post("/profile/:user", postImage);
+router.post("/profile/image/:user", imageChanged);
 router.delete("/profile/clearImage", deleteImage);
 
 router.get("/finances/:user", getItems);
