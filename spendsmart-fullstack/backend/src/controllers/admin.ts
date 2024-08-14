@@ -314,6 +314,8 @@ export const postItem = async (req: Request, res: Response) => {
   const email = req.params.user;
   const item = req.body;
 
+  console.log(email)
+  console.log(item)
   try {
     await User.updateOne({ email: email }, { $push: { items: item } });
     res.status(201).json({ message: "Item added" });

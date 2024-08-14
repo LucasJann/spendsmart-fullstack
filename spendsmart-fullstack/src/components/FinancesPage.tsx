@@ -35,12 +35,12 @@ const Finances = () => {
   const [formData, setFormData] = useState<financesProps>(formDataProperties);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
+  const [background, setBackground] = useState(false);
   const [confirmButton, setConfirmButton] = useState<boolean>(false);
   const [profileBalanceChanged, setProfileBalanceChanged] =
     useState<boolean>(false);
 
   const navigation = useNavigate();
-
   const patchBalance = async (isSelected: boolean) => {
     if (isSelected) {
       const expense = { expense: formData.expense.replace(/[^0-9]/g, "") };
@@ -183,7 +183,7 @@ const Finances = () => {
         category: formData.category,
       };
     }
-
+    console.log(item);
     try {
       await fetch(`http://localhost:8080/finances/${user}`, {
         method: "POST",
@@ -195,7 +195,10 @@ const Finances = () => {
     } catch (err) {
       console.error(err);
     }
-
+    setBackground(true);
+    setTimeout(() => {
+      setBackground(false);
+    }, 1000);
     setShowForm(false);
     setProfileBalanceChanged(!profileBalanceChanged);
     setFormData((prevState) => ({
@@ -249,12 +252,14 @@ const Finances = () => {
               <Button
                 id="confirmItemButton"
                 type="submit"
-                className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
+                className={`mt-2 p-3 ${
+                  background ? `bg-green-500` : "bg-red-500"
+                } rounded-md caret-transparent transition duration-1000 ease-in-out`}
                 onClick={() => {
                   navigation("/historyPage");
                 }}
               >
-                History
+                {background ? "Registered" : "History"}
               </Button>
             </Fragment>
           )}
