@@ -175,8 +175,10 @@ export const patchBalance = async (
     const newBalance = String(newValue);
 
     await User.updateOne({ email: user }, { $set: { balance: newBalance } });
+    return res.status(201).json({ message: "Balance Updated" });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };
 
@@ -186,7 +188,7 @@ export const getImage = async (req: Request, res: Response) => {
   try {
     const result = await User.findOne({ email: user });
     const userImage = result?.image;
-    res.status(201).json({ image: userImage });
+    return res.status(201).json({ image: userImage });
   } catch (err) {
     console.error(err);
   }
@@ -230,7 +232,7 @@ export const imageChanged = async (req: Request, res: Response) => {
   const currentImage = req.body.profileImage;
 
   if (currentImage.includes("profilepic.jpg")) {
-    res.status(201).json({ path: newImage });
+    return res.status(201).json({ path: newImage });
   }
 
   try {
@@ -239,9 +241,9 @@ export const imageChanged = async (req: Request, res: Response) => {
     const splittedCurrentImage = currentImage.split("images/")[1];
     if (splittedUserImage !== splittedCurrentImage) {
       clearImage(currentImage);
-      res.status(201).json({ path: newImage });
+      return res.status(201).json({ path: newImage });
     } else {
-      res.status(201).json({ path: newImage });
+      return res.status(201).json({ path: newImage });
     }
   } catch (err) {
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -290,7 +292,7 @@ export const deleteGoal = async (req: Request, res: Response) => {
     );
 
     await userLogged.save();
-    res.status(200).json({ message: "Goal removed" });
+    return res.status(200).json({ message: "Goal removed" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -303,7 +305,7 @@ export const getItems = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ email: email });
     const items = user.items;
-    res.status(201).json({ message: "Items fetched", items: items });
+    return res.status(201).json({ message: "Items fetched", items: items });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -314,11 +316,9 @@ export const postItem = async (req: Request, res: Response) => {
   const email = req.params.user;
   const item = req.body;
 
-  console.log(email)
-  console.log(item)
   try {
     await User.updateOne({ email: email }, { $push: { items: item } });
-    res.status(201).json({ message: "Item added" });
+    return res.status(201).json({ message: "Item added" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
