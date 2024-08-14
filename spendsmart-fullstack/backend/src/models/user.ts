@@ -26,10 +26,10 @@ interface User extends Document {
 }
 
 const ItemSchema = new Schema({
-  date: { type: String },
+  date: { type: String, required: true },
   income: { type: String },
   expense: { type: String },
-  category: { type: String, },
+  category: { type: String, required: true },
 });
 
 const GoalSchema = new Schema({
