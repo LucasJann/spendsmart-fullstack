@@ -26,6 +26,37 @@ const Profile = () => {
   const [oldBalance, setOldBalance] = useState<number>();
 
   const [profileImage, setProfileImage] = useState<string>(profilePic);
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (selectedImage) {
+        const selectedImageState = selectedImage.split("src\\")[1];
+
+        const bodyImage = {
+          selectedImage: selectedImageState,
+        };
+
+        try {
+          await fetch(`http://localhost:8080/profile/clearImage`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(bodyImage),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    if (selectedImage !== undefined) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    }
+  }, [selectedImage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,10 +122,6 @@ const Profile = () => {
       formData.append("profileImage", profileImage);
     }
 
-    // const profile = {
-    //   image: profileImage,
-    // };
-
     try {
       const user = localStorage.getItem("user")?.replace(/"/g, "");
       const response = await fetch(
@@ -114,7 +141,7 @@ const Profile = () => {
         ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
         : profilePic;
 
-      // setOldProfileImage(profileImage);
+      setSelectedImage(responseData.path);
       setProfileImage(newProfileImage);
     } catch (err) {
       console.error(err);

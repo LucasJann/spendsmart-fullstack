@@ -16,7 +16,6 @@ interface ValidationErrorProps {
 
 const clearImage = (filePath: string) => {
   filePath = path.join(__dirname, "..", filePath);
-  console.log(filePath);
   fs.unlink(filePath, (err) => console.error(err));
 };
 
@@ -219,7 +218,12 @@ export const postImage = async (req: Request, res: Response) => {
 
 export const deleteImage = (req: Request, res: Response) => {
   const image = req.body.image;
-  clearImage(image);
+  const selectedImage = req.body.selectedImage;
+  try {
+    clearImage(image || selectedImage);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const imageChanged = async (req: Request, res: Response) => {
