@@ -134,7 +134,6 @@ const Finances = () => {
         category: formData.category,
       };
     }
-    console.log(item);
     try {
       await fetch(`http://localhost:8080/finances/${user}`, {
         method: "POST",
