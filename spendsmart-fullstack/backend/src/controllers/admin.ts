@@ -204,7 +204,7 @@ export const postImage = async (req: Request, res: Response) => {
 
   try {
     const loggedUser = await User.findOne({ email: user });
-    const userImage = loggedUser.image.split("src\\")[1];
+    const userImage = loggedUser.image?.split("src\\")[1];
     await User.updateOne({ email: user }, { $set: { image: imagePath } });
 
     clearImage(userImage);
