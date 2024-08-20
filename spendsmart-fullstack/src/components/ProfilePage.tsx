@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "./Image";
 import Input from "./Input";
 import Button from "./Button";
+import NavBar from "./NavBar";
 import landScape from "../images/landscape.jpg";
 import profilePic from "../images/profilepic.jpg";
 
@@ -226,6 +227,7 @@ const Profile = () => {
       style={{ backgroundImage: `url(${landScape})` }}
     >
       <div className="w-full flex flex-col items-center justify-center h-screen">
+        <NavBar />
         <Image
           src={profileImage}
           alt="Profile Pic"
@@ -251,13 +253,13 @@ const Profile = () => {
           </form>
         )}
         <div className="text-white text-4xl items-start"></div>
-        <div className="flex max-w-md w-full bg-black bg-opacity-60 shadow-mg rounded-md p-2 mb-5 mt-2 text-white">
-          <h2 className="w-1/3">Your balance:</h2>
+        <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mb-5 mt-2 text-white">
+          <h2 className="w-1/2">Your balance:</h2>
           <Input
             id="balance"
             type="text"
             name="balance"
-            className={`block w-full rounded-md shadow-sm focus:ring-0 border-transparent ${getBalanceTextColor()} bg-transparent text-center text-md`}
+            className={`w-full rounded-md shadow-sm focus:ring-0 border-transparent ${getBalanceTextColor()} bg-transparent text-center text-md`}
             value={formatBalance(balance)}
             onChange={handleValueChange}
             disabled={formState.disabled}
