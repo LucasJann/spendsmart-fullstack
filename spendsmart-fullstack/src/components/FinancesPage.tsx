@@ -274,7 +274,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Cutlery"
+                          formData.category === "Cutlery" ||
+                          formData.category === "Talheres"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -291,14 +292,15 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Mortarboard"
+                          formData.category === "Graduation hat" ||
+                          formData.category === "Chapéu de formatura"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
                       >
                         <Image
                           src={education}
-                          alt="Mortarboard"
+                          alt="Graduation hat"
                           className="max-h-full max-w-full"
                           onClick={selectedImage}
                         />
@@ -308,7 +310,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Heart"
+                          formData.category === "Heart" ||
+                          formData.category === "Coração"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -325,7 +328,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Rocket"
+                          formData.category === "Rocket" ||
+                          formData.category === "Foguete"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -342,7 +346,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "House"
+                          formData.category === "House" ||
+                          formData.category === "Casa"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -359,7 +364,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Airplane"
+                          formData.category === "Airplane" ||
+                          formData.category === "Avião"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -380,7 +386,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Rising bar"
+                          formData.category === "Rising bar" ||
+                          formData.category === "Barra em ascensão"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -397,7 +404,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Pigbank"
+                          formData.category === "Pigbank" ||
+                          formData.category === "Cofrinho"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
@@ -414,7 +422,8 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Coin"
+                          formData.category === "Coin" ||
+                          formData.category === "Moeda"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                         }`}
