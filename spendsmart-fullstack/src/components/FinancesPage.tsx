@@ -15,6 +15,7 @@ import evening from "../images/evening.jpg";
 import leisure from "../Icons/Leisure.svg";
 import education from "../Icons/Education.svg";
 import investments from "../Icons/Investments.svg";
+import NavBar from "./NavBar";
 
 const Finances = () => {
   interface financesProps {
@@ -204,6 +205,7 @@ const Finances = () => {
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat "
       style={{ backgroundImage: `url(${evening})` }}
     >
+      <NavBar />
       <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white ">
         <div className="text-center caret-transparent">
           <Button
@@ -226,7 +228,9 @@ const Finances = () => {
           </Button>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label className="ml-1 caret-transparent">Date:</label>
+          <label className="ml-1 caret-transparent">{`${
+            isSelected ? "Expense Date" : "Income Date"
+          }`}</label>
           <Input
             id="dateInput"
             name="dateInput"
@@ -257,7 +261,7 @@ const Finances = () => {
           {showForm && (
             <Fragment>
               <label className="ml-1 caret-transparent">
-                {isSelected ? "Expense:" : "Income:"}
+                {isSelected ? "Expense Value:" : "Income Value:"}
               </label>
               <Input
                 id={isSelected ? "expenseInput" : "incomeInput"}

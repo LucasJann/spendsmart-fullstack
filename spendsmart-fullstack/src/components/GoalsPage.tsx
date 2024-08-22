@@ -4,6 +4,7 @@ import Input from "./Input";
 import Button from "./Button";
 import GoalItem from "./GoalItem";
 import "../index.css";
+import NavBar from "./NavBar";
 
 const Goals = () => {
   interface Goal {
@@ -175,8 +176,9 @@ const Goals = () => {
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${beach})` }}
     >
+      <NavBar />
       <form
-        className="mt-2 w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+        className="mt-12 w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col items-center shadow-mg bg-black bg-opacity-40 shadow-mg rounded-md text-gray-200 text-center p-3">

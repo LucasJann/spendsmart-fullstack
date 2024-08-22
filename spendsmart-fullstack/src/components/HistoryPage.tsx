@@ -5,6 +5,7 @@ import night from "../images/night.jpg";
 import Card from "./Card";
 import Input from "./Input";
 import Button from "./Button";
+import NavBar from "./NavBar";
 
 const HistoryPage = () => {
   interface dateInterface {
@@ -197,8 +198,9 @@ const HistoryPage = () => {
       className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent"
       style={{ backgroundImage: `url(${night})` }}
     >
+      <NavBar />
       <section
-        className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-2`}
+        className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-12`}
       >
         <form className="flex flex-col items-center" onSubmit={submitHandler}>
           <div className="flex w-full justify-between ">
@@ -248,7 +250,7 @@ const HistoryPage = () => {
 
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`max-h-100 mt-2 p-3 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`max-h-100 mt-2 p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div
             className={`${getDivStyle(
