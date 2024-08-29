@@ -120,7 +120,7 @@ const Login = () => {
               navigate("/");
               setIsSelected(!isSelected);
             } else {
-              navigate("/menuPage");
+              navigate("/profilePage");
               localStorage.setItem("user", JSON.stringify(email));
             }
           }

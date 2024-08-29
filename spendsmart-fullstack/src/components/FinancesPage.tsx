@@ -386,7 +386,7 @@ const Finances = () => {
                   </ul>
                 )}
                 {!isSelected && (
-                  <ul className="grid grid-cols-3 gap-3 w-full">
+                  <ul className="grid grid-cols-3 gap-3 w-full mt-11 mb-12 p-2">
                     <li className="text-center">
                       <div
                         className={`${

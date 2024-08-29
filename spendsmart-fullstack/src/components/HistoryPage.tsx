@@ -206,7 +206,7 @@ const HistoryPage = () => {
           <div className="flex w-full justify-between ">
             <Button
               id="incomeButton"
-              type="button"
+              type="submit"
               className={`w-1/2  ${incomeBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
               onClick={filter}
             >
@@ -214,14 +214,13 @@ const HistoryPage = () => {
             </Button>
             <Button
               id="expenseButton"
-              type="button"
+              type="submit"
               className={`w-1/2  ${expenseBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
               onClick={filter}
             >
               Expenses
             </Button>
           </div>
-
           <label className="">Initial Date</label>
           <Input
             id="startDate"
@@ -247,10 +246,9 @@ const HistoryPage = () => {
           </Button>
         </form>
       </section>
-
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`max-h-100 mt-2 p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-6/7 max-h-100 mt-2 p-1 lg:p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div
             className={`${getDivStyle(
@@ -272,7 +270,7 @@ const HistoryPage = () => {
       )}
       {financesFiltered && filteredItemsLength !== 0 && (
         <section
-          className={`max-h-100 mt-2 p-3 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-6/7 max-h-100 mt-2 p-1 lg:p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom `}
         >
           <div
             className={`${getDivStyle(
