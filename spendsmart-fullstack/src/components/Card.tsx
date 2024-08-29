@@ -69,14 +69,14 @@ const Card: React.FC<cardProperties> = ({
   return (
     <div
       id={_id}
-      className="flex p-2 border rounded-md shadow-mg bg-white shadow "
+      className="w-full flex p-2 border rounded-md shadow-mg bg-white shadow "
     >
       <Image
         src={ctgry}
         alt={alt}
         className="bg-white rounded-sm flex h-16 w-20 mr-2"
       />
-      <div className="w-full grid grid-cols-2 p-1 font-serif">
+      <div className="w-full grid grid-cols-2 p-2 font-serif">
         <p>Date: </p>
         <p className="text-end">{date}</p>
         {income && (
