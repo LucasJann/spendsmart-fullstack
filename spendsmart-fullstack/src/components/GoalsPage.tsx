@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import beach from "../images/afternoon.jpg";
+import beach from "../images/landscape.jpg";
 import Input from "./Input";
 import Button from "./Button";
 import GoalItem from "./GoalItem";
@@ -214,7 +214,7 @@ const Goals = () => {
             <Button
               id="goalSubmitButton"
               type="submit"
-              className="w-full bg-teal-400 p-3 mt-2 rounded-md text-white"
+              className="w-full bg-green-600 p-3 mt-2 rounded-md text-white"
             >
               Confirm
             </Button>
