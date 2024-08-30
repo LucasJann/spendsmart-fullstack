@@ -4,7 +4,7 @@ import Image from "./Image";
 import Input from "./Input";
 import Button from "./Button";
 import NavBar from "./NavBar";
-import landScape from "../images/landscape.jpg";
+import landScape from "../images/morning.jpg";
 import profilePic from "../images/profilepic.jpg";
 
 const Profile = () => {
@@ -22,15 +22,13 @@ const Profile = () => {
     editBalance: false,
   };
   const [formState, setFormState] = useState<formProperties>(formValues);
-
+  const [fullName, setFullName] = useState<string>("");
   const [balance, setBalance] = useState<number>(0);
-
   const [imageSaved, setImageSaved] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>(profilePic);
+  const [profileImage, setProfileImage] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (imageSaved === false) {
       const handleBeforeUnload = async () => {
@@ -106,6 +104,9 @@ const Profile = () => {
           ? `../../backend/src/images/${profileJson.image.split("images\\")[1]}`
           : profilePic;
         setProfileImage(fetchedProfileImage);
+
+        const userName = profileJson.name + " " + profileJson.lastName;
+        setFullName(userName);
 
         if (!balanceResponse.ok) {
           throw new Error(
@@ -230,7 +231,7 @@ const Profile = () => {
         <NavBar />
         <Image
           src={profileImage}
-          alt="Profile Pic"
+          alt="Image"
           onClick={handleImageClick}
           className="w-64 h-64 rounded-full "
         />
@@ -252,9 +253,14 @@ const Profile = () => {
             </Button>
           </form>
         )}
+        {!formState.image && (
+          <p className="text-white text-3xl font-mono font-bold">
+            {fullName}
+          </p>
+        )}
         <div className="text-white text-4xl items-start"></div>
-        <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mb-5 mt-2 text-white">
-          <h2 className="w-1/2">Your balance:</h2>
+        <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mt-1 mb-14 text-white">
+          <h2 className="w-1/2 text-yellow-500">Your balance:</h2>
           <Input
             id="balance"
             type="text"

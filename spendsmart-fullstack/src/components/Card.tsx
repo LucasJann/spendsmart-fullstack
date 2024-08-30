@@ -77,18 +77,20 @@ const Card: React.FC<cardProperties> = ({
         className="bg-white rounded-sm flex h-16 w-20 mr-2"
       />
       <div className="w-full grid grid-cols-2 p-2 font-serif">
-        <p>Date: </p>
-        <p className="text-end">{date}</p>
         {income && (
           <Fragment>
-            <p>Income: </p>
-            <p className="text-end">{income}</p>
+            <p className="text-green-600">Date: </p>
+            <p className="text-end text-green-600">{date}</p>
+            <p className="text-green-600">Income: </p>
+            <p className="text-end text-green-600">{income}</p>
           </Fragment>
         )}
         {expense && (
           <Fragment>
-            <p>Expense: </p>
-            <p className="text-end truncate">{expense}</p>
+              <p className="text-red-600">Date: </p>
+              <p className="text-end text-red-600">{date}</p>
+              <p className="text-red-600">Expense: </p>
+              <p className="text-end text-red-600 truncate">{expense}</p>
           </Fragment>
         )}
       </div>

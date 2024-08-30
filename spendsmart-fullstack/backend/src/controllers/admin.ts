@@ -186,8 +186,10 @@ export const getImage = async (req: Request, res: Response) => {
 
   try {
     const result = await User.findOne({ email: user });
-    const userImage = result?.image;
-    return res.status(201).json({ image: userImage });
+    const image = result?.image;
+    const name = result?.name;
+    const lastName = result?.lastName;
+    return res.status(201).json({ image: image, name, lastName });
   } catch (err) {
     console.error(err);
   }
