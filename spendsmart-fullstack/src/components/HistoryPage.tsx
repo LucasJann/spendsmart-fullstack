@@ -35,12 +35,14 @@ const HistoryPage = () => {
   };
 
   const [items, setItems] = useState<itemsInterface[]>([]);
+  const [prevItems, setPrevItems] = useState<itemsInterface[]>([]);
   const [itemsLength, setItemsLength] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
 
   const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
   const [financesFiltered, setFinancesFiltered] = useState<boolean>(false);
-  const [filteredItemsLength, setfilteredItemsLength] = useState<number>(0);
+  const [incomesAndExpenses, setIncomesAndExpenses] = useState<boolean>(false);
+  const [filteredItemsLength, setFilteredItemsLength] = useState<number>(0);
   const [filteredItems, setFilteredItems] = useState<filteredItemsInterface[]>(
     []
   );
@@ -48,9 +50,8 @@ const HistoryPage = () => {
     useState<string>("bg-green-600");
   const [expenseBackground, setExpenseBackground] =
     useState<string>("bg-red-600");
-
-  const [backgroundTransition, setBackgroundTransition] = useState<string>("");
-  const [searchMessage, setSearchMessage] = useState<string>("Search By Date");
+  const [incomesAndExpensesBackground, setIncomesAndExpensesBackground] =
+    useState<string>("bg-blue-600");
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
@@ -72,6 +73,7 @@ const HistoryPage = () => {
             parseDate(b.date).getTime() - parseDate(a.date).getTime()
         );
 
+        setPrevItems(responseData.items);
         setItems(responseData.items);
         setItemsLength(responseData.items.length);
       } catch (err) {
@@ -118,9 +120,78 @@ const HistoryPage = () => {
     }
   };
 
+  const filterAll = () => {
+    setIncomesAndExpenses(true);
+  };
+
+  const allFinances = () => {
+    window.location.reload();
+  };
+
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (filterClicked !== null) {
+    if (incomesAndExpenses) {
+      if (filterClicked === null) {
+        if (items.length !== 0) {
+          const newItems = items.filter((e) => {
+            const date = e.date;
+            const initialDate = formatDate(selectedDate.initialDate);
+            const finalDate = formatDate(selectedDate.finalDate);
+
+            if (date >= initialDate && date <= finalDate) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          setItems(newItems);
+          setIncomesAndExpenses(false);
+          setIncomeBackground("bg-green-600");
+          setExpenseBackground("bg-red-600");
+          setIncomesAndExpensesBackground("bg-gray-600");
+          return;
+        } else {
+          console.log("UEQ");
+          const newItems = prevItems.filter((e) => {
+            const date = e.date;
+            const initialDate = formatDate(selectedDate.initialDate);
+            const finalDate = formatDate(selectedDate.finalDate);
+
+            if (date >= initialDate && date <= finalDate) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          setItems(newItems);
+          setIncomesAndExpenses(false);
+          setIncomeBackground("bg-green-600");
+          setExpenseBackground("bg-red-600");
+          setIncomesAndExpensesBackground("bg-gray-600");
+          return;
+        }
+      } else {
+        const newItems = prevItems.filter((e) => {
+          const date = e.date;
+          const initialDate = formatDate(selectedDate.initialDate);
+          const finalDate = formatDate(selectedDate.finalDate);
+
+          if (date >= initialDate && date <= finalDate) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setItems(newItems);
+        setItemsLength(filteredItems.length);
+        setFinancesFiltered(false);
+        setIncomeBackground("bg-green-600");
+        setExpenseBackground("bg-red-600");
+        setIncomesAndExpensesBackground("bg-gray-600");
+      }
+      setIncomesAndExpenses(false);
+      return;
+    } else {
       if (filterClicked) {
         const incomeItems = items.filter((e) => {
           return e.income ? true : false;
@@ -138,7 +209,10 @@ const HistoryPage = () => {
         });
         setFinancesFiltered(true);
         setFilteredItems(filteredItems);
-        setfilteredItemsLength(filteredItems.length);
+        setFilteredItemsLength(filteredItems.length);
+        setIncomeBackground("bg-gray-600");
+        setExpenseBackground("bg-red-600");
+        setIncomesAndExpensesBackground("bg-blue-600");
       } else {
         const expenseItems = items.filter((e) => {
           return e.expense ? true : false;
@@ -156,40 +230,20 @@ const HistoryPage = () => {
         });
         setFinancesFiltered(true);
         setFilteredItems(filteredItems);
-        setfilteredItemsLength(filteredItems.length);
+        setFilteredItemsLength(filteredItems.length);
+        setIncomeBackground("bg-green-600");
+        setExpenseBackground("bg-gray-600");
+        setIncomesAndExpensesBackground("bg-blue-600");
       }
-    } else {
-      const filteredItems = items.filter((e) => {
-        const date = e.date;
-        const initialDate = formatDate(selectedDate.initialDate);
-        const finalDate = formatDate(selectedDate.finalDate);
-
-        if (date >= initialDate && date <= finalDate) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      setFinancesFiltered(true);
-      setFilteredItems(filteredItems);
-      setfilteredItemsLength(filteredItems.length);
     }
   };
 
   const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.id;
     if (id === "incomeButton") {
-      setSearchMessage("Search Incomes By Date");
       setFilterClicked(true);
-      setIncomeBackground("bg-gray-500");
-      setExpenseBackground("bg-red-600");
-      setBackgroundTransition("bg-green-600");
     } else {
-      setSearchMessage("Search Expenses By Date");
       setFilterClicked(false);
-      setIncomeBackground("bg-green-600");
-      setExpenseBackground("bg-gray-500");
-      setBackgroundTransition("bg-red-600");
     }
   };
 
@@ -207,18 +261,18 @@ const HistoryPage = () => {
             <Button
               id="incomeButton"
               type="submit"
-              className={`w-1/2  ${incomeBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${incomeBackground}`}
               onClick={filter}
             >
-              Incomes
+              Search Incomes by Date
             </Button>
             <Button
               id="expenseButton"
               type="submit"
-              className={`w-1/2  ${expenseBackground} p-1 m-1 rounded-md transition duration-700 ease-in-out`}
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${expenseBackground}`}
               onClick={filter}
             >
-              Expenses
+              Search Expenses by Date
             </Button>
           </div>
           <label className="">Initial Date</label>
@@ -240,16 +294,28 @@ const HistoryPage = () => {
           <Button
             id="searchButton"
             type="submit"
-            className={`w-full bg-blue-600 p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${backgroundTransition}`}
+            onClick={filterAll}
+            className={`w-full  p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${incomesAndExpensesBackground}`}
           >
-            {searchMessage}
+            Search Incomes and Expenses by Date
           </Button>
         </form>
       </section>
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`w-6/7 max-h-100 mt-2 p-1 lg:p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
+          <div className="flex justify-end">
+            <Button
+              id="allFinances"
+              type="button"
+              className="rounded-md bg-black border-solid border-2 border-stone-400 text-white w-full md:w-1/5"
+              onClick={allFinances}
+            >
+              See all finances
+            </Button>
+          </div>
+
           <div
             className={`${getDivStyle(
               filteredItemsLength || itemsLength
@@ -270,8 +336,18 @@ const HistoryPage = () => {
       )}
       {financesFiltered && filteredItemsLength !== 0 && (
         <section
-          className={`w-6/7 max-h-100 mt-2 p-1 lg:p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom `}
+          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
+          <div className="flex justify-end">
+            <Button
+              id="allFinances"
+              type="button"
+              className="rounded-md bg-black border-solid border-2 border-stone-400 text-white w-full md:w-1/5"
+              onClick={allFinances}
+            >
+              See all finances
+            </Button>
+          </div>
           <div
             className={`${getDivStyle(
               filteredItemsLength || itemsLength
