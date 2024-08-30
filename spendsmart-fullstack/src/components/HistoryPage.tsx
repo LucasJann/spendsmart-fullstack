@@ -120,8 +120,12 @@ const HistoryPage = () => {
     }
   };
 
-  const filterAll = async () => {
+  const filterAll = () => {
     setIncomesAndExpenses(true);
+  };
+
+  const allFinances = () => {
+    window.location.reload();
   };
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -299,13 +303,14 @@ const HistoryPage = () => {
       </section>
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-3 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div className="flex justify-end">
             <Button
               id="allFinances"
               type="button"
-              className="rounded-md bg-gray-600 text-white w-full md:w-1/5"
+              className="rounded-md bg-black border-solid border-2 border-stone-400 text-white w-full md:w-1/5"
+              onClick={allFinances}
             >
               See all finances
             </Button>
@@ -331,8 +336,18 @@ const HistoryPage = () => {
       )}
       {financesFiltered && filteredItemsLength !== 0 && (
         <section
-          className={`w-6/7 max-h-100 mt-2 p-1 lg:p-7 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom  `}
+          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
+          <div className="flex justify-end">
+            <Button
+              id="allFinances"
+              type="button"
+              className="rounded-md bg-black border-solid border-2 border-stone-400 text-white w-full md:w-1/5"
+              onClick={allFinances}
+            >
+              See all finances
+            </Button>
+          </div>
           <div
             className={`${getDivStyle(
               filteredItemsLength || itemsLength
