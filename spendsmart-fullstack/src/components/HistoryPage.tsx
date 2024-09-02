@@ -53,6 +53,8 @@ const HistoryPage = () => {
   const [incomesAndExpensesBackground, setIncomesAndExpensesBackground] =
     useState<string>("bg-blue-600");
 
+  const [backgroundToggle, setBackgroundToggle] = useState<boolean>(false);
+
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
     const getFinances = async () => {
@@ -82,6 +84,14 @@ const HistoryPage = () => {
     };
     getFinances();
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIncomeBackground("bg-green-600");
+      setExpenseBackground("bg-red-600");
+      setIncomesAndExpensesBackground("bg-blue-600");
+    }, 1000);
+  }, [backgroundToggle]);
 
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-");
@@ -149,6 +159,8 @@ const HistoryPage = () => {
           setIncomeBackground("bg-green-600");
           setExpenseBackground("bg-red-600");
           setIncomesAndExpensesBackground("bg-gray-600");
+          setBackgroundToggle(!backgroundToggle);
+
           return;
         } else {
           const newItems = prevItems.filter((e) => {
@@ -167,6 +179,8 @@ const HistoryPage = () => {
           setIncomeBackground("bg-green-600");
           setExpenseBackground("bg-red-600");
           setIncomesAndExpensesBackground("bg-gray-600");
+          setBackgroundToggle(!backgroundToggle);
+
           return;
         }
       } else {
@@ -187,6 +201,8 @@ const HistoryPage = () => {
         setIncomeBackground("bg-green-600");
         setExpenseBackground("bg-red-600");
         setIncomesAndExpensesBackground("bg-gray-600");
+        setBackgroundToggle(!backgroundToggle);
+
       }
       setIncomesAndExpenses(false);
       return;
@@ -212,6 +228,7 @@ const HistoryPage = () => {
         setIncomeBackground("bg-gray-600");
         setExpenseBackground("bg-red-600");
         setIncomesAndExpensesBackground("bg-blue-600");
+        setBackgroundToggle(!backgroundToggle);
       } else {
         const expenseItems = items.filter((e) => {
           return e.expense ? true : false;
@@ -233,6 +250,7 @@ const HistoryPage = () => {
         setIncomeBackground("bg-green-600");
         setExpenseBackground("bg-gray-600");
         setIncomesAndExpensesBackground("bg-blue-600");
+        setBackgroundToggle(!backgroundToggle);
       }
     }
   };
