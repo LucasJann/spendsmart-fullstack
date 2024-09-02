@@ -64,7 +64,6 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
       console.error("User not logged in");
       return;
     }
-
     try {
       const response = await fetch(
         `http://localhost:8080/goalsPage/deleteGoal`,
