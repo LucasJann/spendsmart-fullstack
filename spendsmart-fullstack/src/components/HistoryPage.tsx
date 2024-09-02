@@ -151,7 +151,6 @@ const HistoryPage = () => {
           setIncomesAndExpensesBackground("bg-gray-600");
           return;
         } else {
-          console.log("UEQ");
           const newItems = prevItems.filter((e) => {
             const date = e.date;
             const initialDate = formatDate(selectedDate.initialDate);
@@ -295,7 +294,7 @@ const HistoryPage = () => {
             id="searchButton"
             type="submit"
             onClick={filterAll}
-            className={`w-full  p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${incomesAndExpensesBackground}`}
+            className={`w-full p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${incomesAndExpensesBackground}`}
           >
             Search Incomes and Expenses by Date
           </Button>
@@ -303,7 +302,7 @@ const HistoryPage = () => {
       </section>
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-full md:w-full xl:w-5/6 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div className="flex justify-end">
             <Button
@@ -336,7 +335,7 @@ const HistoryPage = () => {
       )}
       {financesFiltered && filteredItemsLength !== 0 && (
         <section
-          className={`w-6/7 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-full md:w-full xl:w-5/6 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-lg overflow-y-auto scrollbar-custom`}
         >
           <div className="flex justify-end">
             <Button
