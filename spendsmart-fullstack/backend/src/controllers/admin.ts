@@ -286,17 +286,14 @@ export const postGoals = async (req: Request, res: Response) => {
 export const deleteGoal = async (req: Request, res: Response) => {
   const _id = req.body._id;
   const user = req.body.email;
-
   try {
     const userLogged = await User.findOne({ email: user });
-
     if (!userLogged) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
     userLogged.goals = userLogged.goals.filter(
       (item: any) => item._id.toString() !== _id
     );
-
     await userLogged.save();
     return res.status(200).json({ message: "Goal removed" });
   } catch (err) {
