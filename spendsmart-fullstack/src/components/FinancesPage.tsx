@@ -228,7 +228,7 @@ const Finances = () => {
           </Button>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label className="ml-1 caret-transparent">{`${
+          <label htmlFor='dateInput' className="ml-1 caret-transparent">{`${
             isSelected ? "Expense Date" : "Income Date"
           }`}</label>
           <Input
@@ -260,7 +260,10 @@ const Finances = () => {
           )}
           {showForm && (
             <Fragment>
-              <label className="ml-1 caret-transparent">
+              <label
+                htmlFor={isSelected ? "expenseInput" : "incomeInput"}
+                className="ml-1 caret-transparent"
+              >
                 {isSelected ? "Expense Value:" : "Income Value:"}
               </label>
               <Input
@@ -272,7 +275,7 @@ const Finances = () => {
                 className="mb-1 text-black text-center rounded-md"
               />
               <label className="ml-1 caret-transparent">Categories:</label>
-              <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md caret-transparent">
+              <div className="mt-1 p-2 bg-black bg-opacity-40 rounded-md caret-transparent cursor-pointer">
                 {isSelected && (
                   <ul className="grid grid-cols-3 gap-3 w-full">
                     <li className="text-center">
