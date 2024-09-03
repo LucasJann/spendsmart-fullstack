@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Image from "./Image";
 import profilePic from "../images/prestate.png";
+
 const NavBar = () => {
   const location = useLocation();
 
@@ -35,7 +36,7 @@ const NavBar = () => {
 
   return (
     <nav
-      className="w-full fixed top-0 p-1 text-white caret-transparent"
+      className="w-full fixed top-0 p-1 text-white caret-transparent "
       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
       {location.pathname !== "/historyPage" && (
@@ -45,7 +46,7 @@ const NavBar = () => {
               location.pathname === "/profilePage"
                 ? "text-yellow-500"
                 : "hover:text-yellow-500"
-            } hover:transition duration-1000 ease-in-out`}
+            } hover:transition duration-1000 ease-in-out `}
             to="/profilePage"
           >
             Profile

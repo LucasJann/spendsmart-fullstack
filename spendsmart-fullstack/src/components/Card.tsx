@@ -67,14 +67,11 @@ const Card: React.FC<cardProperties> = ({
       alt = "Rising Bar";
   }
   return (
-    <div
-      id={_id}
-      className="w-full flex p-2 border rounded-md shadow-mg bg-white shadow "
-    >
+    <div id={_id} className="w-full flex p-2 border rounded-md bg-white ">
       <Image
         src={ctgry}
         alt={alt}
-        className="bg-white rounded-sm flex h-16 w-20 mr-2"
+        className="rounded-sm flex h-16 w-20 mr-2 "
       />
       <div className="w-full grid grid-cols-2 p-2 font-serif">
         {income && (
@@ -87,10 +84,10 @@ const Card: React.FC<cardProperties> = ({
         )}
         {expense && (
           <Fragment>
-              <p className="text-red-600">Date: </p>
-              <p className="text-end text-red-600">{date}</p>
-              <p className="text-red-600">Expense: </p>
-              <p className="text-end text-red-600 truncate">{expense}</p>
+            <p className="text-red-600">Date: </p>
+            <p className="text-end text-red-600">{date}</p>
+            <p className="text-red-600">Expense: </p>
+            <p className="text-end text-red-600 truncate">{expense}</p>
           </Fragment>
         )}
       </div>

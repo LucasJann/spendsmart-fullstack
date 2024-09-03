@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import Image from "./Image";
 import Input from "./Input";
 import Button from "./Button";
@@ -29,8 +28,9 @@ const Profile = () => {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
+
   useEffect(() => {
-    if (imageSaved === false) {
+    if (!imageSaved) {
       const handleBeforeUnload = async () => {
         if (selectedImage) {
           const selectedImageState = selectedImage.split("src\\")[1];
@@ -54,7 +54,11 @@ const Profile = () => {
       };
       handleBeforeUnload();
     }
+    if (imageSaved) {
+      window.location.reload();
+    }
   }, [imageSaved]);
+
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
@@ -254,9 +258,7 @@ const Profile = () => {
           </form>
         )}
         {!formState.image && (
-          <p className="text-white text-3xl font-mono font-bold">
-            {fullName}
-          </p>
+          <p className="text-white text-3xl font-mono font-bold">{fullName}</p>
         )}
         <div className="text-white text-4xl items-start"></div>
         <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mt-1 mb-14 text-white">

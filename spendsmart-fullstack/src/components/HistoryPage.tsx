@@ -202,7 +202,6 @@ const HistoryPage = () => {
         setExpenseBackground("bg-red-600");
         setIncomesAndExpensesBackground("bg-gray-600");
         setBackgroundToggle(!backgroundToggle);
-
       }
       setIncomesAndExpenses(false);
       return;
@@ -273,7 +272,7 @@ const HistoryPage = () => {
       <section
         className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-12`}
       >
-        <form className="flex flex-col items-center" onSubmit={submitHandler}>
+        <form className="flex flex-col items-center " onSubmit={submitHandler}>
           <div className="flex w-full justify-between ">
             <Button
               id="incomeButton"
@@ -320,7 +319,7 @@ const HistoryPage = () => {
       </section>
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`w-full md:w-full xl:w-5/6 mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`w-full sm:w-5/6 md:w-full mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
           <div className="flex justify-end">
             <Button
