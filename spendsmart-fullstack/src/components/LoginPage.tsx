@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Input from "./Input";
 import Button from "./Button";
 import burningSkyImage from "../images/burning-sky.jpg";
+import FormField from "./FormField";
 
 const Login = () => {
   interface formValuesProperties {
@@ -153,7 +153,7 @@ const Login = () => {
         <Button
           id="loginButton"
           type="button"
-          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 caret-transparent "
+          className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 caret-transparent"
           onClick={handleSelected}
           isSelected={isSelected}
         >
@@ -169,16 +169,16 @@ const Login = () => {
           Register
         </Button>
         {isSelected && (
-          <section className="text-left font-serif text-gray-300 caret-transparent">
-            <h2 className={formData.emailError ? "mt-2 text-red-400" : "mt-2"}>
-              E-mail
-            </h2>
-            <Input
+          <section className="text-left font-serif text-gray-300 ">
+            <FormField
               id="loginEmail"
               type="email"
               name="email"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.email}
+              placeholder="Insira seu e-mail"
+              error={error}
+              nameError={formData.emailError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -187,23 +187,18 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-              placeholder="Insira seu e-mail"
-            />
-            {formData.emailError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
-            <h2
-              className={formData.passwordError ? "mt-2 text-red-400" : "mt-2"}
             >
-              Password
-            </h2>
-            <Input
+              E-mail
+            </FormField>
+            <FormField
               id="loginPassword"
               type="password"
               name="password"
-              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400 caret-transparent"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.password}
+              placeholder="Insira sua senha"
+              error={error}
+              nameError={formData.passwordError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -212,16 +207,14 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-              placeholder="Insira sua senha"
-            />
-            {formData.passwordError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
+            >
+              Password
+            </FormField>
+
             <Button
               id="entranceButton"
               type="submit"
-              className="w-full mt-5 p-4 bg-red-500"
+              className="w-full mt-5 p-4 bg-red-500 caret-transparent"
             >
               Entrar
             </Button>
@@ -229,15 +222,15 @@ const Login = () => {
         )}
         {!isSelected && (
           <section className="text-left font-serif text-gray-300">
-            <h2 className={formData.nameError ? "mt-2 text-red-400" : "mt-2"}>
-              Name
-            </h2>
-            <Input
+            <FormField
               id="name"
-              type="text"
               name="name"
+              type="text"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+              placeholder="Insira seu nome"
               value={formData.name}
+              error={error}
+              nameError={formData.nameError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -246,23 +239,18 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-              placeholder="Insira seu nome"
-            />
-            {formData.nameError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
-            <h2
-              className={formData.lastNameError ? "mt-2 text-red-400" : "mt-2"}
             >
-              Last Name
-            </h2>
-            <Input
+              Name
+            </FormField>
+            <FormField
               id="lastName"
-              type="text"
               name="lastName"
+              type="text"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+              placeholder="Insira seu sobrenome"
               value={formData.lastName}
+              error={error}
+              nameError={formData.lastNameError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -271,22 +259,18 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-              placeholder="Insira seu sobrenome"
-            />
-            {formData.lastNameError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
-            <h2 className={formData.emailError ? "mt-2 text-red-400" : "mt-2"}>
-              E-mail
-            </h2>
-            <Input
+            >
+              Last Name
+            </FormField>
+            <FormField
               id="registerEmail"
               type="email"
               name="email"
-              placeholder="Insira seu e-mail"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+              placeholder="Insira seu e-mail"
               value={formData.email}
+              error={error}
+              nameError={formData.emailError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -295,23 +279,18 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-            />
-            <hr />
-            {formData.emailError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <h2
-              className={formData.passwordError ? "mt-2 text-red-400" : "mt-2"}
             >
-              Password
-            </h2>
-            <Input
+              E-mail
+            </FormField>
+            <FormField
               id="registerPassword"
               type="password"
               name="password"
               placeholder="Insira sua senha"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.password}
+              error={error}
+              nameError={formData.passwordError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
@@ -320,43 +299,33 @@ const Login = () => {
                 }));
                 setDisabled(false);
               }}
-            />
-            {formData.passwordError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
-            <h2
-              className={
-                formData.confirmPasswordError ? "mt-2 text-red-400" : "mt-2"
-              }
             >
-              Confirm Password
-            </h2>
-            <Input
+              Password
+            </FormField>
+            <FormField
               id="confirmPassword"
               type="password"
               name="confirmPassword"
               placeholder="Confirme sua senha"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.confirmPassword}
+              error={error}
+              nameError={formData.confirmPasswordError}
               onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
                   confirmPassword: e.target.value,
-                  passwordError: false,
                   confirmPasswordError: false,
                 }));
                 setDisabled(false);
               }}
-            />
-            {formData.confirmPasswordError && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
-            <hr />
+            >
+              Confirm Password
+            </FormField>
             <Button
               id="confirmButton"
               type="submit"
-              className="bg-red-500 mt-5 p-4 w-full"
+              className="bg-red-500 mt-5 p-4 w-full caret-transparent"
               disabled={disabled}
             >
               Confirm
