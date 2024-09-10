@@ -5,6 +5,16 @@ import Button from "./Button";
 import NavBar from "./NavBar";
 import landScape from "../images/morning.jpg";
 import profilePic from "../images/profilepic.jpg";
+import emptyImage from "../images/prestate.png";
+
+const formatBalance = (value: number) => {
+  const formatter = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  });
+  return formatter.format(value / 100);
+};
 
 const Profile = () => {
   interface formProperties {
@@ -24,7 +34,8 @@ const Profile = () => {
   const [fullName, setFullName] = useState<string>("");
   const [balance, setBalance] = useState<number>(0);
   const [imageSaved, setImageSaved] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>(profilePic);
+  const [preState] = useState<string>(emptyImage);
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
@@ -58,7 +69,6 @@ const Profile = () => {
       window.location.reload();
     }
   }, [imageSaved]);
-
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
@@ -104,10 +114,14 @@ const Profile = () => {
           );
         }
         const profileJson = await profileResponse.json();
-        const fetchedProfileImage = profileJson.image
-          ? `../../backend/src/images/${profileJson.image.split("images\\")[1]}`
-          : profilePic;
-        setProfileImage(fetchedProfileImage);
+        if (profileJson.image) {
+          const fetchedProfileImage = profileJson.image
+            ? `../../backend/src/images/${
+                profileJson.image.split("images\\")[1]
+              }`
+            : preState;
+          setProfileImage(fetchedProfileImage);
+        }
 
         const userName = profileJson.name + " " + profileJson.lastName;
         setFullName(userName);
@@ -126,15 +140,6 @@ const Profile = () => {
 
     fetchData();
   }, [formState.onConfirm]);
-
-  const formatBalance = (value: number) => {
-    const formatter = new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-    });
-    return formatter.format(value / 100);
-  };
 
   const handleImageClick = () => {
     setFormState((prevState) => ({
@@ -173,7 +178,7 @@ const Profile = () => {
       const responseData = await response.json();
       const newProfileImage = responseData.path
         ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
-        : profilePic;
+        : preState;
 
       setSelectedImage(responseData.path);
       setProfileImage(newProfileImage);

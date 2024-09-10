@@ -5,17 +5,28 @@ import Button from "./Button";
 import burningSkyImage from "../images/burning-sky.jpg";
 import FormField from "./FormField";
 
+const formatBalance = (value: number) => {
+  const formatter = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  });
+  return formatter.format(value / 100);
+};
+
 const Login = () => {
   interface formValuesProperties {
     name: string;
     lastName: string;
     email: string;
     password: string;
+    initialBalance: string;
     confirmPassword: string;
     nameError: boolean;
     lastNameError: boolean;
     emailError: boolean;
     passwordError: boolean;
+    initialBalanceError: boolean;
     confirmPasswordError: boolean;
   }
 
@@ -25,10 +36,12 @@ const Login = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    initialBalance: "",
     nameError: false,
     lastNameError: false,
     emailError: false,
     passwordError: false,
+    initialBalanceError: false,
     confirmPasswordError: false,
   };
 
@@ -52,10 +65,15 @@ const Login = () => {
     const email = formData.email;
     const password = formData.password;
     const confirmPassword = formData.confirmPassword;
+    let initialBalance = formData.initialBalance;
+
+    if (initialBalance === "") {
+      initialBalance = "0";
+    }
 
     const data = isSelected
       ? { email, password }
-      : { name, lastName, email, password, confirmPassword };
+      : { name, lastName, email, password, confirmPassword, initialBalance };
 
     try {
       const url = isSelected
@@ -115,6 +133,7 @@ const Login = () => {
               email: "",
               password: "",
               confirmPassword: "",
+              initialBalance: "",
             }));
             if (!isSelected) {
               navigate("/");
@@ -138,6 +157,15 @@ const Login = () => {
       password: "",
       emailError: false,
       passwordError: false,
+    }));
+  };
+
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.replace(/[^0-9]/g, "");
+    setFormData((prevState) => ({
+      ...prevState,
+      initialBalance: value,
+      initialBalanceError: false,
     }));
   };
 
@@ -227,7 +255,7 @@ const Login = () => {
               name="name"
               type="text"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
-              placeholder="Insira seu nome"
+              placeholder="Insert your name"
               value={formData.name}
               error={error}
               nameError={formData.nameError}
@@ -247,7 +275,7 @@ const Login = () => {
               name="lastName"
               type="text"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
-              placeholder="Insira seu sobrenome"
+              placeholder="Insert your last name"
               value={formData.lastName}
               error={error}
               nameError={formData.lastNameError}
@@ -267,7 +295,7 @@ const Login = () => {
               type="email"
               name="email"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
-              placeholder="Insira seu e-mail"
+              placeholder="Insert your e-mail"
               value={formData.email}
               error={error}
               nameError={formData.emailError}
@@ -286,7 +314,7 @@ const Login = () => {
               id="registerPassword"
               type="password"
               name="password"
-              placeholder="Insira sua senha"
+              placeholder="Insert your password"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.password}
               error={error}
@@ -306,7 +334,7 @@ const Login = () => {
               id="confirmPassword"
               type="password"
               name="confirmPassword"
-              placeholder="Confirme sua senha"
+              placeholder="Confirm your password"
               className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
               value={formData.confirmPassword}
               error={error}
@@ -321,6 +349,19 @@ const Login = () => {
               }}
             >
               Confirm Password
+            </FormField>
+            <FormField
+              id="initialBalance"
+              type="text"
+              name="confirmPassword"
+              placeholder="Insert your initial Balance, this value can't be changed"
+              className="block w-full mb-2 rounded-md shadow-sm focus:ring-0 border-transparent bg-transparent text-gray-400"
+              value={formatBalance(Number(formData.initialBalance))}
+              error={error}
+              nameError={formData.initialBalanceError}
+              onChange={handleValueChange}
+            >
+              Your initial balance
             </FormField>
             <Button
               id="confirmButton"

@@ -42,6 +42,7 @@ export const Register = async (
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashedPassword,
+      balance: req.body.initialBalance,
       goals: [],
     });
 
