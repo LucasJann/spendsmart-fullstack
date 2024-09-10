@@ -31,7 +31,6 @@ router.post(
     ).isLength({ min: 2, max: 32 }),
     body("email", "Please enter a valid email address")
       .isEmail()
-      .normalizeEmail()
       .custom((value) => {
         const domains = [
           "gmail.com",

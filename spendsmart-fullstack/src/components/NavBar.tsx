@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Image from "./Image";
-import profilePic from "../images/prestate.png";
+import profilePic from "../images/profilepic.jpg"
 
 const NavBar = () => {
   const location = useLocation();
 
-  const [standardImage, setStandardImage] = useState<string>(profilePic);
+  const [standardImage, setStandardImage] = useState<string>(profilePic );
   const [image, setImage] = useState<string>(standardImage);
 
   useEffect(() => {
     const profileImage = async () => {
       const user = localStorage.getItem("user")?.replace(/"/g, "");
-      console.log(user);
       try {
         const response = await fetch(`http://localhost:8080/profile/${user}`);
 
@@ -21,6 +20,11 @@ const NavBar = () => {
         }
 
         const responseData = await response.json();
+
+        if (!responseData.image) {
+          return;
+        }
+
         setImage(
           `../../backend/src/images/${
             responseData.image.split("\\images\\")[1]
