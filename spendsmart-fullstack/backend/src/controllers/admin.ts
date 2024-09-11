@@ -203,13 +203,13 @@ export const postImage = async (req: Request, res: Response) => {
 
   const user = req.params.user;
   const imagePath = req.file.path;
-  const profileImagePath = req.body.profileImage;
+  let profileImagePath = req.body.profileImage;
 
   try {
     const loggedUser = await User.findOne({ email: user });
     const userImage = loggedUser.image?.split("src\\")[1];
+    profileImagePath = loggedUser.image?.split("src\\")[1];
     await User.updateOne({ email: user }, { $set: { image: imagePath } });
-
     clearImage(userImage);
     clearImage(profileImagePath);
     return res.status(200).json({ path: imagePath });
