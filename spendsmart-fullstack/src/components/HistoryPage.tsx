@@ -113,6 +113,18 @@ const HistoryPage = () => {
     }
   };
 
+  const getWidth = (itemsLength: number) => {
+    switch (itemsLength) {
+      case 1:
+        return "w-full md:w-2/4";
+      case 2:
+        return "w-full sm:w-3/4 md:w-3/4";
+
+      default:
+        return "w-full";
+    }
+  };
+
   const dateChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id = e.currentTarget.id;
     const value = e.currentTarget.value;
@@ -319,13 +331,13 @@ const HistoryPage = () => {
       </section>
       {!financesFiltered && items.length !== 0 && (
         <section
-          className={`w-full sm:w-5/6 md:w-full mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          className={`${getWidth(items.length)} mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
               id="allFinances"
               type="button"
-              className="rounded-md bg-black border-solid border-2 border-stone-400 text-white w-full md:w-1/5"
+              className={`rounded-md bg-black border-solid border-2 border-stone-400 text-white w-1/4`}
               onClick={allFinances}
             >
               See all finances
