@@ -64,9 +64,8 @@ const Profile = () => {
         }
       };
       handleBeforeUnload();
-    }
-    if (imageSaved) {
-      window.location.reload();
+    } else {
+      setImageSaved(false);
     }
   }, [imageSaved]);
 
@@ -237,7 +236,7 @@ const Profile = () => {
       style={{ backgroundImage: `url(${landScape})` }}
     >
       <div className="w-full flex flex-col items-center justify-center h-screen">
-        <NavBar />
+        <NavBar imageChanged={imageSaved} />
         <Image
           src={profileImage}
           alt="Image"
