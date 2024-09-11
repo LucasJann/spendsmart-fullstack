@@ -162,6 +162,11 @@ const Login = () => {
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.replace(/[^0-9]/g, "");
+
+    if (value.length > 15) {
+      return;
+    }
+
     setFormData((prevState) => ({
       ...prevState,
       initialBalance: value,
