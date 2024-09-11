@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Image from "./Image";
-import profilePic from "../images/profilepic.jpg"
+import profilePic from "../images/profilepic.jpg";
 
-const NavBar = () => {
+interface NavBarProperties {
+  imageChanged?: boolean;
+}
+
+const NavBar: React.FC<NavBarProperties> = ({ imageChanged }) => {
   const location = useLocation();
 
-  const [standardImage, setStandardImage] = useState<string>(profilePic );
+  const [standardImage, setStandardImage] = useState<string>(profilePic);
   const [image, setImage] = useState<string>(standardImage);
 
   useEffect(() => {
@@ -36,7 +40,7 @@ const NavBar = () => {
       }
     };
     profileImage();
-  }, []);
+  }, [imageChanged]);
 
   return (
     <nav
