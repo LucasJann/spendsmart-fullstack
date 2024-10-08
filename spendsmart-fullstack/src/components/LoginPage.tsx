@@ -47,9 +47,11 @@ const initialFormValues = {
 const Login = () => {
   const [formData, setFormData] =
     useState<initialProperties>(initialFormValues);
+
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [isSelected, setIsSelected] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
