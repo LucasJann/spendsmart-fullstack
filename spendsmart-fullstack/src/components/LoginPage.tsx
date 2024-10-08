@@ -94,37 +94,46 @@ const Login = () => {
           let err = resData.errorMessage;
           if (err !== undefined) {
             setError(err);
-            // refactor to switch
-            if (resData.path === "name") {
-              setFormData((prevState) => ({
-                ...prevState,
-                nameError: true,
-              }));
-              setDisabled(true);
-            } else if (resData.path === "lastName") {
-              setFormData((prevState) => ({
-                ...prevState,
-                lastNameError: true,
-              }));
-              setDisabled(true);
-            } else if (resData.path === "email") {
-              setFormData((prevState) => ({
-                ...prevState,
-                emailError: true,
-              }));
-              setDisabled(true);
-            } else if (resData.path === "password") {
-              setFormData((prevState) => ({
-                ...prevState,
-                passwordError: true,
-              }));
-              setDisabled(true);
-            } else {
-              setFormData((prevState) => ({
-                ...prevState,
-                confirmPasswordError: true,
-              }));
-              setDisabled(true);
+            switch (resData.path) {
+              case "name":
+                setFormData((prevState) => ({
+                  ...prevState,
+                  nameError: true,
+                }));
+                setDisabled(true);
+                break;
+              case "lastName":
+                setFormData((prevState) => ({
+                  ...prevState,
+                  lastNameError: true,
+                }));
+                setDisabled(true);
+                break;
+              case "email":
+                setFormData((prevState) => ({
+                  ...prevState,
+                  emailError: true,
+                }));
+                setDisabled(true);
+                break;
+              case "password":
+                setFormData((prevState) => ({
+                  ...prevState,
+                  passwordError: true,
+                }));
+                setDisabled(true);
+                break;
+              default:
+                setFormData((prevState) => ({
+                  ...prevState,
+                  name: "",
+                  lastName: "",
+                  email: "",
+                  password: "",
+                  confirmPassword: "",
+                  initialBalance: "",
+                }));
+                break;
             }
           } else {
             setFormData((prevState) => ({
