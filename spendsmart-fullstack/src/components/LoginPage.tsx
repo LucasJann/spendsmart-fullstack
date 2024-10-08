@@ -14,6 +14,21 @@ const formatBalance = (value: number) => {
   return formatter.format(value / 100);
 };
 
+interface initialProperties {
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  initialBalance: string;
+  confirmPassword: string;
+  nameError: boolean;
+  lastNameError: boolean;
+  emailError: boolean;
+  passwordError: boolean;
+  initialBalanceError: boolean;
+  confirmPasswordError: boolean;
+}
+
 const initialFormValues = {
   name: "",
   lastName: "",
@@ -30,7 +45,8 @@ const initialFormValues = {
 };
 
 const Login = () => {
-  const [formData, setFormData] = useState(initialFormValues);
+  const [formData, setFormData] =
+    useState<initialProperties>(initialFormValues);
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [isSelected, setIsSelected] = useState(true);
@@ -251,7 +267,8 @@ const Login = () => {
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirm your password"
-                className="w-full mb-2 rounded-md bg-transparent text-gray-400"                value={formData.confirmPassword}
+                className="w-full mb-2 rounded-md bg-transparent text-gray-400"
+                value={formData.confirmPassword}
                 error={error}
                 nameError={formData.confirmPasswordError}
                 onChange={(e) => handleInputChange(e, "confirmPassword")}
@@ -263,7 +280,8 @@ const Login = () => {
                 type="text"
                 name="initialBalance"
                 placeholder="Insert your initial Balance, this value can't be changed"
-                className="w-full mb-2 rounded-md bg-transparent text-gray-400"                value={formatBalance(Number(formData.initialBalance))}
+                className="w-full mb-2 rounded-md bg-transparent text-gray-400"
+                value={formatBalance(Number(formData.initialBalance))}
                 error={error}
                 nameError={formData.initialBalanceError}
                 onChange={handleValueChange}
