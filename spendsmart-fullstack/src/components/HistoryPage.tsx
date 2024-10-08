@@ -99,7 +99,6 @@ const HistoryPage = () => {
   };
 
   const getWidth = (items: number) => {
-    console.log(items);
     switch (items) {
       case 0:
         return "w-1/3";

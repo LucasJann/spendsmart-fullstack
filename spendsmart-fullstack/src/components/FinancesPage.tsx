@@ -33,6 +33,13 @@ const Finances = () => {
     category: "",
   };
 
+  enum Category {
+    AirPlane = "Air Plane",
+    House = "House",
+    RisingBar = "Rising bar"
+
+  }
+
   const [formData, setFormData] = useState<financesProps>(formDataProperties);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
@@ -353,7 +360,7 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "House" ||
+                          formData.category === Category.House ||
                           formData.category === "Casa"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
@@ -371,7 +378,7 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Airplane" ||
+                          formData.category === Category.AirPlane ||
                           formData.category === "Avião"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"
@@ -393,7 +400,7 @@ const Finances = () => {
                     <li className="text-center">
                       <div
                         className={`${
-                          formData.category === "Rising bar" ||
+                          formData.category === Category.RisingBar ||
                           formData.category === "Barra em ascensão"
                             ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                             : "bg-white rounded-sm flex h-16 w-16 mx-auto"

@@ -189,7 +189,7 @@ const Goals = () => {
             type="text"
             value={formData.balance}
             disabled
-            className="w-3/4 mb-2 border rounded-md text-center"
+            className="w-3/4 mb-2 border rounded-md"
           />
           <label htmlFor="goalTitle">What is your goal?</label>
           <Input
@@ -197,7 +197,7 @@ const Goals = () => {
             name="goalTitle"
             type="text"
             value={formData.goal}
-            className="w-3/4 mb-2 text-black text-center rounded-md"
+            className="w-3/4 mb-2 text-black  rounded-md"
             placeholder="Resume your goal"
             onChange={handleGoal}
           />
