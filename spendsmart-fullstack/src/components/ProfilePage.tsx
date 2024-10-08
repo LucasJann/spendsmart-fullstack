@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import Image from "./Image";
 import Input from "./Input";
 import Button from "./Button";
@@ -40,6 +42,8 @@ const Profile = () => {
     undefined
   );
 
+  const location = useLocation();
+
   useEffect(() => {
     if (!imageSaved) {
       const handleBeforeUnload = async () => {
@@ -65,7 +69,7 @@ const Profile = () => {
       };
       handleBeforeUnload();
     } else {
-      setImageSaved(false);
+      window.location.reload();
     }
   }, [imageSaved]);
 
@@ -94,9 +98,39 @@ const Profile = () => {
 
     if (selectedImage !== undefined) {
       window.addEventListener("beforeunload", handleBeforeUnload);
-      window.addEventListener("popstate", handleBeforeUnload);
+      window.addEventListener("popState", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popState", handleBeforeUnload);
+
+        handleBeforeUnload();
+      };
     }
-  }, [selectedImage]);
+  }, [selectedImage, location.pathname]);
+
+  useEffect(() => {
+    if (selectedImage) {
+      const handleRouteChange = async () => {
+        const selectedImageState = selectedImage.split("src\\")[1];
+        const bodyImage = { selectedImage: selectedImageState };
+
+        try {
+          await fetch(`http://localhost:8080/profile/clearImage`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(bodyImage),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      handleRouteChange();
+    }
+  }, [selectedImage, location.pathname]);
 
   useEffect(() => {
     const fetchData = async () => {

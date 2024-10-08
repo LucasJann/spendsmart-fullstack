@@ -5,10 +5,20 @@ interface ImageProps {
   onClick?: (e: React.MouseEvent<HTMLImageElement>) => void;
 }
 
-const Image: React.FC<ImageProps> = ({ src, alt, onClick, className }) => {
+const Image: React.FC<ImageProps> = ({
+  src,
+  alt,
+  onClick,
+  className,
+}) => {
   return (
     <>
-      <img src={src} alt={alt} onClick={onClick} className={className} />
+      <img
+        src={src}
+        alt={alt}
+        onClick={onClick}
+        className={className}
+      />
     </>
   );
 };

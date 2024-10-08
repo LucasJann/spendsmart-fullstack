@@ -94,6 +94,7 @@ const Login = () => {
           let err = resData.errorMessage;
           if (err !== undefined) {
             setError(err);
+            // refactor to switch
             if (resData.path === "name") {
               setFormData((prevState) => ({
                 ...prevState,
