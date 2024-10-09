@@ -8,7 +8,7 @@ import Categories from "./Categories";
 
 import evening from "../images/evening.jpg";
 
-const formatNumber = (value: number) => {
+const formattNumber = (value: number) => {
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -33,41 +33,73 @@ const Finances = () => {
     category: "",
   };
 
-  const navigation = useNavigate();
-
   const [background, setBackground] = useState(false);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
   const [confirmButton, setConfirmButton] = useState<boolean>(false);
   const [formData, setFormData] = useState<financesProps>(formDataProperties);
 
+  const navigation = useNavigate();
+  const date = formData.date;
+  const income = formData.income;
+  const expense = formData.expense;
+  const category = formData.category;
+
   useEffect(() => {
-    if (formData.date !== "") {
+    if (date !== "") {
       setShowForm(true);
     }
-  }, [formData.date]);
+  }, [date]);
 
   useEffect(() => {
-    const date = formData.date;
-    const category = formData.category;
-
-    if (date !== "" && category !== "") {
+    if (date === "" && category === "") {
+      return;
+    }
+    if (income || expense) {
       setConfirmButton(true);
     }
-  }, [formData.date, formData.category, formData.expense, formData.income]);
+  }, [date, category, expense, income]);
 
-  const handleSelected = () => {
+  useEffect(() => {
+    const updateProfileBalance = async () => {
+      const user = localStorage.getItem("user")?.replace(/"/g, "");
+      const value = isSelected
+        ? { expenseValue: expense.replace(/[^0-9]/g, "") }
+        : { incomeValue: income.replace(/[^0-9]/g, "") };
+      try {
+        await fetch(`http://localhost:8080/balance/calcNewBalance/${user}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(value),
+        });
+      } catch (err) {
+        console.error(err);
+      }
+      setFormData(formDataProperties);
+    };
+
+    updateProfileBalance();
+  }, [background]);
+
+  const onSelectHandler = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      income: "",
+      expense: "",
+    }));
     setConfirmButton(false);
     setIsSelected(!isSelected);
   };
 
-  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
 
     const parsedValue = value.replace(/[^0-9]/g, "");
     const number = Number(parsedValue);
-    const formattedNumber = formatNumber(number);
+    const formattedNumber = formattNumber(number);
 
     if (value.length > 13) {
       return;
@@ -94,7 +126,7 @@ const Finances = () => {
         setFormData((prevState) => ({
           ...prevState,
           income: formattedNumber,
-      }));
+        }));
     }
   };
 
@@ -105,24 +137,16 @@ const Finances = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const user = localStorage.getItem("user")?.replace(/"/g, "");
-    let item = {};
-    if (isSelected) {
-      item = {
-        date: formData.date,
-        expense: formData.expense === "" ? "R$0,00" : formData.expense,
-        category: formData.category,
-      };
-    } else {
-      item = {
-        date: formData.date,
-        income: formData.income === "" ? "R$0,00" : formData.income,
-        category: formData.category,
-      };
-    }
+
+    let item = {
+      date: date,
+      expense: isSelected ? expense : income,
+      category: category,
+    };
+
     try {
       await fetch(`http://localhost:8080/finances/${user}`, {
         method: "POST",
@@ -134,58 +158,14 @@ const Finances = () => {
     } catch (err) {
       console.error(err);
     }
-    setBackground(true);
+
     setTimeout(() => {
       setBackground(false);
-    }, 1000);
-    setShowForm(false);
-    setFormData((prevState) => ({
-      ...prevState,
-      date: "",
-    }));
-    setConfirmButton(false);
+    }, 5000);
 
-    if (isSelected) {
-      const expense = { expense: formData.expense.replace(/[^0-9]/g, "") };
-      setFormData((prevState) => ({
-        ...prevState,
-        income: "",
-        expense: "",
-        category: "",
-      }));
-      try {
-        const user = localStorage.getItem("user")?.replace(/"/g, "");
-        await fetch(`http://localhost:8080/balance/addExpense/${user}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(expense),
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      const income = { income: formData.income.replace(/[^0-9]/g, "") };
-      setFormData((prevState) => ({
-        ...prevState,
-        income: "",
-        expense: "",
-        category: "",
-      }));
-      try {
-        const user = localStorage.getItem("user")?.replace(/"/g, "");
-        await fetch(`http://localhost:8080/balance/addIncome/${user}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(income),
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    setShowForm(false);
+    setBackground(true);
+    setConfirmButton(false);
   };
 
   return (
@@ -200,7 +180,7 @@ const Finances = () => {
             id="loginButton"
             type="button"
             className="text-gray-300"
-            onClick={handleSelected}
+            onClick={onSelectHandler}
             isSelected={isSelected}
           >
             Expense
@@ -209,13 +189,13 @@ const Finances = () => {
             id="registerButton"
             type="button"
             className="mb-10 text-gray-300 ml-3"
-            onClick={handleSelected}
+            onClick={onSelectHandler}
             isSelected={!isSelected}
           >
             Income
           </Button>
         </div>
-        <form className="flex flex-col" onSubmit={handleSubmit}>
+        <form className="flex flex-col" onSubmit={onSubmitHandler}>
           <label htmlFor="dateInput" className="ml-1">{`${
             isSelected ? "Expense Date" : "Income Date"
           }`}</label>
@@ -224,7 +204,7 @@ const Finances = () => {
             name="dateInput"
             type="date"
             value={formData.date}
-            onChange={inputChangeHandler}
+            onChange={handleInputChange}
             className="mb-1 text-black text-center rounded-md"
           />
           {!showForm && (
@@ -237,7 +217,7 @@ const Finances = () => {
                 type="submit"
                 className={`mt-2 p-3 ${
                   background ? `bg-green-500` : "bg-red-500"
-                } rounded-md caret-transparent transition duration-1000 ease-in-out`}
+                } rounded-md transition duration-1000 ease-in-out`}
                 onClick={() => {
                   navigation("/historyPage");
                 }}
@@ -250,7 +230,7 @@ const Finances = () => {
             <Fragment>
               <label
                 htmlFor={isSelected ? "expenseInput" : "incomeInput"}
-                className="ml-1 caret-transparent"
+                className="ml-1"
               >
                 {isSelected ? "Expense Value:" : "Income Value:"}
               </label>
@@ -258,7 +238,7 @@ const Finances = () => {
                 id={isSelected ? "expenseInput" : "incomeInput"}
                 name={isSelected ? "expenseInput" : "incomeInput"}
                 value={isSelected ? formData.expense : formData.income}
-                onChange={inputChangeHandler}
+                onChange={handleInputChange}
                 type="text"
                 className="mb-1 text-black text-center rounded-md"
               />
@@ -270,7 +250,7 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="submit"
-                  className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
+                  className="mt-2 p-3 bg-red-500 rounded-md"
                 >
                   Confirm
                 </Button>
@@ -279,7 +259,7 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="button"
-                  className="mt-2 p-3 bg-red-500 rounded-md caret-transparent"
+                  className="mt-2 p-3 bg-red-500 rounded-md"
                   onClick={() => {
                     navigation("/historyPage");
                   }}
