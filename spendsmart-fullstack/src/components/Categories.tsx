@@ -19,7 +19,7 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
   const [category, setCategory] = useState<string>("");
 
   const selectedImage = (e: React.MouseEvent<HTMLImageElement>) => {
-    const selectedCategory = e.currentTarget.alt;
+    const selectedCategory = e.currentTarget.id;
     setCategory(selectedCategory);
   };
 
@@ -32,12 +32,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Cutlery" || category === "Talheres"
+                  category === "1"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="1"
                   src={food}
                   alt="Cutlery"
                   className="max-h-full max-w-full"
@@ -49,13 +50,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Graduation hat" ||
-                  category === "Chapéu de formatura"
+                  category === "2"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="2"
                   src={education}
                   alt="Graduation hat"
                   className="max-h-full max-w-full"
@@ -67,12 +68,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Heart" || category === "Coração"
+                  category === "3"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="3"
                   src={health}
                   alt="Heart"
                   className="max-h-full max-w-full"
@@ -84,12 +86,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Rocket" || category === "Foguete"
+                  category === "4"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="4"
                   src={leisure}
                   alt="Rocket"
                   className="max-h-full max-w-full"
@@ -101,12 +104,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "House" || category === "Casa"
+                  category === "5"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="5"
                   src={home}
                   alt="House"
                   className="max-h-full max-w-full"
@@ -118,12 +122,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Airplane" || category === "Avião"
+                  category === "6"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="6"
                   src={trip}
                   alt="Airplane"
                   className="max-h-full max-w-full"
@@ -139,13 +144,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Rising bar" ||
-                  category === "Barra em ascensão"
+                  category === "7"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="7"
                   src={investments}
                   alt="Rising bar"
                   className="max-h-full max-w-full"
@@ -157,12 +162,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Pigbank" || category === "Cofrinho"
+                  category === "8"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="8"
                   src={extra}
                   alt="Pigbank"
                   className="max-h-full max-w-full"
@@ -174,12 +180,13 @@ const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
             <li className="text-center">
               <div
                 className={`${
-                  category === "Coin" || category === "Moeda"
+                  category === "9"
                     ? "bg-gray-300 rounded-sm flex p-2 h-16 w-16 mx-auto"
                     : "bg-white rounded-sm flex h-16 w-16 mx-auto"
                 }`}
               >
                 <Image
+                  id="9"
                   src={salary}
                   alt="Coin"
                   className="max-h-full max-w-full"
