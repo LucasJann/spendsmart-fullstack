@@ -32,6 +32,13 @@ const Finances = () => {
 
   const navigation = useNavigate();
 
+  const handleCategoryChange = (selectedCategory: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      category: selectedCategory,
+    }));
+  };
+
   useEffect(() => {
     if (formData.date !== "") {
       setShowForm(true);
@@ -189,12 +196,12 @@ const Finances = () => {
       style={{ backgroundImage: `url(${evening})` }}
     >
       <NavBar />
-      <section className="max-w-sm w-3/4 bg-black bg-opacity-60 shadow-mg rounded-md p-6 text-white ">
+      <section className="max-w-sm w-3/4 bg-black bg-opacity-60 rounded-md p-6 text-white">
         <div className="text-center caret-transparent">
           <Button
             id="loginButton"
             type="button"
-            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300"
+            className="text-gray-300"
             onClick={handleSelected}
             isSelected={isSelected}
           >
@@ -203,7 +210,7 @@ const Finances = () => {
           <Button
             id="registerButton"
             type="button"
-            className="bg-transparent border-t-0 border-l-0 border-r-0 mb-10 text-gray-300 ml-3 caret-transparent"
+            className="mb-10 text-gray-300 ml-3"
             onClick={handleSelected}
             isSelected={!isSelected}
           >
@@ -211,7 +218,7 @@ const Finances = () => {
           </Button>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label htmlFor="dateInput" className="ml-1 caret-transparent">{`${
+          <label htmlFor="dateInput" className="ml-1">{`${
             isSelected ? "Expense Date" : "Income Date"
           }`}</label>
           <Input
@@ -220,11 +227,11 @@ const Finances = () => {
             type="date"
             value={formData.date}
             onChange={inputChangeHandler}
-            className="mb-1 text-black text-center rounded-md caret-transparent"
+            className="mb-1 text-black text-center rounded-md"
           />
           {!showForm && (
             <Fragment>
-              <p className="text-gray-400 text-center caret-transparent">
+              <p className="text-gray-400 text-center">
                 -----Select a date to start-----
               </p>
               <Button
@@ -257,7 +264,7 @@ const Finances = () => {
                 type="text"
                 className="mb-1 text-black text-center rounded-md"
               />
-              <Categories isSelected={isSelected} />
+              <Categories isSelected={isSelected} onCategorySelect={handleCategoryChange} />
               {confirmButton && (
                 <Button
                   id="confirmItemButton"
