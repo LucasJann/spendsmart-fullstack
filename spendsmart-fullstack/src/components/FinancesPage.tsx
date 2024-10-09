@@ -1,12 +1,21 @@
-import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Fragment, useState, useEffect } from "react";
 
 import Input from "./Input";
+import NavBar from "./NavBar";
 import Button from "./Button";
+import Categories from "./Categories";
 
 import evening from "../images/evening.jpg";
-import NavBar from "./NavBar";
-import Categories from "./Categories";
+
+const formatNumber = (value: number) => {
+  const formatter = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  });
+  return formatter.format(value / 100);
+};
 
 const Finances = () => {
   interface financesProps {
@@ -24,20 +33,13 @@ const Finances = () => {
     category: "",
   };
 
-  const [formData, setFormData] = useState<financesProps>(formDataProperties);
-  const [showForm, setShowForm] = useState<boolean>(false);
-  const [isSelected, setIsSelected] = useState<boolean>(true);
-  const [background, setBackground] = useState(false);
-  const [confirmButton, setConfirmButton] = useState<boolean>(false);
-
   const navigation = useNavigate();
 
-  const handleCategoryChange = (selectedCategory: string) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      category: selectedCategory,
-    }));
-  };
+  const [background, setBackground] = useState(false);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [isSelected, setIsSelected] = useState<boolean>(true);
+  const [confirmButton, setConfirmButton] = useState<boolean>(false);
+  const [formData, setFormData] = useState<financesProps>(formDataProperties);
 
   useEffect(() => {
     if (formData.date !== "") {
@@ -54,57 +56,53 @@ const Finances = () => {
     }
   }, [formData.date, formData.category, formData.expense, formData.income]);
 
-  const formatNumber = (value: number) => {
-    const formatter = new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-    });
-    return formatter.format(value / 100);
-  };
-
   const handleSelected = () => {
     setConfirmButton(false);
     setIsSelected(!isSelected);
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.name === "dateInput") {
-      const dateValue = e.currentTarget.value;
-      if (dateValue === "") {
-        setConfirmButton(false);
-      }
-      setFormData((prevState) => ({
-        ...prevState,
-        date: dateValue,
-      }));
-    } else if (e.currentTarget.name === "expenseInput") {
-      const value = e.currentTarget.value;
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
 
-      if (value.length > 13) {
-        return;
-      }
-      const parsedValue = value.replace(/[^0-9]/g, "");
-      const number = Number(parsedValue);
-      const formattedExpense = formatNumber(number);
-      setFormData((prevState) => ({
-        ...prevState,
-        expense: formattedExpense,
-      }));
-    } else {
-      const value = e.currentTarget.value;
+    const parsedValue = value.replace(/[^0-9]/g, "");
+    const number = Number(parsedValue);
+    const formattedNumber = formatNumber(number);
 
-      if (value.length > 13) {
-        return;
-      }
-      const parsedValue = value.replace(/[^0-9]/g, "");
-      const number = Number(parsedValue);
-      const formattedIncome = formatNumber(number);
-      setFormData((prevState) => ({
-        ...prevState,
-        income: formattedIncome,
+    if (value.length > 13) {
+      return;
+    }
+
+    if (value === "") {
+      setConfirmButton(false);
+    }
+
+    switch (name) {
+      case "dateInput":
+        setFormData((prevState) => ({
+          ...prevState,
+          date: value,
+        }));
+        break;
+      case "expenseInput":
+        setFormData((prevState) => ({
+          ...prevState,
+          expense: formattedNumber,
+        }));
+        break;
+      default:
+        setFormData((prevState) => ({
+          ...prevState,
+          income: formattedNumber,
       }));
     }
+  };
+
+  const handleCategoryChange = (selectedCategory: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      category: selectedCategory,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -264,7 +262,10 @@ const Finances = () => {
                 type="text"
                 className="mb-1 text-black text-center rounded-md"
               />
-              <Categories isSelected={isSelected} onCategorySelect={handleCategoryChange} />
+              <Categories
+                isSelected={isSelected}
+                onCategorySelect={handleCategoryChange}
+              />
               {confirmButton && (
                 <Button
                   id="confirmItemButton"
