@@ -170,7 +170,7 @@ const Finances = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat "
+      className="flex flex-col items-center justify-center h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${evening})` }}
     >
       <NavBar />
