@@ -13,14 +13,19 @@ import investments from "../Icons/Investments.svg";
 
 interface CategoriesProps {
   isSelected: boolean;
+  onCategorySelect: (category: string) => void;
 }
 
-const Categories: React.FC<CategoriesProps> = ({ isSelected }) => {
+const Categories: React.FC<CategoriesProps> = ({
+  isSelected,
+  onCategorySelect,
+}) => {
   const [category, setCategory] = useState<string>("");
 
   const selectedImage = (e: React.MouseEvent<HTMLImageElement>) => {
     const selectedCategory = e.currentTarget.id;
     setCategory(selectedCategory);
+    onCategorySelect(selectedCategory);
   };
 
   return (

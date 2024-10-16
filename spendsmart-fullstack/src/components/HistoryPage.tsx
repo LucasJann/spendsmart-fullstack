@@ -1,19 +1,47 @@
 import { useState, useEffect } from "react";
 
-import night from "../images/night.jpg";
-
 import Card from "./Card";
 import Input from "./Input";
-import Button from "./Button";
 import NavBar from "./NavBar";
+import Button from "./Button";
+
+import night from "../images/night.jpg";
+
+const formatDate = (date: string) => {
+  const [year, month, day] = date.split("-");
+  return `${day}-${month}-${year}`;
+};
+
+const getDivStyle = (items: number) => {
+  switch (items) {
+    case 1:
+      return "grid grid-cols-1";
+    case 2:
+      return "grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2";
+    case 3:
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3";
+    default:
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+  }
+};
+
+const getWidth = (items: number) => {
+  switch (items) {
+    case 0:
+      return "w-1/3";
+    case 1:
+      return "w-11/12 md:w-5/12";
+    case 2:
+      return "w-11/12 sm:w-full md:w-7/12";
+    case 3:
+      return "w-11/12 sm:w-full md:w-11/12";
+    default:
+      return "w-full";
+  }
+};
 
 const HistoryPage = () => {
-  interface dateInterface {
-    initialDate: string;
-    finalDate: string;
-  }
-
-  interface itemsInterface {
+  interface itemInterface {
     _id: string;
     date: string;
     income?: string;
@@ -21,26 +49,46 @@ const HistoryPage = () => {
     category: string;
   }
 
+  interface dateInterface {
+    finalDate: string;
+    initialDate: string;
+  }
+
+  interface backgroundInterface {
+    income: string;
+    expense: string;
+    incomeAndExpense: string;
+  }
+
+  const itemsObject = [
+    {
+      _id: "",
+      date: "",
+      income: "",
+      expense: "",
+      category: "",
+    },
+  ];
+
   const dateObject = {
-    initialDate: "",
     finalDate: "",
+    initialDate: "",
   };
 
-  const [items, setItems] = useState<itemsInterface[]>([]);
-  const [prevItems, setPrevItems] = useState<itemsInterface[]>([]);
-  const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
+  const backgroundObject = {
+    income: "bg-green-600",
+    expense: "bg-red-600",
+    incomeAndExpense: "bg-blue-600",
+  };
 
+  const [background, setBackground] =
+    useState<backgroundInterface>(backgroundObject);
+
+  const [items, setItems] = useState<itemInterface[]>(itemsObject);
+  const [prevItems, setPrevItems] = useState<itemInterface[]>(itemsObject);
+  const [selectedDate, setSelectedDate] = useState<dateInterface>(dateObject);
   const [filterClicked, setFilterClicked] = useState<boolean | null>(null);
   const [incomesAndExpenses, setIncomesAndExpenses] = useState<boolean>(false);
-
-  const [incomeBackground, setIncomeBackground] =
-    useState<string>("bg-green-600");
-  const [expenseBackground, setExpenseBackground] =
-    useState<string>("bg-red-600");
-  const [incomesAndExpensesBackground, setIncomesAndExpensesBackground] =
-    useState<string>("bg-blue-600");
-
-  const [backgroundToggle, setBackgroundToggle] = useState<boolean>(false);
 
   useEffect(() => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
@@ -58,7 +106,7 @@ const HistoryPage = () => {
         };
 
         responseData.items.sort(
-          (a: itemsInterface, b: itemsInterface) =>
+          (a: itemInterface, b: itemInterface) =>
             parseDate(b.date).getTime() - parseDate(a.date).getTime()
         );
 
@@ -71,190 +119,87 @@ const HistoryPage = () => {
     getFinances();
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIncomeBackground("bg-green-600");
-      setExpenseBackground("bg-red-600");
-      setIncomesAndExpensesBackground("bg-blue-600");
-    }, 1000);
-  }, [backgroundToggle]);
-
-  const formatDate = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    return `${day}-${month}-${year}`;
+  const onFilterHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const id = e.currentTarget.id;
+    id === "incomeButton" ? setFilterClicked(true) : setFilterClicked(false);
   };
 
-  const getDivStyle = (items: number) => {
-    console.log(items);
-    switch (items) {
-      case 1:
-        return "grid grid-cols-1";
-      case 2:
-        return "grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2";
-      case 3:
-        return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3";
-      default:
-        return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-    }
-  };
-
-  const getWidth = (items: number) => {
-    switch (items) {
-      case 0:
-        return "w-1/3";
-      case 1:
-        return "w-11/12 md:w-5/12";
-      case 2:
-        return "w-11/12 sm:w-full md:w-7/12";
-      case 3:
-        return "w-11/12 sm:w-full md:w-11/12";
-      default:
-        return "w-full";
-    }
-  };
-
-  const dateChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id = e.currentTarget.id;
     const value = e.currentTarget.value;
 
-    if (id === "startDate") {
-      setSelectedDate((prevState) => ({
-        ...prevState,
-        initialDate: formatDate(value),
-      }));
-    } else {
-      setSelectedDate((prevState) => ({
-        ...prevState,
-        finalDate: formatDate(value),
-      }));
-    }
+    id === "startDate"
+      ? setSelectedDate((prevState) => ({
+          ...prevState,
+          initialDate: formatDate(value),
+        }))
+      : setSelectedDate((prevState) => ({
+          ...prevState,
+          finalDate: formatDate(value),
+        }));
   };
 
-  const filterAll = () => {
-    setIncomesAndExpenses(true);
-  };
-
-  const allFinances = () => {
-    setItems(prevItems);
-  };
-
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const finalDate = formatDate(selectedDate.finalDate);
+    const initialDate = formatDate(selectedDate.initialDate);
+
     if (incomesAndExpenses) {
-      if (filterClicked === null) {
-        if (items.length !== 0) {
-          const newItems = prevItems.filter((e) => {
-            const date = e.date;
-            const initialDate = formatDate(selectedDate.initialDate);
-            const finalDate = formatDate(selectedDate.finalDate);
-
-            if (date >= initialDate && date <= finalDate) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-          setItems(newItems);
-          setIncomesAndExpenses(false);
-          setIncomeBackground("bg-green-600");
-          setExpenseBackground("bg-red-600");
-          setIncomesAndExpensesBackground("bg-gray-600");
-          setBackgroundToggle(!backgroundToggle);
-
-          return;
+      const incomesAndExpensesItems = prevItems.filter((e) => {
+        if (e.date >= initialDate && e.date <= finalDate) {
+          return true;
         } else {
-          const newItems = prevItems.filter((e) => {
-            const date = e.date;
-            const initialDate = formatDate(selectedDate.initialDate);
-            const finalDate = formatDate(selectedDate.finalDate);
-
-            if (date >= initialDate && date <= finalDate) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-          setItems(newItems);
-          setIncomesAndExpenses(false);
-          setIncomeBackground("bg-green-600");
-          setExpenseBackground("bg-red-600");
-          setIncomesAndExpensesBackground("bg-gray-600");
-          setBackgroundToggle(!backgroundToggle);
-
-          return;
+          return false;
         }
-      } else {
-        const newItems = prevItems.filter((e) => {
-          const date = e.date;
-          const initialDate = formatDate(selectedDate.initialDate);
-          const finalDate = formatDate(selectedDate.finalDate);
-
-          if (date >= initialDate && date <= finalDate) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        setItems(newItems);
-        setIncomeBackground("bg-green-600");
-        setExpenseBackground("bg-red-600");
-        setIncomesAndExpensesBackground("bg-gray-600");
-        setBackgroundToggle(!backgroundToggle);
-      }
+      });
+      setBackground((prevState) => ({
+        ...prevState,
+        income: "bg-green-600",
+        expense: "bg-red-600",
+        incomeAndExpense: "bg-gray-600",
+      }));
       setIncomesAndExpenses(false);
-      return;
-    } else {
-      if (filterClicked) {
-        const incomeItems = prevItems.filter((e) => {
+
+      return setItems(incomesAndExpensesItems);
+    }
+
+    let incomeItems = [{}];
+    let expenseItems = [{}];
+
+    const filteredItems = filterClicked
+      ? (incomeItems = prevItems.filter((e) => {
           return e.income ? true : false;
-        });
-        const filteredItems = incomeItems.filter((e) => {
-          const date = e.date;
-          const initialDate = formatDate(selectedDate.initialDate);
-          const finalDate = formatDate(selectedDate.finalDate);
-
-          if (date >= initialDate && date <= finalDate) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        setItems(filteredItems);
-        setIncomeBackground("bg-gray-600");
-        setExpenseBackground("bg-red-600");
-        setIncomesAndExpensesBackground("bg-blue-600");
-        setBackgroundToggle(!backgroundToggle);
-      } else {
-        const expenseItems = prevItems.filter((e) => {
+        }))
+      : (expenseItems = prevItems.filter((e) => {
           return e.expense ? true : false;
-        });
-        const filteredItems = expenseItems.filter((e) => {
-          const date = e.date;
-          const initialDate = formatDate(selectedDate.initialDate);
-          const finalDate = formatDate(selectedDate.finalDate);
+        }));
 
-          if (date >= initialDate && date <= finalDate) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        setItems(filteredItems);
-        setIncomeBackground("bg-green-600");
-        setExpenseBackground("bg-gray-600");
-        setIncomesAndExpensesBackground("bg-blue-600");
-        setBackgroundToggle(!backgroundToggle);
+    switch (filterClicked) {
+      case true:
+        setBackground(() => ({
+          income: "bg-gray-600",
+          expense: "bg-red-600",
+          incomeAndExpense: "bg-blue-600",
+        }));
+        break;
+      case false:
+        setBackground(() => ({
+          income: "bg-green-600",
+          expense: "bg-gray-600",
+          incomeAndExpense: "bg-blue-600",
+        }));
+        break;
+    }
+
+    const filteredItemsByDate = filteredItems.filter((e) => {
+      if (e.date >= initialDate && e.date <= finalDate) {
+        return true;
+      } else {
+        return false;
       }
-    }
-  };
-
-  const filter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const id = e.currentTarget.id;
-    if (id === "incomeButton") {
-      setFilterClicked(true);
-    } else {
-      setFilterClicked(false);
-    }
+    });
+    setItems(filteredItemsByDate);
   };
 
   return (
@@ -266,21 +211,24 @@ const HistoryPage = () => {
       <section
         className={`max-w-md w-full bg-black bg-opacity-60 rounded-md text-white p-1 mt-12`}
       >
-        <form className="flex flex-col items-center " onSubmit={submitHandler}>
+        <form
+          className="flex flex-col items-center "
+          onSubmit={onSubmitHandler}
+        >
           <div className="flex w-full justify-between ">
             <Button
               id="incomeButton"
               type="submit"
-              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${incomeBackground}`}
-              onClick={filter}
+              onClick={onFilterHandler}
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${background.income}`}
             >
               Search Incomes by Date
             </Button>
             <Button
               id="expenseButton"
               type="submit"
-              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${expenseBackground}`}
-              onClick={filter}
+              onClick={onFilterHandler}
+              className={`w-1/2 p-1 m-1 rounded-md transition duration-700 ease-in-out ${background.expense}`}
             >
               Search Expenses by Date
             </Button>
@@ -290,7 +238,7 @@ const HistoryPage = () => {
             id="startDate"
             name="startDate"
             type="date"
-            onChange={dateChangeHandler}
+            onChange={handleDateChange}
             className="w-3/4 mb-1 text-black text-center rounded-md"
           />
           <label className="">Final Date</label>
@@ -298,46 +246,43 @@ const HistoryPage = () => {
             id="endDate"
             name="endDate"
             type="date"
-            onChange={dateChangeHandler}
-            className="w-3/4 mb-1 text-black text-center rounded-md"
+            onChange={handleDateChange}
+            className="w-3/4 text-black text-center rounded-md"
           />
           <Button
             id="searchButton"
             type="submit"
-            onClick={filterAll}
-            className={`w-full p-3 mt-2 rounded-md rounded transition duration-700 ease-in-out ${incomesAndExpensesBackground}`}
+            onClick={() => {
+              setIncomesAndExpenses(true);
+            }}
+            className={`w-full p-3 mt-2 rounded-md transition duration-700 ease-in-out ${background.incomeAndExpense}`}
           >
             Search Incomes and Expenses by Date
           </Button>
+          <Button
+            id="allFinances"
+            type="button"
+            className={`w-full mt-2 text-white rounded-md bg-black border-solid border-2 border-stone-400  `}
+            onClick={() => {
+              setItems(prevItems);
+              setBackground((prevState) => ({
+                ...prevState,
+                income: "bg-green-600",
+                expense: "bg-red-600",
+                incomeAndExpense: "bg-blue-600",
+              }));
+            }}
+          >
+            See all finances
+          </Button>
         </form>
       </section>
-      {items.length === 0 && (
-        <Button
-          id="allFinances"
-          type="button"
-          className={`rounded-md bg-black border-solid border-2 border-stone-400 text-white w-3/12 mt-2`}
-          onClick={allFinances}
-        >
-          See all finances
-        </Button>
-      )}
       {items.length !== 0 && (
         <section
           className={`${getWidth(
             items.length
-          )} mt-2 max-h-100 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
+          )} mt-2 p-1 lg:p-2 bg-black bg-opacity-40 rounded-md overflow-y-auto scrollbar-custom`}
         >
-          <div className="flex justify-center">
-            <Button
-              id="allFinances"
-              type="button"
-              className={`rounded-md bg-black border-solid border-2 border-stone-400 text-white w-6/12`}
-              onClick={allFinances}
-            >
-              See all finances
-            </Button>
-          </div>
-
           <div className={`${getDivStyle(items.length)} gap-3 mt-2`}>
             {items.map((item) => (
               <Card

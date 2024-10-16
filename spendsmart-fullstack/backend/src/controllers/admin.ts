@@ -159,17 +159,16 @@ export const patchBalance = async (
 ) => {
   const value = req.body;
   const user = req.params.user;
-
   try {
     const userData = await User.findOne({ email: user });
     const parsedBalance = Number(userData.balance);
     let newValue = 0;
 
-    if ("expense" in value) {
-      const parsedValue = Number(value.expense);
+    if ("expenseValue" in value) {
+      const parsedValue = Number(value.expenseValue);
       newValue = parsedBalance - parsedValue;
     } else {
-      const parsedValue = Number(value.income);
+      const parsedValue = Number(value.incomeValue);
       newValue = parsedBalance + parsedValue;
     }
     const newBalance = String(newValue);

@@ -88,8 +88,7 @@ router.post(
 
 router.get("/balance/:user", getBalance);
 router.post("/balance", postBalance);
-router.patch("/balance/addExpense/:user", patchBalance);
-router.patch("/balance/addIncome/:user", patchBalance);
+router.patch("/balance/calcNewBalance/:user", patchBalance);
 
 router.post(
   "/login",
