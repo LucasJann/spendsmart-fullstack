@@ -9,6 +9,8 @@ import landScape from "../images/morning.jpg";
 import profilePic from "../images/profilepic.jpg";
 import emptyImage from "../images/prestate.png";
 
+const user = localStorage.getItem("user")?.replace(/"/g, "");
+
 const formatBalance = (value: number) => {
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -29,7 +31,7 @@ interface formProperties {
   image: boolean;
   disabled: boolean;
   onConfirm: boolean;
-  imageSaved: boolean
+  imageSaved: boolean;
   editBalance: boolean;
 }
 
@@ -50,63 +52,57 @@ const Profile = () => {
   };
 
   const [form, setForm] = useState(formValues);
-  const [preState] = useState<string>(emptyImage);
   const [profile, setProfile] = useState(profileValues);
+  const [preState] = useState<string>(emptyImage);
 
   const location = useLocation();
 
   useEffect(() => {
-    if (!form.imageSaved) {
-      const handleBeforeUnload = async () => {
-        if (profile.selectedImage) {
-          const selectedImageState = profile.selectedImage.split("src\\")[1];
+    if (profile.selectedImage) {
+      const handleRouteChange = async () => {
+        const selectedImageState = profile.selectedImage?.split("src\\")[1];
+        const imageObj = { selectedImage: selectedImageState };
 
-          const bodyImage = {
-            selectedImage: selectedImageState,
-          };
-
-          try {
-            await fetch(`http://localhost:8080/profile/clearImage`, {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(bodyImage),
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      };
-      handleBeforeUnload();
-    } else {
-      window.location.reload();
-    }
-  }, [form.imageSaved]);
-
-  useEffect(() => {
-    const handleBeforeUnload = async () => {
-      if (profile.selectedImage) {
-        const selectedImageState = profile.selectedImage.split("src\\")[1];
-
-        const bodyImage = {
-          selectedImage: selectedImageState,
-        };
-
-        console.log(bodyImage)
         try {
           await fetch(`http://localhost:8080/profile/clearImage`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(bodyImage),
+            body: JSON.stringify(imageObj),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      handleRouteChange();
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (profile.selectedImage) {
+        const selectedImageState = profile.selectedImage.split("src\\")[1];
+
+        const imageObj = {
+          selectedImage: selectedImageState,
+        };
+
+        try {
+          await fetch(`http://localhost:8080/profile/clearImage`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(imageObj),
           });
         } catch (err) {
           console.error(err);
         }
       }
     };
+
     if (profile.selectedImage !== undefined) {
       window.addEventListener("beforeunload", handleBeforeUnload);
       window.addEventListener("popState", handleBeforeUnload);
@@ -121,31 +117,36 @@ const Profile = () => {
   }, [profile.selectedImage, location.pathname]);
 
   useEffect(() => {
-    if (profile.selectedImage) {
-      const handleRouteChange = async () => {
-        const selectedImageState = profile.selectedImage?.split("src\\")[1];
-        const bodyImage = { selectedImage: selectedImageState };
+    if (!form.imageSaved) {
+      const handleBeforeUnload = async () => {
+        if (profile.selectedImage) {
+          const selectedImageState = profile.selectedImage.split("src\\")[1];
 
-        try {
-          await fetch(`http://localhost:8080/profile/clearImage`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(bodyImage),
-          });
-        } catch (err) {
-          console.error(err);
+          const imageObj = {
+            selectedImage: selectedImageState,
+          };
+
+          try {
+            await fetch(`http://localhost:8080/profile/clearImage`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(imageObj),
+            });
+          } catch (err) {
+            console.error(err);
+          }
         }
       };
-
-      handleRouteChange();
+      handleBeforeUnload();
+    } else {
+      window.location.reload();
     }
-  }, [location.pathname]);
+  }, [form.imageSaved]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const user = localStorage.getItem("user")?.replace(/"/g, "");
       try {
         const [profileResponse, balanceResponse] = await Promise.all([
           fetch(`http://localhost:8080/profile/${user}`),
@@ -214,7 +215,6 @@ const Profile = () => {
     }
 
     try {
-      const user = localStorage.getItem("user")?.replace(/"/g, "");
       const response = await fetch(
         `http://localhost:8080/profile/image/${user}`,
         {
@@ -256,7 +256,6 @@ const Profile = () => {
     }
 
     try {
-      const user = localStorage.getItem("user")?.replace(/"/g, "");
       await fetch(`http://localhost:8080/profile/${user}`, {
         method: "POST",
         body: formData,
@@ -322,7 +321,9 @@ const Profile = () => {
           </form>
         )}
         {!form.image && (
-          <p className="text-white text-3xl font-mono font-bold">{profile.name}</p>
+          <p className="text-white text-3xl font-mono font-bold">
+            {profile.name}
+          </p>
         )}
         <div className="text-white text-4xl items-start"></div>
         <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mt-1 mb-14 text-white">
