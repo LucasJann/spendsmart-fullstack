@@ -18,37 +18,48 @@ const formatBalance = (value: number) => {
   return formatter.format(value / 100);
 };
 
-const Profile = () => {
-  interface formProperties {
-    image: boolean;
-    disabled: boolean;
-    onConfirm: boolean;
-    editBalance: boolean;
-  }
+interface profileProperties {
+  name: string;
+  image: string;
+  balance: number;
+  selectedImage: string | undefined;
+}
 
-  const formValues = {
+interface formProperties {
+  image: boolean;
+  disabled: boolean;
+  onConfirm: boolean;
+  imageSaved: boolean
+  editBalance: boolean;
+}
+
+const Profile = () => {
+  const profileValues: profileProperties = {
+    name: "",
+    image: profilePic,
+    balance: 0,
+    selectedImage: undefined,
+  };
+
+  const formValues: formProperties = {
     image: false,
     disabled: true,
     onConfirm: false,
+    imageSaved: false,
     editBalance: false,
   };
-  const [formState, setFormState] = useState<formProperties>(formValues);
-  const [fullName, setFullName] = useState<string>("");
-  const [balance, setBalance] = useState<number>(0);
-  const [imageSaved, setImageSaved] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>(profilePic);
+
+  const [form, setForm] = useState(formValues);
   const [preState] = useState<string>(emptyImage);
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
+  const [profile, setProfile] = useState(profileValues);
 
   const location = useLocation();
 
   useEffect(() => {
-    if (!imageSaved) {
+    if (!form.imageSaved) {
       const handleBeforeUnload = async () => {
-        if (selectedImage) {
-          const selectedImageState = selectedImage.split("src\\")[1];
+        if (profile.selectedImage) {
+          const selectedImageState = profile.selectedImage.split("src\\")[1];
 
           const bodyImage = {
             selectedImage: selectedImageState,
@@ -71,17 +82,18 @@ const Profile = () => {
     } else {
       window.location.reload();
     }
-  }, [imageSaved]);
+  }, [form.imageSaved]);
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
-      if (selectedImage) {
-        const selectedImageState = selectedImage.split("src\\")[1];
+      if (profile.selectedImage) {
+        const selectedImageState = profile.selectedImage.split("src\\")[1];
 
         const bodyImage = {
           selectedImage: selectedImageState,
         };
 
+        console.log(bodyImage)
         try {
           await fetch(`http://localhost:8080/profile/clearImage`, {
             method: "DELETE",
@@ -95,8 +107,7 @@ const Profile = () => {
         }
       }
     };
-
-    if (selectedImage !== undefined) {
+    if (profile.selectedImage !== undefined) {
       window.addEventListener("beforeunload", handleBeforeUnload);
       window.addEventListener("popState", handleBeforeUnload);
 
@@ -107,12 +118,12 @@ const Profile = () => {
         handleBeforeUnload();
       };
     }
-  }, [selectedImage, location.pathname]);
+  }, [profile.selectedImage, location.pathname]);
 
   useEffect(() => {
-    if (selectedImage) {
+    if (profile.selectedImage) {
       const handleRouteChange = async () => {
-        const selectedImageState = selectedImage.split("src\\")[1];
+        const selectedImageState = profile.selectedImage?.split("src\\")[1];
         const bodyImage = { selectedImage: selectedImageState };
 
         try {
@@ -130,7 +141,7 @@ const Profile = () => {
 
       handleRouteChange();
     }
-  }, [selectedImage, location.pathname]);
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,18 +157,23 @@ const Profile = () => {
             `Failed to fetch profile data. Status: ${profileResponse.status}`
           );
         }
+
         const profileJson = await profileResponse.json();
+
         if (profileJson.image) {
           const fetchedProfileImage = profileJson.image
             ? `../../backend/src/images/${
                 profileJson.image.split("images\\")[1]
               }`
             : preState;
-          setProfileImage(fetchedProfileImage);
-        }
+          const userName = profileJson.name + " " + profileJson.lastName;
 
-        const userName = profileJson.name + " " + profileJson.lastName;
-        setFullName(userName);
+          setProfile((prevState) => ({
+            ...prevState,
+            name: userName,
+            image: fetchedProfileImage,
+          }));
+        }
 
         if (!balanceResponse.ok) {
           throw new Error(
@@ -165,17 +181,20 @@ const Profile = () => {
           );
         }
         const balanceJson = await balanceResponse.json();
-        setBalance(balanceJson.balance || 0);
+        setProfile((prevState) => ({
+          ...prevState,
+          balance: balanceJson.balance || 0,
+        }));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [formState.onConfirm]);
+  }, [form.onConfirm]);
 
   const handleImageClick = () => {
-    setFormState((prevState) => ({
+    setForm((prevState) => ({
       ...prevState,
       image: true,
     }));
@@ -190,8 +209,8 @@ const Profile = () => {
       formData.append("image", inputImage.files[0]);
     }
 
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
+    if (profile.image) {
+      formData.append("profileImage", profile.image);
     }
 
     try {
@@ -207,14 +226,17 @@ const Profile = () => {
       if (!response.ok) {
         console.error("Error to fetch");
       }
-
       const responseData = await response.json();
+
       const newProfileImage = responseData.path
         ? `../../backend/src/images/${responseData.path.split("images\\")[1]}`
         : preState;
 
-      setSelectedImage(responseData.path);
-      setProfileImage(newProfileImage);
+      setProfile((prevState) => ({
+        ...prevState,
+        image: newProfileImage,
+        selectedImage: responseData.path,
+      }));
     } catch (err) {
       console.error(err);
     }
@@ -229,8 +251,8 @@ const Profile = () => {
       formData.append("image", inputElement.files[0]);
     }
 
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
+    if (profile.image) {
+      formData.append("profileImage", profile.image);
     }
 
     try {
@@ -242,18 +264,19 @@ const Profile = () => {
     } catch (error) {
       console.error("Error uploading profile image:", error);
     }
-    setImageSaved(true);
-    setFormState((prevState) => ({
+
+    setForm((prevState) => ({
       ...prevState,
       image: false,
-      onConfirm: !formState.onConfirm,
+      onConfirm: !form.onConfirm,
+      imageSaved: true,
     }));
   };
 
   const getBalanceTextColor = () => {
-    if (balance > 0) {
+    if (profile.balance > 0) {
       return "text-green-300";
-    } else if (balance < 0) {
+    } else if (profile.balance < 0) {
       return "text-red-300";
     }
     return "text-gray-300";
@@ -261,7 +284,10 @@ const Profile = () => {
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.replace(/[^0-9]/g, "");
-    setBalance(Number(value));
+    setProfile((prevState) => ({
+      ...prevState,
+      balance: Number(value),
+    }));
   };
 
   return (
@@ -270,14 +296,14 @@ const Profile = () => {
       style={{ backgroundImage: `url(${landScape})` }}
     >
       <div className="w-full flex flex-col items-center justify-center h-screen">
-        <NavBar imageChanged={imageSaved} />
+        <NavBar image={form.imageSaved} />
         <Image
-          src={profileImage}
+          src={profile.image}
           alt="Image"
           onClick={handleImageClick}
           className="w-64 h-64 rounded-full "
         />
-        {formState.image && (
+        {form.image && (
           <form onSubmit={handleImageUpload}>
             <Input
               id="image"
@@ -295,8 +321,8 @@ const Profile = () => {
             </Button>
           </form>
         )}
-        {!formState.image && (
-          <p className="text-white text-3xl font-mono font-bold">{fullName}</p>
+        {!form.image && (
+          <p className="text-white text-3xl font-mono font-bold">{profile.name}</p>
         )}
         <div className="text-white text-4xl items-start"></div>
         <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mt-1 mb-14 text-white">
@@ -306,9 +332,9 @@ const Profile = () => {
             type="text"
             name="balance"
             className={`w-full rounded-md shadow-sm focus:ring-0 border-transparent ${getBalanceTextColor()} bg-transparent text-center text-md`}
-            value={formatBalance(balance)}
+            value={formatBalance(profile.balance)}
             onChange={handleValueChange}
-            disabled={formState.disabled}
+            disabled={form.disabled}
           />
         </div>
       </div>

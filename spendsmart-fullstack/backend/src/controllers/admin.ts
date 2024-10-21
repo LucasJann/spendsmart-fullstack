@@ -219,7 +219,7 @@ export const postImage = async (req: Request, res: Response) => {
 };
 
 export const deleteImage = (req: Request, res: Response) => {
-  const image = req.body.image;
+  const image = req.file?.path;
   const selectedImage = req.body.selectedImage;
   try {
     clearImage(image || selectedImage);
@@ -233,7 +233,6 @@ export const imageChanged = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  const user = req.params.user;
   const newImage = req.file.path;
   const currentImage = req.body.profileImage;
 
@@ -242,10 +241,15 @@ export const imageChanged = async (req: Request, res: Response) => {
   }
 
   try {
-    const userLogged = await User.findOne({ email: user });
-    const splittedUserImage = userLogged.image.split("images\\")[1];
-    const splittedCurrentImage = currentImage.split("images/")[1];
-    if (splittedUserImage !== splittedCurrentImage) {
+    const resolvedFilePath = path.join(__dirname, "..", currentImage);
+
+    const imageName = path.basename(resolvedFilePath);
+
+    const folderPath = path.dirname(resolvedFilePath);
+
+    const files = await fs.promises.readdir(folderPath);
+
+    if (!files.includes(imageName)) {
       clearImage(currentImage);
       return res.status(201).json({ path: newImage });
     } else {
