@@ -16,43 +16,43 @@ const formatBalance = (value: number) => {
 
 interface initialProperties {
   name: string;
-  lastName: string;
-  email: string;
-  password: string;
-  initialBalance: string;
-  confirmPassword: string;
   nameError: boolean;
+  lastName: string;
   lastNameError: boolean;
+  email: string;
   emailError: boolean;
+  password: string;
   passwordError: boolean;
+  initialBalance: string;
   initialBalanceError: boolean;
+  confirmPassword: string;
   confirmPasswordError: boolean;
 }
 
 const initialFormValues = {
   name: "",
-  lastName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  initialBalance: "",
   nameError: false,
+  lastName: "",
   lastNameError: false,
+  email: "",
   emailError: false,
+  password: "",
   passwordError: false,
-  initialBalanceError: false,
+  confirmPassword: "",
   confirmPasswordError: false,
+  initialBalance: "",
+  initialBalanceError: false,
 };
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] =
     useState<initialProperties>(initialFormValues);
 
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [isSelected, setIsSelected] = useState(true);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem("user", "");

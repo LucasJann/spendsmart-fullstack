@@ -153,14 +153,19 @@ const HistoryPage = () => {
           return false;
         }
       });
+
       setBackground((prevState) => ({
         ...prevState,
         income: "bg-green-600",
         expense: "bg-red-600",
         incomeAndExpense: "bg-gray-600",
       }));
-      setIncomesAndExpenses(false);
 
+      setTimeout(() => {
+        setBackground(backgroundObject);
+      }, 1000);
+
+      setIncomesAndExpenses(false);
       return setItems(incomesAndExpensesItems);
     }
 
@@ -182,6 +187,9 @@ const HistoryPage = () => {
           expense: "bg-red-600",
           incomeAndExpense: "bg-blue-600",
         }));
+        setTimeout(() => {
+          setBackground(backgroundObject);
+        }, 1000);
         break;
       case false:
         setBackground(() => ({
@@ -189,6 +197,9 @@ const HistoryPage = () => {
           expense: "bg-gray-600",
           incomeAndExpense: "bg-blue-600",
         }));
+        setTimeout(() => {
+          setBackground(backgroundObject);
+        }, 1000);
         break;
     }
 

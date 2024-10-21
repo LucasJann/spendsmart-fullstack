@@ -1,50 +1,47 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+
 import Image from "./Image";
 import profilePic from "../images/profilepic.jpg";
 
+let profile = profilePic;
+
 interface NavBarProperties {
-  imageChanged?: boolean;
+  image?: boolean;
 }
 
-const NavBar: React.FC<NavBarProperties> = ({ imageChanged }) => {
+const NavBar: React.FC<NavBarProperties> = ({ image }) => {
+  const user = localStorage.getItem("user")?.replace(/"/g, "");
   const location = useLocation();
-
-  const [standardImage, setStandardImage] = useState<string>(profilePic);
-  const [image, setImage] = useState<string>(standardImage);
+  
+  const [defaultImage, setDefaultImage] = useState<string>(profile);
 
   useEffect(() => {
-    const profileImage = async () => {
-      const user = localStorage.getItem("user")?.replace(/"/g, "");
+    const profilePic = async () => {
       try {
         const response = await fetch(`http://localhost:8080/profile/${user}`);
 
         if (!response.ok) {
-          console.error("");
+          console.error(":::Internal Server Error:::");
         }
-
         const responseData = await response.json();
 
         if (!responseData.image) {
           return;
         }
-
-        setImage(
-          `../../backend/src/images/${
-            responseData.image.split("\\images\\")[1]
-          }`
-        );
-        setStandardImage(image);
+        const image = responseData.image.split("\\images\\")[1];
+        setDefaultImage(`../../backend/src/images/${image}`);
+        profile = defaultImage;
       } catch (err) {
         console.error(err);
       }
     };
-    profileImage();
-  }, [imageChanged]);
+    profilePic();
+  }, [image]);
 
   return (
     <nav
-      className="w-full fixed top-0 p-1 text-white caret-transparent "
+      className="w-full fixed top-0 p-1 text-white"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
       {location.pathname !== "/historyPage" && (
@@ -81,7 +78,7 @@ const NavBar: React.FC<NavBarProperties> = ({ imageChanged }) => {
           </Link>
           <Link className="flex justify-end w-full" to="/profilePage">
             <Image
-              src={image}
+              src={defaultImage}
               alt="Profile image"
               className="rounded-xl w-8 h-8 mr-2"
             />
