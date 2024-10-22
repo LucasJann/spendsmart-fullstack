@@ -14,9 +14,22 @@ interface ValidationErrorProps {
   location: string;
 }
 
-const clearImage = (filePath: string) => {
-  filePath = path.join(__dirname, "..", filePath);
-  fs.unlink(filePath, (err) => console.error(err));
+const clearImage = async (filePath: string) => {
+  try {
+    const resolvedFilePath = path.join(__dirname, "..", filePath);
+
+    const imageName = path.basename(resolvedFilePath);
+
+    const folderPath = path.dirname(resolvedFilePath);
+
+    const files = await fs.promises.readdir(folderPath);
+
+    if (files.includes(imageName)) {
+      await fs.promises.unlink(resolvedFilePath);
+    }
+  } catch (error) {
+    console.error("Erro ao tentar remover a imagem:", error);
+  }
 };
 
 export const Register = async (
@@ -201,25 +214,17 @@ export const postImage = async (req: Request, res: Response) => {
   }
 
   const user = req.params.user;
-  const newImage = req.file.path;
-  const profileImage = req.body.profileImage;
+  const imagePath = req.file.path;
+  const profileImagePath = req.body.profileImage;
 
   try {
-    await User.updateOne({ email: user }, { $set: { image: newImage } });
-    const resolvedFilePath = path.join(__dirname, "..", profileImage);
+    const loggedUser = await User.findOne({ email: user });
+    const userImage = loggedUser.image?.split("src\\")[1];
+    await User.updateOne({ email: user }, { $set: { image: imagePath } });
 
-    const imageName = path.basename(resolvedFilePath);
-
-    const folderPath = path.dirname(resolvedFilePath);
-
-    const files = await fs.promises.readdir(folderPath);
-
-    if (!files.includes(imageName)) {
-      clearImage(profileImage);
-      return res.status(201).json({ path: newImage });
-    } else {
-      return res.status(201).json({ path: newImage });
-    }
+    clearImage(userImage);
+    clearImage(profileImagePath);
+    return res.status(200).json({ path: imagePath });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
@@ -250,11 +255,8 @@ export const imageChanged = async (req: Request, res: Response) => {
 
   try {
     const resolvedFilePath = path.join(__dirname, "..", currentImage);
-
     const imageName = path.basename(resolvedFilePath);
-
     const folderPath = path.dirname(resolvedFilePath);
-
     const files = await fs.promises.readdir(folderPath);
 
     if (!files.includes(imageName)) {
