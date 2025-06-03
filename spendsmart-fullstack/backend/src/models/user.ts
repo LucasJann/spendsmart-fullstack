@@ -2,10 +2,12 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface Item {
   id: string;
+  alt: string
   date: string;
   income?: string;
   expense?: string;
   category: string;
+  iconPath: string;
 }
 
 interface Goal {
@@ -16,20 +18,22 @@ interface Goal {
 
 interface User extends Document {
   name: string;
-  lastName: string;
   email: string;
-  password: string;
-  balance: string;
-  image?: string;
   items: Item[];
+  image?: string;
   goals: Goal[];
+  balance: string;
+  lastName: string;
+  password: string;
 }
 
 const ItemSchema = new Schema({
+  alt: { type: String, required: true },
   date: { type: String, required: true },
   income: { type: String },
   expense: { type: String },
   category: { type: String, required: true },
+  iconPath: { type: String, required: true },
 });
 
 const GoalSchema = new Schema({
@@ -39,13 +43,13 @@ const GoalSchema = new Schema({
 
 const UserSchema = new Schema({
   name: { type: String, required: true },
-  lastName: { type: String, required: true },
   email: { type: String, required: true },
-  password: { type: String, required: true },
-  balance: { type: String, default: "0" },
   image: { type: String },
   items: { type: [ItemSchema], default: [] },
   goals: { type: [GoalSchema], default: [] },
+  balance: { type: String, default: "0" },
+  lastName: { type: String, required: true },
+  password: { type: String, required: true },
 });
 
 export const User = mongoose.model<User>("User", UserSchema);

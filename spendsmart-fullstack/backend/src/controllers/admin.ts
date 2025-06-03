@@ -95,7 +95,6 @@ export const Login = async (
 
   try {
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(422).json({
         errorMessage: "User not found",
@@ -254,18 +253,20 @@ export const imageChanged = async (req: Request, res: Response) => {
   }
 
   try {
-    const resolvedFilePath = path.join(__dirname, "..", currentImage);
-    const imageName = path.basename(resolvedFilePath);
-    const folderPath = path.dirname(resolvedFilePath);
-    const files = await fs.promises.readdir(folderPath);
+    const resolvedFilePath = path.resolve(__dirname, "..", currentImage);
 
-    if (!files.includes(imageName)) {
-      clearImage(currentImage);
-      return res.status(201).json({ path: newImage });
-    } else {
-      return res.status(201).json({ path: newImage });
+    const fileExists = await fs.promises
+      .access(resolvedFilePath)
+      .then(() => true)
+      .catch(() => false);
+
+    if (fileExists) {
+      await clearImage(currentImage);
     }
+
+    return res.status(201).json({ path: newImage });
   } catch (err) {
+    console.error("Error handling image change:", err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 };

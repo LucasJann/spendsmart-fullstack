@@ -6,7 +6,7 @@ import {
   act,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Profile from "../components/ProfilePage";
+import Profile from "../pages/Profile";
 import fetchMock from "jest-fetch-mock";
 
 fetchMock.enableMocks();

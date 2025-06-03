@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import Card from "./Card";
-import Input from "./Input";
-import NavBar from "./NavBar";
-import Button from "./Button";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import NavBar from "../components/NavBar";
+import Button from "../components/Button";
 
 import night from "../images/night.jpg";
 
@@ -43,10 +43,12 @@ const getWidth = (items: number) => {
 const HistoryPage = () => {
   interface itemInterface {
     _id: string;
+    alt: string;
     date: string;
     income?: string;
     expense?: string;
     category: string;
+    iconPath: string;
   }
 
   interface dateInterface {
@@ -63,10 +65,12 @@ const HistoryPage = () => {
   const itemsObject = [
     {
       _id: "",
+      alt: "",
       date: "",
       income: "",
       expense: "",
       category: "",
+      iconPath: "",
     },
   ];
 
@@ -297,12 +301,13 @@ const HistoryPage = () => {
           <div className={`${getDivStyle(items.length)} gap-3 mt-2`}>
             {items.map((item) => (
               <Card
-                key={item._id}
                 _id={item._id}
+                key={item._id}
+                alt={item.alt}
                 date={formatDate(item.date)}
                 income={item.income}
                 expense={item.expense}
-                category={item.category}
+                iconPath={item.iconPath}
               />
             ))}
           </div>
