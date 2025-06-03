@@ -6,8 +6,7 @@ import mongoose from "mongoose";
 import mainRoute from "./routes/main";
 
 const MONGODB_URI =
-  "mongodb+srv://lucasjan:Q41TavYrylvI7Xki@cluster.neqaq8n.mongodb.net/logins?&w=majority";
-
+"mongodb+srv://lucasjanjobs:bqtgpHYWUo41a3nE@cluster0.e2ul92v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 const app = express();
 
 app.use(

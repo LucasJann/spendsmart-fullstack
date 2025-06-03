@@ -1,29 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import Image from "./Image";
-import Input from "./Input";
-import Button from "./Button";
-import NavBar from "./NavBar";
+import Image from "../components/Image";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import NavBar from "../components/NavBar";
+import Balance from "../components/Balance";
 import landScape from "../images/morning.jpg";
 import profilePic from "../images/profilepic.jpg";
 import emptyImage from "../images/prestate.png";
 
 const user = localStorage.getItem("user")?.replace(/"/g, "");
 
-const formatBalance = (value: number) => {
-  const formatter = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  });
-  return formatter.format(value / 100);
-};
-
 interface profileProperties {
   name: string;
   image: string;
-  balance: number;
   selectedImage: string | undefined;
 }
 
@@ -32,14 +23,12 @@ interface formProperties {
   disabled: boolean;
   onConfirm: boolean;
   imageSaved: boolean;
-  editBalance: boolean;
 }
 
 const Profile = () => {
   const profileValues: profileProperties = {
     name: "",
     image: profilePic,
-    balance: 0,
     selectedImage: undefined,
   };
 
@@ -48,7 +37,6 @@ const Profile = () => {
     disabled: true,
     onConfirm: false,
     imageSaved: false,
-    editBalance: false,
   };
 
   const [form, setForm] = useState(formValues);
@@ -109,7 +97,7 @@ const Profile = () => {
 
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
-        window.addEventListener("popState", handleBeforeUnload);
+        window.removeEventListener("popState", handleBeforeUnload);
 
         handleBeforeUnload();
       };
@@ -148,10 +136,9 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [profileResponse, balanceResponse] = await Promise.all([
-          fetch(`http://localhost:8080/profile/${user}`),
-          fetch(`http://localhost:8080/balance/${user}`),
-        ]);
+        const profileResponse = await fetch(
+          `http://localhost:8080/profile/${user}`
+        );
 
         if (!profileResponse.ok) {
           throw new Error(
@@ -175,24 +162,13 @@ const Profile = () => {
             image: fetchedProfileImage,
           }));
         }
-
-        if (!balanceResponse.ok) {
-          throw new Error(
-            `Failed to fetch balance data. Status: ${balanceResponse.status}`
-          );
-        }
-        const balanceJson = await balanceResponse.json();
-        setProfile((prevState) => ({
-          ...prevState,
-          balance: balanceJson.balance || 0,
-        }));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [form.onConfirm]);
+  }, [form.onConfirm, form.imageSaved]);
 
   const handleImageClick = () => {
     setForm((prevState) => ({
@@ -272,23 +248,6 @@ const Profile = () => {
     }));
   };
 
-  const getBalanceTextColor = () => {
-    if (profile.balance > 0) {
-      return "text-green-300";
-    } else if (profile.balance < 0) {
-      return "text-red-300";
-    }
-    return "text-gray-300";
-  };
-
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]/g, "");
-    setProfile((prevState) => ({
-      ...prevState,
-      balance: Number(value),
-    }));
-  };
-
   return (
     <div
       className="flex justify-center h-screen bg-cover bg-center bg-no-repeat caret-transparent w-full"
@@ -327,16 +286,8 @@ const Profile = () => {
         )}
         <div className="text-white text-4xl items-start"></div>
         <div className="flex max-w-md w-5/6 bg-black bg-opacity-60 shadow-mg rounded-md p-2 mt-1 mb-14 text-white">
-          <h2 className="w-1/2 text-yellow-500">Your balance:</h2>
-          <Input
-            id="balance"
-            type="text"
-            name="balance"
-            className={`w-full rounded-md shadow-sm focus:ring-0 border-transparent ${getBalanceTextColor()} bg-transparent text-center text-md`}
-            value={formatBalance(profile.balance)}
-            onChange={handleValueChange}
-            disabled={form.disabled}
-          />
+          <h2 className="w-1/2 text-yellow-500 ml-5">Your balance:</h2>
+          <Balance />
         </div>
       </div>
     </div>

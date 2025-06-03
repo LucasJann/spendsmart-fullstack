@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 
-import Input from "./Input";
-import NavBar from "./NavBar";
-import Button from "./Button";
-import GoalItem from "./GoalItem";
+import Input from "../components/Input";
+import NavBar from "../components/NavBar";
+import Button from "../components/Button";
+import GoalItem from "../components/GoalItem";
 
 import beach from "../images/landscape.jpg";
 

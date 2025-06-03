@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-import LoginPage from "../components/LoginPage";
+import LoginPage from "../pages/Login";
 
 describe("LoginPage component", () => {
   it("renders login form by default", () => {

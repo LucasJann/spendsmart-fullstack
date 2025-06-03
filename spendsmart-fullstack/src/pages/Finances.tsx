@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { Fragment, useState, useEffect } from "react";
 
-import Input from "./Input";
-import NavBar from "./NavBar";
-import Button from "./Button";
-import Categories from "./Categories";
+import Input from "../components/Input";
+import NavBar from "../components/NavBar";
+import Button from "../components/Button";
+import Categories from "../components/Categories";
 
 import evening from "../images/evening.jpg";
 
@@ -18,26 +18,30 @@ const formattNumber = (value: number) => {
 };
 
 const Finances = () => {
-  interface financesProps {
+  interface FinancesProps {
     id: string;
+    alt: string;
     date: string;
     income: string;
     expense: string;
     category: string;
+    iconPath: string;
   }
   const formDataProperties = {
     id: "",
+    alt: "",
     date: "",
     income: "",
     expense: "",
     category: "",
+    iconPath: "",
   };
 
-  const [background, setBackground] = useState(false);
+  const [formData, setFormData] = useState<FinancesProps>(formDataProperties);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [background, setBackground] = useState(false);
   const [isSelected, setIsSelected] = useState<boolean>(true);
   const [confirmButton, setConfirmButton] = useState<boolean>(false);
-  const [formData, setFormData] = useState<financesProps>(formDataProperties);
 
   const navigation = useNavigate();
   const date = formData.date;
@@ -95,8 +99,8 @@ const Finances = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
-    const value = e.currentTarget.value;
 
+    const value = e.currentTarget.value;
     const parsedValue = value.replace(/[^0-9]/g, "");
     const number = Number(parsedValue);
     const formattedNumber = formattNumber(number);
@@ -130,10 +134,17 @@ const Finances = () => {
     }
   };
 
-  const handleCategoryChange = (selectedCategory: string) => {
+  const handleCategoryChange = (
+    selectedCategory: string,
+    selectedIconPath: string,
+    alt: string,
+  ) => {
+    console.log(selectedIconPath)
     setFormData((prevState) => ({
       ...prevState,
+      alt: alt,
       category: selectedCategory,
+      iconPath: selectedIconPath.split("5173")[1],
     }));
   };
 
@@ -142,9 +153,11 @@ const Finances = () => {
     const user = localStorage.getItem("user")?.replace(/"/g, "");
 
     let item = {
+      alt: formData.alt,
       date: date,
-      expense: isSelected ? expense : income,
+      [`${isSelected ? "expense" : "income"}`]: isSelected ? expense : income,
       category: category,
+      iconPath: formData.iconPath,
     };
 
     try {
@@ -179,8 +192,8 @@ const Finances = () => {
           <Button
             id="loginButton"
             type="button"
-            className="text-gray-300"
             onClick={onSelectHandler}
+            className="text-gray-300"
             isSelected={isSelected}
           >
             Expense
@@ -188,8 +201,8 @@ const Finances = () => {
           <Button
             id="registerButton"
             type="button"
-            className="mb-10 text-gray-300 ml-3"
             onClick={onSelectHandler}
+            className="mb-10 text-gray-300 ml-3"
             isSelected={!isSelected}
           >
             Income
@@ -215,12 +228,12 @@ const Finances = () => {
               <Button
                 id="confirmItemButton"
                 type="submit"
-                className={`mt-2 p-3 ${
-                  background ? `bg-green-500` : "bg-red-500"
-                } rounded-md transition duration-1000 ease-in-out`}
                 onClick={() => {
                   navigation("/historyPage");
                 }}
+                className={`mt-2 p-3 ${
+                  background ? `bg-green-500` : "bg-red-500"
+                } rounded-md transition duration-1000 ease-in-out`}
               >
                 {background ? "Finance Registered" : "History"}
               </Button>
@@ -238,13 +251,13 @@ const Finances = () => {
                 id={isSelected ? "expenseInput" : "incomeInput"}
                 name={isSelected ? "expenseInput" : "incomeInput"}
                 value={isSelected ? formData.expense : formData.income}
-                onChange={handleInputChange}
                 type="text"
+                onChange={handleInputChange}
                 className="mb-1 text-black text-center rounded-md"
               />
               <Categories
                 isSelected={isSelected}
-                onCategorySelect={handleCategoryChange}
+                onCategorySelected={handleCategoryChange}
               />
               {confirmButton && (
                 <Button
@@ -259,10 +272,10 @@ const Finances = () => {
                 <Button
                   id="confirmItemButton"
                   type="button"
-                  className="mt-2 p-3 bg-red-500 rounded-md"
                   onClick={() => {
                     navigation("/historyPage");
                   }}
+                  className="mt-2 p-3 bg-red-500 rounded-md"
                 >
                   History
                 </Button>

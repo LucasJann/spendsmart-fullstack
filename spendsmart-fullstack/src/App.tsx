@@ -1,16 +1,16 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Login from "./components/LoginPage";
-import Profile from "./components/ProfilePage";
-import Finances from "./components/FinancesPage";
-import History from "./components/HistoryPage";
-import Goals from "./components/GoalsPage";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Finances from "./pages/Finances";
+import History from "./pages/History";
+import Goals from "./pages/Goals";
 
 const router = createBrowserRouter([
   {
     path: "/",
     children: [
-      { path: "/", element: <Login /> },
+      { path: "/", element: <Home /> },
       { path: "/profilePage", element: <Profile /> },
       { path: "/financesPage", element: <Finances /> },
       { path: "/historyPage", element: <History /> },
