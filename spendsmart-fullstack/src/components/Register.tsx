@@ -68,7 +68,6 @@ const Register = () => {
         body: JSON.stringify(data),
       });
       const resData = await response.json();
-
       if (resData.errorMessage) {
         setError(resData.errorMessage);
         handleError(resData.path);
@@ -104,7 +103,7 @@ const Register = () => {
             error={error}
             value={formData.name}
             onChange={(e) => handleInputChange(e, "name")}
-            nameError={formData.nameError}
+            isError={formData.nameError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your name"
           >
@@ -117,7 +116,7 @@ const Register = () => {
             error={error}
             value={formData.lastName}
             onChange={(e) => handleInputChange(e, "lastName")}
-            nameError={formData.lastNameError}
+            isError={formData.lastNameError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your last name"
           >
@@ -130,7 +129,7 @@ const Register = () => {
             error={error}
             value={formData.email}
             onChange={(e) => handleInputChange(e, "email")}
-            nameError={formData.emailError}
+            isError={formData.emailError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your e-mail"
           >
@@ -143,7 +142,7 @@ const Register = () => {
             error={error}
             value={formData.password}
             onChange={(e) => handleInputChange(e, "password")}
-            nameError={formData.passwordError}
+            isError={formData.passwordError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your password"
           >
@@ -156,7 +155,7 @@ const Register = () => {
             error={error}
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange(e, "confirmPassword")}
-            nameError={formData.confirmPasswordError}
+            isError={formData.confirmPasswordError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Confirm your password"
           >

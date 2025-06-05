@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Input from "./Input";
 
 interface FormFieldProperties {
@@ -9,7 +10,7 @@ interface FormFieldProperties {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   children: string;
   className: string;
-  nameError: boolean;
+  isError: boolean;
   placeholder: string;
 }
 
@@ -22,20 +23,20 @@ const FormField: React.FC<FormFieldProperties> = ({
   onChange,
   children,
   className,
-  nameError,
+  isError,
   placeholder,
 }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage === "") {
+      setErrorMessage(error);
+    }
+  }, [isError]);
+
   return (
     <div>
-      <h2
-        className={
-          nameError
-            ? "mt-2 text-red-400"
-            : "mt-2"
-        }
-      >
-        {children}
-      </h2>
+      <h2 className={isError ? "mt-2 text-red-400" : "mt-2"}>{children}</h2>
       <Input
         id={id}
         type={type}
@@ -45,7 +46,7 @@ const FormField: React.FC<FormFieldProperties> = ({
         className={className}
         placeholder={placeholder}
       />
-      {nameError && <p className="text-red-400 text-xs">{error}</p>}
+      {isError && <p className="text-red-400 text-xs">{errorMessage}</p>}
       <hr />
     </div>
   );

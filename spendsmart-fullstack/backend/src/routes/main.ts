@@ -68,12 +68,12 @@ router.post(
       .trim()
       .isLength({ min: 5 })
       .custom((value, { req }) => {
-        if (value !== req.body.confirmPassword) {
+        if (value !== req.body.password) {
           throw new Error("Passwords have to match!");
         }
         return true;
       }),
-    body("confirmPassword")
+    body("confirmPassword", "Passwords have to match!")
       .trim()
       .isLength({ min: 5 })
       .custom((value, { req }) => {
