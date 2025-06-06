@@ -14,6 +14,7 @@ const user = localStorage.getItem("user")?.replace(/"/g, "");
 
 interface profileProperties {
   name: string;
+  lastName: string;
   image: string;
   selectedImage: string | undefined;
 }
@@ -28,6 +29,7 @@ interface formProperties {
 const Profile = () => {
   const profileValues: profileProperties = {
     name: "",
+    lastName: "",
     image: profilePic,
     selectedImage: undefined,
   };
@@ -44,6 +46,39 @@ const Profile = () => {
   const [preState] = useState<string>(emptyImage);
 
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profileResponse = await fetch(
+          `http://localhost:8080/profile/${user}`
+        );
+
+        if (!profileResponse.ok) {
+          throw new Error(
+            `Failed to fetch profile data. Status: ${profileResponse.status}`
+          );
+        }
+
+        const profileJson = await profileResponse.json();
+        
+        if (profileJson.image === undefined) {
+          profileJson.image = profile.image;
+        }
+
+        setProfile((prevState) => ({
+          ...prevState,
+          image: profileJson.image,
+          name: profileJson.name,
+          lastName: profileJson.lastName,
+        }));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (profile.selectedImage) {
@@ -154,11 +189,9 @@ const Profile = () => {
                 profileJson.image.split("images\\")[1]
               }`
             : preState;
-          const userName = profileJson.name + " " + profileJson.lastName;
 
           setProfile((prevState) => ({
             ...prevState,
-            name: userName,
             image: fetchedProfileImage,
           }));
         }
@@ -281,7 +314,7 @@ const Profile = () => {
         )}
         {!form.image && (
           <p className="text-white text-3xl font-mono font-bold">
-            {profile.name}
+            {`${profile.name} ${profile.lastName}`}
           </p>
         )}
         <div className="text-white text-4xl items-start"></div>

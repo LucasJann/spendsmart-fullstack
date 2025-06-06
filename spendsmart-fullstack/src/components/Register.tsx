@@ -75,6 +75,8 @@ const Register = () => {
         resetForm();
         navigate("/profilePage");
       }
+
+      localStorage.setItem("user", `${formData.email}`);
     } catch (err) {
       console.error(err);
     }

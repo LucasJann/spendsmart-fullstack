@@ -17,29 +17,57 @@ const Balance = () => {
   const [showBalanceModal, setShowBalanceModal] = useState(false);
 
   useEffect(() => {
-    const balanceValue = async () => {
-      try {
-        const balanceResponse = await fetch(
-          `http://localhost:8080/balance/${user}`
-        );
-
-        if (!balanceResponse.ok) {
-          throw new Error(
-            `Failed to fetch balance data. Status: ${balanceResponse.status}`
+    if (showBalanceModal === true) {
+      const balanceValue = async () => {
+        try {
+          const balanceResponse = await fetch(
+            `http://localhost:8080/balance/${user}`
           );
-        }
-        const balanceJson = await balanceResponse.json();
-        if (balanceJson.balance === "0") {
-          return setShowBalanceModal(true);
-        }
 
-        setBalance(balanceJson.balance);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    balanceValue();
-  }, []);
+          if (!balanceResponse.ok) {
+            throw new Error(
+              `Failed to fetch balance data. Status: ${balanceResponse.status}`
+            );
+          }
+          const balanceJson = await balanceResponse.json();
+
+          if (balanceJson.balance !== '0') {
+            return setShowBalanceModal(false);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      balanceValue();
+    }
+  }, [showBalanceModal]);
+
+  useEffect(() => {
+    if (showBalanceModal === false) {
+      const balanceValue = async () => {
+        try {
+          const balanceResponse = await fetch(
+            `http://localhost:8080/balance/${user}`
+          );
+
+          if (!balanceResponse.ok) {
+            throw new Error(
+              `Failed to fetch balance data. Status: ${balanceResponse.status}`
+            );
+          }
+          const balanceJson = await balanceResponse.json();
+
+          if (balanceJson.balance === "0") {
+            return setShowBalanceModal(true);
+          }
+          setBalance(balanceJson.balance);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      balanceValue();
+    }
+  }, [showBalanceModal]);
 
   const getBalanceTextColor = () => {
     if (balance === null) {
@@ -55,6 +83,7 @@ const Balance = () => {
   };
 
   const submitHandler = async () => {
+    setShowBalanceModal(false);
     await fetch(`http://localhost:8080/balance`, {
       method: "POST",
       headers: {
@@ -62,8 +91,10 @@ const Balance = () => {
       },
       body: JSON.stringify({ user: user, balance: initialBalance }),
     });
-    setShowBalanceModal(false);
-    window.location.reload();
+
+    if (showBalanceModal === false) {
+      window.location.reload();
+    }
   };
 
   return (
