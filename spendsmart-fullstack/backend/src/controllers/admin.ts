@@ -6,6 +6,17 @@ import path from "path";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 
+const crypto = require("crypto");
+
+let token: string;
+
+const getToken = () => {
+  crypto.randomBytes(32, (err: string, buffer: any) => {
+    token = buffer.toString("hex");
+  });
+};
+getToken();
+
 interface ValidationErrorProps {
   type: string;
   value: string;
@@ -57,18 +68,19 @@ export const Register = async (
       password: hashedPassword,
       balance: req.body.initialBalance,
       goals: [],
+      token: token,
     });
 
-    const emailFounder = await User.findOne({ email: user.email });
+    const emailFound = await User.findOne({ email: user.email });
 
-    if (emailFounder !== null) {
+    if (emailFound !== null) {
       return res.status(422).json({
         errorMessage: "E-mail already exists",
         path: "email",
       });
     }
     await user.save();
-    return res.status(201).json({ message: "User created!" });
+    return res.status(201).json({ message: "User created!", token: token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });

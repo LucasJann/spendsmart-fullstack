@@ -85,7 +85,7 @@ const Login = () => {
             value={formData.email}
             error={error}
             onChange={(e) => handleInputChange(e, "email")}
-            nameError={formData.emailError}
+            isError={formData.emailError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your e-mail"
           >
@@ -98,7 +98,7 @@ const Login = () => {
             value={formData.password}
             error={error}
             onChange={(e) => handleInputChange(e, "password")}
-            nameError={formData.passwordError}
+            isError={formData.passwordError}
             className="w-full mb-2 rounded-md bg-transparent text-gray-400"
             placeholder="Insert your password"
           >

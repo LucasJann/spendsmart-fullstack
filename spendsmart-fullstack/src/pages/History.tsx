@@ -288,7 +288,7 @@ const HistoryPage = () => {
               }));
             }}
           >
-            See all finances
+            See all Finances
           </Button>
         </form>
       </section>

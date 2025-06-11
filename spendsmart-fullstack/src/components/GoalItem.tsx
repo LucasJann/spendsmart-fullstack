@@ -42,10 +42,8 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
 
   useEffect(() => {
     const newValue = value.replace(/[^0-9]/g, "");
-    const newBalance = balance.replace(/[^0-9]/g, "");
-
     if (balance !== undefined && newValue) {
-      const progress = (parseInt(newBalance) / parseInt(newValue)) * 100;
+      const progress = (parseInt(balance) / parseInt(newValue)) * 100;
       const roundedProgress = Math.min(Math.ceil(progress), 100);
 
       setProgress(roundedProgress);
