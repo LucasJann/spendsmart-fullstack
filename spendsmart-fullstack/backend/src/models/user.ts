@@ -18,6 +18,7 @@ interface Goal {
 
 interface User extends Document {
   name: string;
+  token: string;
   email: string;
   items: Item[];
   image?: string;
@@ -43,6 +44,7 @@ const GoalSchema = new Schema({
 
 const UserSchema = new Schema({
   name: { type: String, required: true },
+  token: { type: String, required: true },
   email: { type: String, required: true },
   image: { type: String },
   items: { type: [ItemSchema], default: [] },

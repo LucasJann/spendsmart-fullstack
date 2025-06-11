@@ -47,6 +47,26 @@ const Profile = () => {
 
   const location = useLocation();
 
+  console.log(user)
+
+  // useEffect(() => {
+  //   if (user !== "") {
+  //     setForm(() => ({
+  //       image: false,
+  //       disabled: true,
+  //       onConfirm: false,
+  //       imageSaved: false,
+  //     }));
+  //     setProfile(() => ({
+  //       name: "",
+  //       lastName: "",
+  //       image: profilePic,
+  //       selectedImage: undefined,
+  //     }));
+  //     setPrestate(emptyImage);
+  //   }
+  // }, [user]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,7 +81,7 @@ const Profile = () => {
         }
 
         const profileJson = await profileResponse.json();
-        
+
         if (profileJson.image === undefined) {
           profileJson.image = profile.image;
         }
