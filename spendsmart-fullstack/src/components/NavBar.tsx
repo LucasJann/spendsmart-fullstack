@@ -11,7 +11,7 @@ interface NavBarProperties {
 }
 
 const NavBar: React.FC<NavBarProperties> = ({ image }) => {
-  const user = localStorage.getItem("user")?.replace(/"/g, "");
+  const token = localStorage.getItem("token")?.replace(/"/g, "");
   const location = useLocation();
   
   const [defaultImage, setDefaultImage] = useState<string>(profile);
@@ -19,7 +19,7 @@ const NavBar: React.FC<NavBarProperties> = ({ image }) => {
   useEffect(() => {
     const profilePic = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/profile/${user}`);
+        const response = await fetch(`http://localhost:8080/profile/${token}`);
 
         if (!response.ok) {
           console.error(":::Internal Server Error:::");

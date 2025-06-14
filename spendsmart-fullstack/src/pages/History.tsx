@@ -95,10 +95,10 @@ const HistoryPage = () => {
   const [incomesAndExpenses, setIncomesAndExpenses] = useState<boolean>(false);
 
   useEffect(() => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    const token = localStorage.getItem("token")?.replace(/"/g, "");
     const getFinances = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/finances/${user}`);
+        const response = await fetch(`http://localhost:8080/finances/${token}`);
         if (!response.ok) {
           console.error("Failed to fetch");
         }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Input from "./Input";
 
-const user = localStorage.getItem("user")?.replace(/"/g, "");
+const token = localStorage.getItem("token")?.replace(/"/g, "");
 const formatBalance = (value: number) => {
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -21,7 +21,7 @@ const Balance = () => {
       const balanceValue = async () => {
         try {
           const balanceResponse = await fetch(
-            `http://localhost:8080/balance/${user}`
+            `http://localhost:8080/balance/${token}`
           );
 
           if (!balanceResponse.ok) {
@@ -47,7 +47,7 @@ const Balance = () => {
       const balanceValue = async () => {
         try {
           const balanceResponse = await fetch(
-            `http://localhost:8080/balance/${user}`
+            `http://localhost:8080/balance/${token}`
           );
 
           if (!balanceResponse.ok) {
@@ -89,7 +89,7 @@ const Balance = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ user: user, balance: initialBalance }),
+      body: JSON.stringify({ token: token, balance: initialBalance }),
     });
 
     if (showBalanceModal === false) {

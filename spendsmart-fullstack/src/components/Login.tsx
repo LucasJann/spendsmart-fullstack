@@ -27,8 +27,28 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const url = "http://localhost:8080/login";
-    const data = { email: formData.email, password: formData.password };
+
+    try {
+      const data = { email: formData.email };
+      const url = "http://localhost:8080/token";
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        console.log("error");
+      }
+
+      const resData = await response.json();
+
+      localStorage.setItem("token", resData.token);
+    } catch (err) {
+      console.error(err);
+    }
 
     const handleError = (field: string) => {
       setFormData((prevState) => ({
@@ -37,6 +57,8 @@ const Login = () => {
       }));
     };
 
+    const url = "http://localhost:8080/login";
+    const data = { email: formData.email, password: formData.password };
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -52,8 +74,6 @@ const Login = () => {
         resetForm();
         navigate("/profilePage");
       }
-
-      localStorage.setItem("user", `${formData.email}`);
     } catch (err) {
       console.error(err);
     }

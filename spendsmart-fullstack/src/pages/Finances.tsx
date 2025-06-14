@@ -66,12 +66,12 @@ const Finances = () => {
 
   useEffect(() => {
     const updateProfileBalance = async () => {
-      const user = localStorage.getItem("user")?.replace(/"/g, "");
+      const token = localStorage.getItem("token")?.replace(/"/g, "");
       const value = isSelected
         ? { expenseValue: expense.replace(/[^0-9]/g, "") }
         : { incomeValue: income.replace(/[^0-9]/g, "") };
       try {
-        await fetch(`http://localhost:8080/balance/calcNewBalance/${user}`, {
+        await fetch(`http://localhost:8080/balance/calcNewBalance/${token}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -150,7 +150,7 @@ const Finances = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
+    const token = localStorage.getItem("token")?.replace(/"/g, "");
 
     let item = {
       alt: formData.alt,
@@ -161,7 +161,7 @@ const Finances = () => {
     };
 
     try {
-      await fetch(`http://localhost:8080/finances/${user}`, {
+      await fetch(`http://localhost:8080/finances/${token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

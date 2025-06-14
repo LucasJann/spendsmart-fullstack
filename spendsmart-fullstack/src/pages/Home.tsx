@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import Login from "../components/Login";
 import Button from "../components/Button";
@@ -6,12 +6,8 @@ import Register from "../components/Register";
 
 import burningSkyImage from "../images/burning-sky.jpg";
 
-const SpendSmart = () => {
+const Home = () => {
   const [isSelected, setIsSelected] = useState(true);
-
-  useEffect(() => {
-    localStorage.setItem("user", "");
-  }, []);
 
   const handleSelected = () => {
     setIsSelected((prev) => !prev);
@@ -49,4 +45,4 @@ const SpendSmart = () => {
   );
 };
 
-export default SpendSmart;
+export default Home;

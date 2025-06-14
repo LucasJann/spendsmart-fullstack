@@ -16,6 +16,7 @@ import {
   postGoals,
   deleteGoal,
   patchBalance,
+  patchToken
 } from "../controllers/admin";
 
 const router = Router();
@@ -86,9 +87,9 @@ router.post(
   Register
 );
 
-router.get("/balance/:user", getBalance);
+router.get("/balance/:token", getBalance);
 router.post("/balance", postBalance);
-router.patch("/balance/calcNewBalance/:user", patchBalance);
+router.patch("/balance/calcNewBalance/:token", patchBalance);
 
 router.post(
   "/login",
@@ -110,16 +111,19 @@ router.post(
   Login
 );
 
-router.get("/profile/:user", getImage);
-router.post("/profile/:user", postImage);
-router.post("/profile/image/:user", imageChanged);
+router.get("/profile/:token", getImage);
+router.post("/profile/:token", postImage);
+router.post("/profile/image/:token", imageChanged);
 router.delete("/profile/clearImage", deleteImage);
 
-router.get("/finances/:user", getItems);
-router.post("/finances/:user", postItem);
+router.get("/finances/:token", getItems);
+router.post("/finances/:token", postItem);
 
-router.get("/goalsPage/:user", getGoals);
-router.post("/goalsPage/:user", postGoals);
+router.get("/goalsPage/:token", getGoals);
+router.post("/goalsPage/:token", postGoals);
 router.delete("/goalsPage/deleteGoal", deleteGoal);
+
+router.patch("/token", patchToken);
+
 
 export default router;
