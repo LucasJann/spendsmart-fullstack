@@ -7,7 +7,7 @@ import GoalItem from "../components/GoalItem";
 
 import beach from "../images/landscape.jpg";
 
-const user = localStorage.getItem("user")?.replace(/"/g, "");
+const token = localStorage.getItem("token")?.replace(/"/g, "");
 
 const formatBalance = (value: number) => {
   const formatter = new Intl.NumberFormat("pt-BR", {
@@ -88,7 +88,7 @@ const Goals = () => {
 
   const getGoals = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8080/goalsPage/${user}`);
+      const response = await fetch(`http://localhost:8080/goalsPage/${token}`);
       if (!response.ok) throw new Error("Failed to fetch goals");
 
       const responseData = await response.json();
@@ -112,7 +112,7 @@ const Goals = () => {
 
   const getBalance = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8080/balance/${user}`);
+      const response = await fetch(`http://localhost:8080/balance/${token}`);
       if (!response.ok) throw new Error("Failed to fetch balance");
 
       const responseData = await response.json();
@@ -169,7 +169,7 @@ const Goals = () => {
     event.preventDefault();
     const data = { id: 1, goal: formData.goal, value: formData.goalValue };
     try {
-      await fetch(`http://localhost:8080/goalsPage/${user}`, {
+      await fetch(`http://localhost:8080/goalsPage/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

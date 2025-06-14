@@ -10,7 +10,7 @@ import landScape from "../images/morning.jpg";
 import profilePic from "../images/profilepic.jpg";
 import emptyImage from "../images/prestate.png";
 
-const user = localStorage.getItem("user")?.replace(/"/g, "");
+const token = localStorage.getItem("token")?.replace(/"/g, "");
 
 interface profileProperties {
   name: string;
@@ -47,31 +47,17 @@ const Profile = () => {
 
   const location = useLocation();
 
-  console.log(user)
-
-  // useEffect(() => {
-  //   if (user !== "") {
-  //     setForm(() => ({
-  //       image: false,
-  //       disabled: true,
-  //       onConfirm: false,
-  //       imageSaved: false,
-  //     }));
-  //     setProfile(() => ({
-  //       name: "",
-  //       lastName: "",
-  //       image: profilePic,
-  //       selectedImage: undefined,
-  //     }));
-  //     setPrestate(emptyImage);
-  //   }
-  // }, [user]);
-
   useEffect(() => {
     const fetchData = async () => {
+      const currentToken = localStorage.getItem("token");
+
+      if (token !== currentToken) {
+        window.location.reload();
+      }
+
       try {
         const profileResponse = await fetch(
-          `http://localhost:8080/profile/${user}`
+          `http://localhost:8080/profile/${token}`
         );
 
         if (!profileResponse.ok) {
@@ -118,7 +104,6 @@ const Profile = () => {
           console.error(err);
         }
       };
-
       handleRouteChange();
     }
   }, [location.pathname]);
@@ -192,7 +177,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const profileResponse = await fetch(
-          `http://localhost:8080/profile/${user}`
+          `http://localhost:8080/profile/${token}`
         );
 
         if (!profileResponse.ok) {
@@ -245,7 +230,7 @@ const Profile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/profile/image/${user}`,
+        `http://localhost:8080/profile/image/${token}`,
         {
           method: "POST",
           body: formData,
@@ -285,7 +270,7 @@ const Profile = () => {
     }
 
     try {
-      await fetch(`http://localhost:8080/profile/${user}`, {
+      await fetch(`http://localhost:8080/profile/${token}`, {
         method: "POST",
         body: formData,
       });

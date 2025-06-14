@@ -15,7 +15,7 @@ const getToken = () => {
     token = buffer.toString("hex");
   });
 };
-getToken();
+// getToken();
 
 interface ValidationErrorProps {
   type: string;
@@ -57,6 +57,7 @@ export const Register = async (
       path: firstError.path,
     });
   }
+  getToken();
 
   try {
     const password = req.body.password;
@@ -133,10 +134,10 @@ export const Login = async (
 };
 
 export const getBalance = async (req: Request, res: Response) => {
-  const user = req.params.user;
+  const token = req.params.token;
 
   try {
-    const userData = await User.findOne({ email: user });
+    const userData = await User.findOne({ token: token });
     if (userData) {
       let balanceValue = userData.balance;
 
@@ -158,10 +159,10 @@ export const postBalance = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.body.user;
+    const token = req.body.token;
     const balanceValue = req.body.balance;
     const result = await User.updateOne(
-      { email: user },
+      { token: token },
       { $set: { balance: balanceValue } }
     );
 
@@ -182,10 +183,10 @@ export const patchBalance = async (
   next: NextFunction
 ) => {
   const value = req.body;
-  const user = req.params.user;
+  const token = req.params.token;
   try {
-    const userData = await User.findOne({ email: user });
-    const parsedBalance = Number(userData.balance);
+    const user = await User.findOne({ token: token });
+    const parsedBalance = Number(user.balance);
     let newValue = 0;
 
     if ("expenseValue" in value) {
@@ -197,7 +198,7 @@ export const patchBalance = async (
     }
     const newBalance = String(newValue);
 
-    await User.updateOne({ email: user }, { $set: { balance: newBalance } });
+    await User.updateOne({ token: token }, { $set: { balance: newBalance } });
     return res.status(201).json({ message: "Balance Updated" });
   } catch (err) {
     console.error(err);
@@ -206,10 +207,10 @@ export const patchBalance = async (
 };
 
 export const getImage = async (req: Request, res: Response) => {
-  const user = req.path.split("profile/")[1];
+  const token = req.path.split("profile/")[1];
 
   try {
-    const result = await User.findOne({ email: user });
+    const result = await User.findOne({ token: token });
     const image = result?.image;
     const name = result?.name;
     const lastName = result?.lastName;
@@ -224,14 +225,14 @@ export const postImage = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  const user = req.params.user;
+  const token = req.params.token;
   const imagePath = req.file.path;
   const profileImagePath = req.body.profileImage;
 
   try {
-    const loggedUser = await User.findOne({ email: user });
+    const loggedUser = await User.findOne({ token: token });
     const userImage = loggedUser.image?.split("src\\")[1];
-    await User.updateOne({ email: user }, { $set: { image: imagePath } });
+    await User.updateOne({ token: token }, { $set: { image: imagePath } });
 
     clearImage(userImage);
     clearImage(profileImagePath);
@@ -284,10 +285,10 @@ export const imageChanged = async (req: Request, res: Response) => {
 };
 
 export const getGoals = async (req: Request, res: Response) => {
-  const user = req.params.user;
+  const token = req.params.token;
 
   try {
-    const result = await User.findOne({ email: user });
+    const result = await User.findOne({ token: token });
     return res
       .status(200)
       .json({ data: result.goals, balance: result.balance });
@@ -298,11 +299,11 @@ export const getGoals = async (req: Request, res: Response) => {
 };
 
 export const postGoals = async (req: Request, res: Response) => {
-  const userEmail = req.params.user;
+  const token = req.params.token;
   const goalData = req.body;
 
   try {
-    await User.updateOne({ email: userEmail }, { $push: { goals: goalData } });
+    await User.updateOne({ token: token }, { $push: { goals: goalData } });
     return res.status(200).json({ message: "Goal added successfully!" });
   } catch (err) {
     console.error(err);
@@ -312,16 +313,14 @@ export const postGoals = async (req: Request, res: Response) => {
 
 export const deleteGoal = async (req: Request, res: Response) => {
   const _id = req.body._id;
-  const user = req.body.email;
+  const token = req.body.token;
   try {
-    const userLogged = await User.findOne({ email: user });
-    if (!userLogged) {
+    const user = await User.findOne({ token: token });
+    if (!user) {
       return res.status(404).json({ errorMessage: "User not found" });
     }
-    userLogged.goals = userLogged.goals.filter(
-      (item: any) => item._id.toString() !== _id
-    );
-    await userLogged.save();
+    user.goals = user.goals.filter((item: any) => item._id.toString() !== _id);
+    await user.save();
     return res.status(200).json({ message: "Goal removed" });
   } catch (err) {
     console.error(err);
@@ -330,10 +329,10 @@ export const deleteGoal = async (req: Request, res: Response) => {
 };
 
 export const getItems = async (req: Request, res: Response) => {
-  const email = req.params.user;
+  const token = req.params.token;
 
   try {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ token: token });
     const items = user.items;
     return res.status(201).json({ message: "Items fetched", items: items });
   } catch (err) {
@@ -343,12 +342,27 @@ export const getItems = async (req: Request, res: Response) => {
 };
 
 export const postItem = async (req: Request, res: Response) => {
-  const email = req.params.user;
+  const token = req.params.token;
   const item = req.body;
 
   try {
-    await User.updateOne({ email: email }, { $push: { items: item } });
+    await User.updateOne({ token: token }, { $push: { items: item } });
     return res.status(201).json({ message: "Item added" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+};
+
+export const patchToken = async (req: Request, res: Response) => {
+  const user = req.body.email;
+  if (token === undefined) {
+    getToken();
+  }
+
+  try {
+    await User.updateOne({ email: user }, { $set: { token: token } });
+    return res.status(200).json({ token: token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });

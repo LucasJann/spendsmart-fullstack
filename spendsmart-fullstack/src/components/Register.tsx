@@ -68,13 +68,13 @@ const Register = () => {
         body: JSON.stringify(data),
       });
       const resData = await response.json();
-      localStorage.setItem("token", `${resData.token}`);
-
+      
       if (resData.errorMessage) {
         setError(resData.errorMessage);
         handleError(resData.path);
       } else {
         resetForm();
+        localStorage.setItem("token", `${resData.token}`);
         navigate("/profilePage");
       }
     } catch (err) {

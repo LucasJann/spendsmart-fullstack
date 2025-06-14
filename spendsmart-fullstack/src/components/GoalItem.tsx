@@ -20,14 +20,14 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
   const [itemPercentageStyle, setItemPercentageStyle] = useState<object>({});
 
   useEffect(() => {
-    const user = localStorage.getItem("user")?.replace(/"/g, "");
-    if (!user) {
+    const token = localStorage.getItem("token")?.replace(/"/g, "");
+    if (!token) {
       console.error("User not logged in");
       return;
     }
     const getBalance = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/balance/${user}`);
+        const response = await fetch(`http://localhost:8080/balance/${token}`);
         if (!response.ok) {
           throw new Error("Failed to fetch balance");
         }
@@ -57,8 +57,8 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
   }, [balance, value]);
 
   const deleteGoalHandler = async () => {
-    const email = localStorage.getItem("user")?.replace(/"/g, "");
-    if (!email) {
+    const token = localStorage.getItem("token")?.replace(/"/g, "");
+    if (!token) {
       console.error("User not logged in");
       return;
     }
@@ -70,7 +70,7 @@ const GoalItem: React.FC<GoalItemProperties> = ({ item }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, _id }),
+          body: JSON.stringify({ token, _id }),
         }
       );
 
